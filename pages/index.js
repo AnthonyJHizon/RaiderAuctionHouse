@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
+
+export default function Home({item}) {
   return (
     <div className={styles.container}>
       <Head>
@@ -12,58 +12,46 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+      <div>
+      <p>{item.auctions[0].item.id}</p>
+      <p>{item.auctions[0].bid}</p>
+      <p>{item.auctions[0].buyout}</p>
+      </div>
       </main>
 
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
       </footer>
     </div>
   )
 }
+
+
+export const getStaticProps = async() => {
+  const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/2?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ")
+  const data = await res.json();
+  // console.log(data.auctions.length);
+  // create a map where each key(data.auctions[i].item.id) with a value of min buyout.
+  let map = new Map();
+  for(let i = 0; i<data.auctions.length-1;i++)
+  {
+    if(!map.has(data.auctions[i].item.id))
+    {
+      map.set(data.auctions[i].item.id, data.auctions[i].buyout);
+    }
+    else
+    {
+      if(map.get(data.auctions[i].item.id) > data.auctions[i].buyout)
+      {
+        // console.log(data.auctions[i].buyout + "           " + map.get(data.auctions[i].item.id));
+        map.set(data.auctions[i].item.id, data.auctions[i].buyout);
+        // console.log(map.get(data.auctions[i].item.id));
+      }
+    }
+  }
+  // console.log(map);
+  return {
+    props: {item : data}
+  }
+}
+
+
