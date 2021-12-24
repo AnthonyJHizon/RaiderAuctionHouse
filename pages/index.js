@@ -1,6 +1,8 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import useSWR from 'swr'
 
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function Home({listings}) {
   let map = new Map();
@@ -22,11 +24,19 @@ export default function Home({listings}) {
     }
   }
   for (const [key,value] of map.entries()) {
-    let itemName = getItemInfo(key.toString()).then(function(result) {
-      return result;
-    });
-    console.log(itemName);
-    posts.push(<div key={key}> <a href={"https://www.wowhead.com/item="+key}>Item Name(WIP): </a>{intToGold(value.toFixed(4))}</div>)
+
+    // let itemName = getItemInfo(key.toString()).then(function(result) {
+    //   console.log(result.props.name);
+    //   posts.push(<div key={key}> <a href={"https://www.wowhead.com/item="+key}>Item Name(WIP): {name}  </a>Buyout Price: {intToGold(value.toFixed(4))}</div>)
+    //   return result.props.name;
+    // });
+    let itemName = "loading....";
+    const { data, error } = useSWR('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
+    if(data != undefined)
+    {
+      itemName = data.name;
+    }
+    posts.push(<div key={key}> <a href={"https://www.wowhead.com/item="+key}>{itemName}</a>Buyout Price: {intToGold(value.toFixed(4))}</div>)
     break;
   }
   
@@ -70,21 +80,21 @@ export const getStaticProps = async () => {
   }
 }
 
-export const  getItemInfo = async (key) => {
-  let data;
-  try{
-    const res =  await fetch('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ')
-    data = await res.json();
-  }
-  catch (error) {
-    console.log('Error getting data', error)
-  }
-  return {
-    props: {
-      name : data.name
-    }
-  };
-}
+// export const  getItemInfo = async (key) => {
+//   let data;
+//   try{
+//     const res =  await fetch('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ')
+//     data = await res.json();
+//   }
+//   catch (error) {
+//     console.log('Error getting data', error)
+//   }
+//   return {
+//     props: {
+//       name : data.name
+//     }
+//   };
+// }
 
 export const intToGold = (int) =>
 {
