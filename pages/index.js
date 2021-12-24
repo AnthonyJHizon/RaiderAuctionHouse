@@ -1,8 +1,10 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useSWR from 'swr'
+import Image from 'next/image'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher2 = (url) => fetch(url).then((res) => res.json())
 
 export default function Home({listings}) {
   let map = new Map();
@@ -24,22 +26,28 @@ export default function Home({listings}) {
     }
   }
   for (const [key,value] of map.entries()) {
-
-    // let itemName = getItemInfo(key.toString()).then(function(result) {
-    //   console.log(result.props.name);
-    //   posts.push(<div key={key}> <a href={"https://www.wowhead.com/item="+key}>Item Name(WIP): {name}  </a>Buyout Price: {intToGold(value.toFixed(4))}</div>)
-    //   return result.props.name;
-    // });
     let itemName = "loading....";
-    const { data, error } = useSWR('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
-    if(data != undefined)
+    let itemIconURL = "https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg";
+    const { data : name, error : nameError } = useSWR('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
+    const { data : icon, error : iconError } = useSWR('https://us.api.blizzard.com/data/wow/media/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher2)
+    if(name != undefined)
     {
-      itemName = data.name;
+      itemName = name.name;
     }
-    posts.push(<div key={key}> <a href={"https://www.wowhead.com/item="+key}>{itemName}</a>Buyout Price: {intToGold(value.toFixed(4))}</div>)
+    if(icon != undefined)
+    {
+      itemIconURL = icon.assets[0].value;
+    }
+    posts.push(
+      <div key={key}>
+        <a href={"https://www.wowhead.com/item="+key}><img src={itemIconURL}/></a>
+        <a href={"https://www.wowhead.com/item="+key}>{itemName}</a>
+        Buyout Price: {intToGold(value.toFixed(4))}
+      </div>
+    )
     break;
   }
-  
+  // console.log(listings.lastModified);
   return (
     <div className={styles.container}>
       <Head>
@@ -52,6 +60,7 @@ export default function Home({listings}) {
 
       <main className={styles.main}>
         <div>
+          <h1>Lastest Price Update: {listings.lastModified} </h1>
           {posts}
         </div>
       </main>
@@ -65,36 +74,24 @@ export default function Home({listings}) {
 
 export const getStaticProps = async () => {
   let data;
+  let lastMod;
   try{
-    const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/2?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ")
+    const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/2?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ");
     data = await res.json();
+    lastMod = res.headers.get('last-modified');
+    // console.log(lastMod);
   }
   catch (error) {
     console.log('Error getting data', error)
   }
   return {
     props: {
-      listings : data
+      listings : data,
+      lastModified : lastMod,
     },
     revalidate: 5,
   }
 }
-
-// export const  getItemInfo = async (key) => {
-//   let data;
-//   try{
-//     const res =  await fetch('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ')
-//     data = await res.json();
-//   }
-//   catch (error) {
-//     console.log('Error getting data', error)
-//   }
-//   return {
-//     props: {
-//       name : data.name
-//     }
-//   };
-// }
 
 export const intToGold = (int) =>
 {
