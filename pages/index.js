@@ -1,13 +1,41 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import useSWR from 'swr'
-import Image from 'next/image'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
+let currRealm = 4728;
+let currAH = 2;
 
-export default function Home({listings, lastModified}) {
+
+export default function Home({listings, lastModified, realms}) {
   let map = new Map();
-  const posts = [];
+  let postsArr = [];
+  let realmsArr = [];
+  let ahArr = [];
+  let realmMap = new Map();
+  let ahMap = new Map();
+  ahMap.set(2, "Alliance");
+  ahMap.set(6, "Horde");
+  ahMap.set(7, "Black Water")
+  for (const [key,value] of ahMap.entries()) {
+    ahArr.push(
+    <>
+        <div key = {key}>{value}</div>
+    </>
+    )
+  }
+  for(let i = 0; i<realms.results.length-1;i++)
+  {
+    realmMap.set(realms.results[i].data.realms[0].id, realms.results[i].data.realms[0].name.en_US, );
+  }
+  const mapSort = new Map([...realmMap.entries()].sort((a, b) => a[1].localeCompare(b[1])));
+  for (const [key,value] of mapSort.entries()) {
+    realmsArr.push(
+      <>
+        <div key = {key}>{value}</div>
+      </>
+    )
+  }
   for(let i = 0; i<listings.auctions.length-1;i++)
   {
     if(!map.has(listings.auctions[i].item.id))
@@ -18,9 +46,7 @@ export default function Home({listings, lastModified}) {
     {
       if(map.get(listings.auctions[i].item.id) > listings.auctions[i].buyout/listings.auctions[i].quantity/10000 && listings.auctions[i].buyout > 0) // buyouts are sometimes = 0
       {
-        // console.log(data.auctions[i].buyout + "           " + map.get(data.auctions[i].item.id));
         map.set(listings.auctions[i].item.id, listings.auctions[i].buyout/listings.auctions[i].quantity/10000);
-        // console.log(map.get(data.auctions[i].item.id));
       }
     }
   }
@@ -37,13 +63,14 @@ export default function Home({listings, lastModified}) {
     {
       itemIconURL = icon.assets[0].value;
     }
-    posts.push(
+    postsArr.push(
       <div key = {key} className= {styles.postsContainer}>
-        <a key={key} href={"https://www.wowhead.com/item="+key}><img src={itemIconURL}/></a>
-        <a key={key} className = {styles.itemName} href={"https://www.wowhead.com/item="+key}>{itemName}</a>
+        <a key={key} href={"https://tbc.wowhead.com/item="+key}><img src={itemIconURL}/></a>
+        <a key={key} className = {styles.itemName} href={"https://tbc.wowhead.com/item="+key}>{itemName}</a>
         <p key={key} >Buyout Price: {intToGold(value.toFixed(4))}</p>
       </div>
     )
+
   }
   return (
     <div className={styles.container}>
@@ -56,9 +83,22 @@ export default function Home({listings, lastModified}) {
       </Head>
 
       <main className={styles.main}>
+      <div className= {styles.dropdown}>
+        <button className ={styles.dropbtn}>Realm Select</button>
+        <div className={styles.dropdownContent}>
+            {realmsArr}
+        </div>
+      </div>
+      <div className= {styles.dropdown}>
+        <button className ={styles.dropbtn}>Auction House Select</button>
+        <div className={styles.dropdownContent}>
+            {ahArr}
+        </div>
+      </div>
         <div className={styles.main} >
+          <h1>{realmMap.get(currRealm)}{ahMap.get(currAH)}Auction House</h1>
           <h1>Last Updated: {lastModified} </h1>
-            {posts}
+            {postsArr}
         </div>
       </main>
 
@@ -72,23 +112,27 @@ export default function Home({listings, lastModified}) {
 export const getStaticProps = async () => {
   let data;
   let lastMod;
+  let realmData;
   try{
     const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/7?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ");
     data = await res.json();
     lastMod = res.headers.get('last-modified');
-    console.log(lastMod);
+    const realmRes = await fetch('https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&orderby=&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ');
+    realmData = await realmRes.json();
   }
   catch (error) {
-    console.log('Error getting data', error)
+    console.log('Error getting data', error);
   }
   return {
     props: {
       listings : data,
       lastModified : lastMod,
+      realms : realmData,
     },
     revalidate: 5,
   }
 }
+
 
 export const intToGold = (int) =>
 {
@@ -101,3 +145,12 @@ export const intToGold = (int) =>
 }
 
 
+export const setRealm = (key) =>
+{
+  currRealm = key;
+}
+
+export const setAH = (key) =>
+{
+  currAH = key;
+}
