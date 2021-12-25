@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import React, { useState, useEffect } from 'react'
 import useSWR from 'swr'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
-let currRealm = 4728;
-let currAH = 2;
-
 
 export default function Home({listings, lastModified, realms}) {
+  const [currRealm, setRealm] = useState(4728);
+  const [currAH, setCurrAH] = useState(7);
   let map = new Map();
   let postsArr = [];
   let realmsArr = [];
@@ -16,12 +16,10 @@ export default function Home({listings, lastModified, realms}) {
   let ahMap = new Map();
   ahMap.set(2, "Alliance");
   ahMap.set(6, "Horde");
-  ahMap.set(7, "Black Water")
+  ahMap.set(7, "Neutral")
   for (const [key,value] of ahMap.entries()) {
     ahArr.push(
-    <>
-        <div key = {key}>{value}</div>
-    </>
+      <div key = {key} onClick={() => setCurrAH(key)}>{value}</div>
     )
   }
   for(let i = 0; i<realms.results.length-1;i++)
@@ -31,14 +29,12 @@ export default function Home({listings, lastModified, realms}) {
   const mapSort = new Map([...realmMap.entries()].sort((a, b) => a[1].localeCompare(b[1])));
   for (const [key,value] of mapSort.entries()) {
     realmsArr.push(
-      <>
-        <div key = {key}>{value}</div>
-      </>
+      <div key = {key} onClick={() => setRealm(key) }>{value}</div>
     )
   }
   for(let i = 0; i<listings.auctions.length-1;i++)
   {
-    if(!map.has(listings.auctions[i].item.id))
+    if(!map.has(listings.auctions[i].item.id) && listings.auctions[i].buyout > 0) // buyouts are sometimes = 0
     {
       map.set(listings.auctions[i].item.id, listings.auctions[i].buyout/listings.auctions[i].quantity/10000);
     }
@@ -65,12 +61,11 @@ export default function Home({listings, lastModified, realms}) {
     }
     postsArr.push(
       <div key = {key} className= {styles.postsContainer}>
-        <a key={key} href={"https://tbc.wowhead.com/item="+key}><img src={itemIconURL}/></a>
-        <a key={key} className = {styles.itemName} href={"https://tbc.wowhead.com/item="+key}>{itemName}</a>
-        <p key={key} >Buyout Price: {intToGold(value.toFixed(4))}</p>
+        <a href={"https://tbc.wowhead.com/item="+key}><img src={itemIconURL}/></a>
+        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+key}>{itemName}</a>
+        <p>Buyout Price: {intToGold(value.toFixed(4))}</p>
       </div>
     )
-
   }
   return (
     <div className={styles.container}>
@@ -142,15 +137,4 @@ export const intToGold = (int) =>
   const copper = valueArr[1]. substr(2)
 
   return gold + "g " + silver + "s " + copper +"c"
-}
-
-
-export const setRealm = (key) =>
-{
-  currRealm = key;
-}
-
-export const setAH = (key) =>
-{
-  currAH = key;
 }
