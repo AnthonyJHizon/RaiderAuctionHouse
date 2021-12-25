@@ -4,9 +4,8 @@ import useSWR from 'swr'
 import Image from 'next/image'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
-const fetcher2 = (url) => fetch(url).then((res) => res.json())
 
-export default function Home({listings}) {
+export default function Home({listings, lastModified}) {
   let map = new Map();
   const posts = [];
   for(let i = 0; i<listings.auctions.length-1;i++)
@@ -29,7 +28,7 @@ export default function Home({listings}) {
     let itemName = "loading....";
     let itemIconURL = "https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg";
     const { data : name, error : nameError } = useSWR('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
-    const { data : icon, error : iconError } = useSWR('https://us.api.blizzard.com/data/wow/media/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher2)
+    const { data : icon, error : iconError } = useSWR('https://us.api.blizzard.com/data/wow/media/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
     if(name != undefined)
     {
       itemName = name.name;
@@ -46,7 +45,6 @@ export default function Home({listings}) {
       </div>
     )
   }
-  console.log(listings.lastModified);
   return (
     <div className={styles.container}>
       <Head>
@@ -59,7 +57,7 @@ export default function Home({listings}) {
 
       <main className={styles.main}>
         <div className={styles.main} >
-          <h1>Lastest Price Update:123123123131231 {listings.lastModified} </h1>
+          <h1>Last Updated: {lastModified} </h1>
             {posts}
         </div>
       </main>
