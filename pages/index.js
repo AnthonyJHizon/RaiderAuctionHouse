@@ -39,15 +39,14 @@ export default function Home({listings}) {
       itemIconURL = icon.assets[0].value;
     }
     posts.push(
-      <div key={key}>
-        <a href={"https://www.wowhead.com/item="+key}><img src={itemIconURL}/></a>
-        <a href={"https://www.wowhead.com/item="+key}>{itemName}</a>
-        Buyout Price: {intToGold(value.toFixed(4))}
+      <div key = {key} className= {styles.postsContainer}>
+        <a key={key} href={"https://www.wowhead.com/item="+key}><img src={itemIconURL}/></a>
+        <a key={key} className = {styles.itemName} href={"https://www.wowhead.com/item="+key}>{itemName}</a>
+        <p key={key} >Buyout Price: {intToGold(value.toFixed(4))}</p>
       </div>
     )
-    break;
   }
-  // console.log(listings.lastModified);
+  console.log(listings.lastModified);
   return (
     <div className={styles.container}>
       <Head>
@@ -59,9 +58,9 @@ export default function Home({listings}) {
       </Head>
 
       <main className={styles.main}>
-        <div>
-          <h1>Lastest Price Update: {listings.lastModified} </h1>
-          {posts}
+        <div className={styles.main} >
+          <h1>Lastest Price Update:123123123131231 {listings.lastModified} </h1>
+            {posts}
         </div>
       </main>
 
@@ -76,10 +75,10 @@ export const getStaticProps = async () => {
   let data;
   let lastMod;
   try{
-    const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/2?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ");
+    const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/4372/auctions/7?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ");
     data = await res.json();
     lastMod = res.headers.get('last-modified');
-    // console.log(lastMod);
+    console.log(lastMod);
   }
   catch (error) {
     console.log('Error getting data', error)
