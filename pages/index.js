@@ -14,7 +14,7 @@ export default function Home({realms}) {
 
   useEffect(() => {
     async function fetchData(){
-      const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/"+currRealm+"/auctions/"+currAH+"?namespace=dynamic-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ");
+      const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/"+currRealm+"/auctions/"+currAH+"?namespace=dynamic-classic-us&locale=en_US&access_token=USgenY3n1ncHBQ4JKzWtZXGr3YP01Smty1");
       const lastMod = res.headers.get('last-modified');
       const data = await res.json();
       setLastMod(lastMod);
@@ -48,7 +48,7 @@ export default function Home({realms}) {
       <div key = {key} onClick={() => setRealm(key) }>{value}</div>
     )
   }
-
+//  console.log(mapSort);
   if(listings != undefined)
   {
     if(listings.auctions != undefined)
@@ -90,6 +90,12 @@ export default function Home({realms}) {
       }
     }
   }
+  if(postsArr.length < 1) // nothing in auction house for selected realm and ah type
+  {
+    postsArr.push(
+      <div>Dead Server KEK</div>
+    )
+  }
   return (
     <div className={styles.container}>
       <Head>
@@ -130,7 +136,7 @@ export default function Home({realms}) {
 export const getStaticProps = async () => {
   let realmData;
   try{
-    const realmRes = await fetch('https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&orderby=&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ');
+    const realmRes = await fetch('https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=USgenY3n1ncHBQ4JKzWtZXGr3YP01Smty1');
     realmData = await realmRes.json();
   }
   catch (error) {
