@@ -11,18 +11,6 @@ export default function Home({realms}) {
   const [currAH, setAH] = useState(7); //default ah set to alliance
   const [listings, setListings] = useState();
   const [lastModified, setLastMod] = useState();
-  
-  // useEffect(() => {
-  //   async function fetchData(){
-  //     console.log("1231231");
-  //     const res = await fetch("https://us.api.blizzard.com/data/wow/connected-realm/"+currRealm+"/auctions/"+currAH+"?namespace=dynamic-classic-us&locale=en_US&access_token=USUNyw6npvBOQThkPGHmOWggaRyfWdla4F");
-  //     const lastMod = res.headers.get('last-modified');
-  //     const data = await res.json(); 
-  //     setLastMod(lastMod);
-  //     setListings(data);
-  // }
-  // fetchData();
-  // },[currRealm, currAH]);
 
   useEffect(() => {
     async function fetchData(){
@@ -178,13 +166,3 @@ export const intToGold = (int) =>
 
   return gold + "g " + silver + "s " + copper +"c"
 }
-
-
-// fetch("https://us.battle.net/oauth/token", {
-//   body: "grant_type=client_credentials",
-//   headers: {
-//     Authorization: "Basic e2NsaWVudF9pZH06e2NsaWVudF9zZWNyZXR9",
-//     "Content-Type": "application/x-www-form-urlencoded"
-//   },
-//   method: "POST"
-// })

@@ -6,6 +6,18 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
+const refreshToken = require('./utils/refreshToken');
+const getAccessToken = require('./utils/getAccessToken');
+
+//set up db
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(async () => {
+  await refreshToken();
+  console.log("connected to db and refreshed token")
+}).catch((error) => console.log(error))
+
 const app = express(); //express app
 
 app.use(cors());
@@ -16,33 +28,12 @@ app.get('/', (req,res) => {
   res.send("123123");
 })
 
-app.get('/refresh', async (req,res) => {
-  // curl -u {client_id}:{client_secret} -d grant_type=client_credentials https://us.battle.net/oauth/token
-  const url = "https://us.battle.net/oauth/token";
-  const params = new URLSearchParams ({
-    grant_type: "client_credentials"
-  })
-  const authOptions = {
-    auth: {
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET
-    }
-  }
-  try{
-  }
-  catch (error) {
-    console.log('Error getting data', error);
-  }
-})
-
 app.get('/api/realms', async (req,res) => {
   let realmData = [];
   try{
-    const response = await axios.get('https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=USUNyw6npvBOQThkPGHmOWggaRyfWdla4F');
+    const response = await axios.get(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
     const results = response.data.results;
     results.forEach(result => {
-      // console.log(result.data.realms[0].name.en_US);
-      // console.log(result.data.id)
       realmData.push({
         id: result.data.id,
         name: result.data.realms[0].name.en_US
@@ -50,7 +41,27 @@ app.get('/api/realms', async (req,res) => {
     });
   }
   catch (error) {
-    console.log('Error getting data', error);
+    if(error.response)
+    {
+      if(error.reponse.status === 401)
+      {
+        //assume access token expired
+        await refreshToken()
+        try{
+          const response = await axios.get(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
+          const results = response.data.results;
+          results.forEach(result => {
+            realmData.push({
+              id: result.data.id,
+              name: result.data.realms[0].name.en_US
+            })
+          });
+        }
+        catch (err) {
+          console.log(err)
+        }
+      }
+    }
   }
   res.json(realmData);
 })
@@ -61,7 +72,7 @@ app.get('/api/auctions', async (req,res) => {
     return res.status(400).json(null);
   }
   try{
-    const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=USUNyw6npvBOQThkPGHmOWggaRyfWdla4F`);
+    const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
     const items = [];
     response.data.auctions.forEach(item => {
       items.push({
@@ -74,7 +85,28 @@ app.get('/api/auctions', async (req,res) => {
     auctionData.items = items;
   }
   catch (error) {
-    console.log('Error getting data', error);
+    if(error.response)
+    {
+      console.log(error);
+      if(error.reponse.status === 401)
+      {
+        //assume access token expired
+        await refreshToken()
+        try{
+          const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
+          const results = response.data.results;
+          results.forEach(result => {
+            realmData.push({
+              id: result.data.id,
+              name: result.data.realms[0].name.en_US
+            })
+        });
+        }
+        catch (err) {
+          console.log(err)
+        }
+      }
+    }
   }
   res.json(auctionData);
 })
