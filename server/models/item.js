@@ -23,8 +23,7 @@ const itemSchema = new mongoose.Schema({
     required: true,
   },
   itemEquip: {
-    type: String,
-    required: true,
+    type: String //not required since some items do not have a itemEquip.name attribute. (Wands, Guns)
   },
   itemQuality: {
     type: String,

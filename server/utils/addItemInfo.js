@@ -31,7 +31,7 @@ module.exports = async function addItemInfo(itemId) {
   catch (error) {
     if(error.response)
     {
-      if(error.reponse.status === 401)
+      if(error.response.status === 401)
       {
         //assume access token expired
         const newAccessToken = refreshToken();
@@ -62,8 +62,24 @@ module.exports = async function addItemInfo(itemId) {
           console.log(err)
         }
       }
+      else if(error.response.status === 404) //item was not found in api, make "Deprecated" item to add to Item
+      {
+        item = {
+          _id: itemId,
+          name: "Deprecated",
+          levelReq: -1,
+          itemLevel:-1,
+          itemClass: "Deprecated",
+          itemSubclass: "Deprecated",
+          itemEquip: "Deprecated",
+          itemQuality: "Deprecated",
+          iconURL: "Deprecated"
+        }
+      }
     }
+    console.log(error)
   }
+  
   if(item) {
     try{
       await Item.create(item)

@@ -1,30 +1,36 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import React, { useState, useEffect } from 'react'
-import useSWR from 'swr'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
-const delay = ms => new Promise(res => setTimeout(res, ms));
 export default function Home({realms}) {
-  let counter = 0;
-  const [currRealm, setRealm] = useState(4728); //default realm set to benediction
-  const [currAH, setAH] = useState(7); //default ah set to alliance
+  const [realmKey, setRealm] = useState(4728); //default realm set to benediction
+  const [ahKey, setAH] = useState(7); //default ah set to alliance
   const [listings, setListings] = useState();
   const [lastModified, setLastMod] = useState();
+  const [totalItems, setTotalItems] = useState();
+  const [uniqueCount, setUniqueCount] = useState();
+  const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
+    setIsLoading(true);
     async function fetchData(){
       const params = new URLSearchParams({
-        currRealm,
-        currAH
+        realmKey,
+        ahKey
       }).toString();
+      // console.log(params);
       const res = await fetch(`http://localhost:3000/api/auctions?${params}`);
       const data = await res.json();
       setLastMod(data.lastModified);
       setListings(data.items);
+      setTotalItems(data.total);
+      setUniqueCount(data.uniqueItems);
+      setIsLoading(false);
+      console.log(data.items);
   }
+
   fetchData();
-  },[currRealm, currAH]);
+  },[realmKey, ahKey]);
 
 
   let map = new Map();
@@ -44,77 +50,53 @@ export default function Home({realms}) {
       <div key = {key} onClick={() => setAH(key)}>{value}</div>
     )
   }
-
   for(let i = 0; i<realms.length-1;i++)
   {
     realmMap.set(realms[i].id, realms[i].name);
   }
-  const mapSort = new Map([...realmMap.entries()].sort((a, b) => a[1].localeCompare(b[1])));
-  for (const [key,value] of mapSort.entries()) {
+  for (const [key,value] of realmMap.entries()) {
     realmsArr.push(
       <div key = {key} onClick={() => setRealm(key) }>{value}</div>
     )
   }
-
-  if(listings != undefined)
-  {
-    total = listings.length;
-    for(let i = 0; i<listings.length-1;i++)
+if(listings){
+  listings.map( (item) => {
+    if(item.itemInfo.levelReq != -1)
     {
-      if(!map.has(listings[i].id) && listings[i].buyout > 0) // buyouts are sometimes = 0
-      {
-        map.set(listings[i].id, listings[i].buyout/listings[i].quantity/10000);
-      }
-      else
-      {
-        if(map.get(listings[i].id) > listings[i].buyout/listings[i].quantity/10000 && listings[i].buyout > 0) // buyouts are sometimes = 0
-        {
-          map.set(listings[i].id, listings[i].buyout/listings[i].quantity/10000);
-        }
-      }
-    }
-  }
-  
-  for (const [key,value] of map.entries()) {
-    let itemName = "loading....";
-    let itemIconURL = "https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg";
-    async function fetchItemInfo() {
-      const params = new URLSearchParams({
-        itemId: key
-      }).toString();
-      const res = await fetch(`http://localhost:3000/api/itemInfo?${params}`);
-      const data = await res.json();
-      // console.log(data.name);
-      counter++;
-      if(counter > 1)
-      {
-        await delay(2000);
-        counter = 0;
-      }
-      console.log(counter);
-    }
-    // const itemInfo = (async () => await fetchItemInfo([key]))();
-    // if(itemInfo.name != undefined)
-    // {
-    //   itemName= itemInfo.name;
-    // }
-    // console.log(itemInfo.name);
-    // console.log(itemInfo);
-    fetchItemInfo();
+    // console.log(item.itemInfo);
     postsArr.push(
-      <div key = {key} className= {styles.postsContainer}>
-        <a href={"https://tbc.wowhead.com/item="+key}><img src={itemIconURL}/></a>
-        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+key}>{itemName}</a>
-        <p>Buyout Price: {intToGold(value.toFixed(4))}</p>
-      </div>
-    )
-  }
-  if(postsArr.length < 1) // nothing in auction house for selected realm and ah type
-  {
-    postsArr.push(
-      <div key = "">Dead Server KEK</div>
-    )
-  }
+      <div key = {item.id} className= {styles.postsContainer}>
+      <a href={"https://tbc.wowhead.com/item="+item.id}><img src={item.itemInfo.iconURL}/></a>
+      <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
+      <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
+    </div>)
+    }
+    else //item is "Deprecated", item is listed, but can not get its info from blizzard api, info attributes are defaulted to "Deprecated" for strings and -1 for Numbers
+    {
+      postsArr.push(
+        <div key = {item.id} className= {styles.postsContainer}>
+        <a href={"https://tbc.wowhead.com/item="+item.id}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
+        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
+        <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
+      </div>)
+    }
+  })
+}
+
+if (isLoading)
+{
+  postsArr = [];
+  postsArr.push(
+    <div key = "">Loading</div>
+  )
+}
+else if (!listings) // nothing in auction house for selected realm and ah type
+{
+  postsArr.push(
+    <div key = "">Dead Server Kek</div>
+  )
+}
+
 
   return (
     <div className={styles.container}>
@@ -139,9 +121,9 @@ export default function Home({realms}) {
         </div>
       </div>
       <div className={styles.main} >
-        <h1>{realmMap.get(currRealm)}{ahMap.get(currAH)}Auction House</h1>
+        <h1>{realmMap.get(realmKey)}{ahMap.get(ahKey)}Auction House</h1>
         <h1>Last Updated: {lastModified} </h1>
-        <h2>Total Auctions: {total} Unique Items: {map.size}</h2>
+        <h2>Total Auctions: {totalItems} Unique Items: {uniqueCount}</h2>
           {postsArr}
       </div>
       </main>
@@ -155,29 +137,47 @@ export default function Home({realms}) {
 
 export const getStaticProps = async () => {
   let realmData;
+  // let data;
   try{
     const realmRes = await fetch('http://localhost:3000/api/realms');
     realmData = await realmRes.json();
+    // const realmHash = {}
+    // realmData && realmData.map((realm) => {
+    //   const {id, name} = realm
+    //   realmHash[id] = name
+    // })
+    // const ahHash = {2:"Alliance",6:"Horde",7:"Neutral"}
+    // const realmKeys = Object.keys(realmHash);
+    // const ahKeys = Object.keys(ahHash);
+    // data = realmKeys && await Promise.all(realmKeys.map(async (realmKey) => {
+    //   let auctionHouseData = ahKeys && await Promise.all(ahKeys.map(async (ahKey) => {
+    //     const auctionParams = new URLSearchParams({
+    //       realmKey,
+    //       ahKey
+    //     }).toString();
+    //     const auctionRes =  auctionParams && await fetch(`http://localhost:3000/api/auctions?${auctionParams}`);
+    //     const auctionData = await auctionRes.json();
+    //     return auctionData;
+    //   }))
+    //   const realmData = {}
+    //   realm[realmKey] = auctionHouseData;
+    //   return realmData
+    // }))
+    // console.log(data)
   }
   catch (error) {
     console.log('Error getting data', error);
   }
+
+  // [{'benediction':{'2':{}, '6': {}, '7':{}}}.]
   return {
     props: {
-      realms : realmData,
+      realms: realmData,
     },
-    revalidate: 5,
+    revalidate: 60,
   }
 }
 
-export async function fetchItemInfo(key) {
-  const params = new URLSearchParams({
-    itemId: key
-  }).toString();
-  const res = await fetch(`http://localhost:3000/api/itemInfo?${params}`);
-  const data = await res.json();
-  return data;
-}
 export const intToGold = (int) =>
 {
   const valueArr = int.toString().split(".");
@@ -187,3 +187,4 @@ export const intToGold = (int) =>
 
   return gold + "g " + silver + "s " + copper +"c"
 }
+

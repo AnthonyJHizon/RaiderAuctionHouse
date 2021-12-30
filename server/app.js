@@ -41,11 +41,12 @@ app.get('/api/realms', async (req,res) => {
         name: result.data.realms[0].name.en_US
       })
     });
+    realmData.sort((a,b) => a.name.localeCompare(b.name)) //sort alphabetically
   }
   catch (error) {
     if(error.response)
     {
-      if(error.reponse.status === 401)
+      if(error.response.status === 401)
       {
         //assume access token expired
         const newAccessToken = refreshToken();
@@ -58,12 +59,14 @@ app.get('/api/realms', async (req,res) => {
               name: result.data.realms[0].name.en_US
             })
           });
+          realmData.sort((a,b) => a.name.localeCompare(b.name)) //sort alphabetically
         }
         catch (err) {
           console.log(err)
         }
       }
     }
+    console.log(error)
   }
   res.json(realmData);
 })
@@ -74,62 +77,123 @@ app.get('/api/auctions', async (req,res) => {
     return res.status(400).json(null);
   }
   try{
-    const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
-    const items = [];
-    response.data.auctions.forEach(item => {
-      items.push({
-        id: item.item.id,
-        buyout: item.buyout,
-        quantity: item.quantity
-      })
+    const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.realmKey}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
+    const minPriceHash = {};
+    const uniqueItems = [];
+    response.data && response.data.auctions.forEach(item => {
+      if(item.item.id === 14484)
+      {
+        if(!minPriceHash[item.item.id] && item.buyout > 0){
+          minPriceHash[item.item.id] = item.buyout/item.quantity/10000
+        }
+        else{
+          if(minPriceHash[item.item.id] > item.buyout/item.quantity/10000 && item.buyout > 0) //sometimes buyout is = 0
+          {
+            minPriceHash[item.item.id] = item.buyout/item.quantity/10000
+          }
+        }
+      }
     })
+    // console.log(minPriceHash);
+    for(const key in minPriceHash){
+      try {
+        itemInfo = await getItemInfo(key)
+        // console.log(key);
+        if(itemInfo === null)
+        {
+          itemInfo = await addItemInfo(key);
+          // console.log("newItem: ", itemInfo.name);
+        }
+      }
+      catch (error) {
+        console.log(error);
+      }
+      uniqueItems.push({
+        id: key,
+        buyout: minPriceHash[key],
+        itemInfo: itemInfo,
+      })
+    }
     auctionData.lastModified = response.headers.date;
-    auctionData.items = items;
+    auctionData.total = response.data.auctions.length;
+    auctionData.uniqueItems = uniqueItems.length;
+    auctionData.items = uniqueItems
   }
   catch (error) {
     if(error.response)
     {
-      console.log(error);
-      if(error.reponse.status === 401)
+      if(error.response.status === 401)
       {
         //assume access token expired
         const newAccessToken = refreshToken();
         try{
           const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=${newAccessToken}`);
-          const results = response.data.results;
-          results.forEach(result => {
-            realmData.push({
-              id: result.data.id,
-              name: result.data.realms[0].name.en_US
+          const minPriceHash = {};
+          const uniqueItems = [];
+          auctionData.total = response.data.auctions.length;
+          response.data && response.data.auctions.forEach(item => {
+            if(!minPriceHash[item.item.id] && item.buyout > 0){
+              minPriceHash[item.item.id] = item.buyout/item.quantity/10000
+            }
+            else{
+              if(minPriceHash[item.item.id] > item.buyout/item.quantity/10000 && item.buyout > 0) //sometimes buyout is = 0
+              {
+                minPriceHash[item.item.id] = item.buyout/item.quantity/10000
+              }
+            }
+          })
+          for(const key in minPriceHash){
+            try {
+              itemInfo = await getItemInfo(key)
+              if(itemInfo === null)
+              {
+                itemInfo = await addItemInfo(key);
+              }
+            }
+            catch (err) {
+              console.log(err);
+            }
+            uniqueItems.push({
+              id: key,
+              buyout: minPriceHash[key],
+              itemInfo: itemInfo,
             })
-        });
+          }
+          auctionData.uniqueItems = uniqueItems.length;
+          auctionData.items = uniqueItems
+          auctionData.lastModified = response.headers.date;
         }
         catch (err) {
           console.log(err)
         }
       }
     }
+    console.log(error)
   }
   res.json(auctionData);
 })
 
-app.get('/api/itemInfo', async (req,res) => {
-  let itemInfo = {};
-  if(!req.query) {
-    return res.status(400).json(null);
-  }
-  try{
-    itemInfo = await getItemInfo(req.query.itemId)
-    if(itemInfo === null)
-    {
-      itemInfo = await addItemInfo(req.query.itemId);
-    }
-  }
-  catch (error) {
-    console.log(error)
-  }
-  res.json(itemInfo);
-})
+// app.get('/api/itemInfo', async (req,res) => {
+//   let itemInfo = {};
+//   if(!req.query) {
+//     return res.status(400).json(null);
+//   }
+//   try{
+//     itemInfo = await getItemInfo(req.query.itemId)
+//     if(itemInfo === null)
+//     {
+//       await sleep(500);
+//       itemInfo = await addItemInfo(req.query.itemId);
+//       console.log("newItem: ",itemInfo.name);
+//     }
+//   }
+//   catch (error) {
+//     console.log(error)
+//   }
+//   res.json(itemInfo);
+// })
+
+
 
 app.listen(3000, () => {
   console.log('server started')
