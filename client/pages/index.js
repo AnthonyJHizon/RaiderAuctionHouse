@@ -26,20 +26,18 @@ export default function Home({realms}) {
       setTotalItems(data.total);
       setUniqueCount(data.uniqueItems);
       setIsLoading(false);
-      console.log(data.items);
+      // console.log(data.items);
   }
 
   fetchData();
   },[realmKey, ahKey]);
 
 
-  let map = new Map();
   let postsArr = [];
   let realmsArr = [];
   let ahArr = [];
   let realmMap = new Map();
   let ahMap = new Map();
-  let total = 0;
 
   ahMap.set(2, "Alliance");
   ahMap.set(6, "Horde");
