@@ -21,4 +21,5 @@ module.exports = async () => {
     console.log('Error getting data', error);
   }
   updateAuthorization(result.access_token);
+  return result.acess_token;
 }

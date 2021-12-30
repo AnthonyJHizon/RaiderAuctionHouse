@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react'
 import useSWR from 'swr'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
-
+const delay = ms => new Promise(res => setTimeout(res, ms));
 export default function Home({realms}) {
-
+  let counter = 0;
   const [currRealm, setRealm] = useState(4728); //default realm set to benediction
   const [currAH, setAH] = useState(7); //default ah set to alliance
   const [listings, setListings] = useState();
@@ -44,6 +44,7 @@ export default function Home({realms}) {
       <div key = {key} onClick={() => setAH(key)}>{value}</div>
     )
   }
+
   for(let i = 0; i<realms.length-1;i++)
   {
     realmMap.set(realms[i].id, realms[i].name);
@@ -77,16 +78,29 @@ export default function Home({realms}) {
   for (const [key,value] of map.entries()) {
     let itemName = "loading....";
     let itemIconURL = "https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg";
-    // const { data : name, error : nameError } = useSWR('https://us.api.blizzard.com/data/wow/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
-    // const { data : icon, error : iconError } = useSWR('https://us.api.blizzard.com/data/wow/media/item/'+key+'?namespace=static-classic-us&locale=en_US&access_token=USwMmO5QuXAeExdcWCOFcaUn1SorqzoyRJ', fetcher)
-    // if(name != undefined)
+    async function fetchItemInfo() {
+      const params = new URLSearchParams({
+        itemId: key
+      }).toString();
+      const res = await fetch(`http://localhost:3000/api/itemInfo?${params}`);
+      const data = await res.json();
+      // console.log(data.name);
+      counter++;
+      if(counter > 1)
+      {
+        await delay(2000);
+        counter = 0;
+      }
+      console.log(counter);
+    }
+    // const itemInfo = (async () => await fetchItemInfo([key]))();
+    // if(itemInfo.name != undefined)
     // {
-    //   itemName = name.name;
+    //   itemName= itemInfo.name;
     // }
-    // if(icon != undefined)
-    // {
-    //   itemIconURL = icon.assets[0].value;
-    // }
+    // console.log(itemInfo.name);
+    // console.log(itemInfo);
+    fetchItemInfo();
     postsArr.push(
       <div key = {key} className= {styles.postsContainer}>
         <a href={"https://tbc.wowhead.com/item="+key}><img src={itemIconURL}/></a>
@@ -156,7 +170,14 @@ export const getStaticProps = async () => {
   }
 }
 
-
+export async function fetchItemInfo(key) {
+  const params = new URLSearchParams({
+    itemId: key
+  }).toString();
+  const res = await fetch(`http://localhost:3000/api/itemInfo?${params}`);
+  const data = await res.json();
+  return data;
+}
 export const intToGold = (int) =>
 {
   const valueArr = int.toString().split(".");
