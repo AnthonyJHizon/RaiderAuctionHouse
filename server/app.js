@@ -8,8 +8,8 @@ const axios = require('axios');
 
 const refreshToken = require('./utils/refreshToken');
 const getAccessToken = require('./utils/getAccessToken');
-const getItemInfo = require('./utils/getItemInfo');
-const addItemInfo = require('./utils/addItemInfo');
+const queryDBItems = require('./utils/queryDBItems')
+const iterateDB = require('./utils/iterateDB');
 
 //set up db
 mongoose.connect(process.env.MONGODB_URI, {
@@ -80,7 +80,7 @@ app.get('/api/auctions', async (req,res) => {
     const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.realmKey}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
     const minPriceHash = {};
     const uniqueItems = [];
-    response.data && response.data.auctions.forEach(item => {
+    response.data && response.data.auctions && response.data.auctions.forEach(item => {
       if(!minPriceHash[item.item.id] && item.buyout > 0){
         minPriceHash[item.item.id] = item.buyout/item.quantity/10000
       }
@@ -91,30 +91,22 @@ app.get('/api/auctions', async (req,res) => {
         }
       }
     })
-    // console.log(minPriceHash);
-    for(const key in minPriceHash){
-      try {
-        itemInfo = await getItemInfo(key)
-        // console.log(key);
-        if(itemInfo === null)
-        {
-          itemInfo = await addItemInfo(key);
-          // console.log("newItem: ", itemInfo.name);
-        }
-      }
-      catch (error) {
-        console.log(error);
-      }
-      uniqueItems.push({
-        id: key,
-        buyout: minPriceHash[key],
-        itemInfo: itemInfo,
-      })
-    }
+    startTime = Date.now();
+ 
+    // const promises = [];
+    // Object.keys(minPriceHash).forEach((key) => {
+    //   promises.push(queryDBItems(key));
+    // })
+    // await Promise.all(promises);
+    const endTime = Date.now();
+    console.log(`Elapsed time ${endTime - startTime}`)
+    // console.log(promises);
+    iterateDB();
+
     auctionData.lastModified = response.headers.date;
-    auctionData.total = response.data.auctions.length;
-    auctionData.uniqueItems = uniqueItems.length;
-    auctionData.items = uniqueItems
+    // auctionData.total = response.data.auctions.length;
+    auctionData.uniqueItems = Object.keys(minPriceHash).length;
+    auctionData.items = minPriceHash
   }
   catch (error) {
     if(error.response)
@@ -139,25 +131,13 @@ app.get('/api/auctions', async (req,res) => {
               }
             }
           })
-          for(const key in minPriceHash){
-            try {
-              itemInfo = await getItemInfo(key)
-              if(itemInfo === null)
-              {
-                itemInfo = await addItemInfo(key);
-              }
-            }
-            catch (err) {
-              console.log(err);
-            }
-            uniqueItems.push({
-              id: key,
-              buyout: minPriceHash[key],
-              itemInfo: itemInfo,
-            })
-          }
-          auctionData.uniqueItems = uniqueItems.length;
-          auctionData.items = uniqueItems
+          // const promises = [];
+          // Object.keys(minPriceHash).forEach((key) => {
+          //   promises.push(queryDBItems(key));
+          // })
+          await Promise.all(promises);
+          auctionData.uniqueItems = Object.keys(minPriceHash).length;
+          auctionData.items = minPriceHash
           auctionData.lastModified = response.headers.date;
         }
         catch (err) {
@@ -169,6 +149,7 @@ app.get('/api/auctions', async (req,res) => {
   }
   res.json(auctionData);
 })
+
 
 // app.get('/api/itemInfo', async (req,res) => {
 //   let itemInfo = {};

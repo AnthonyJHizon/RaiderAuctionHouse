@@ -5,6 +5,7 @@ const itemSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    index: true,
   },
   levelReq: {
     type: Number,
@@ -17,6 +18,7 @@ const itemSchema = new mongoose.Schema({
   itemClass: {
     type: String,
     required: true,
+    index: true,
   },
   itemSubclass: {
     type: String,

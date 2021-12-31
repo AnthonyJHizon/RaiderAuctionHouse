@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 
 export default function Home({realms}) {
   const [realmKey, setRealm] = useState(4728); //default realm set to benediction
-  const [ahKey, setAH] = useState(7); //default ah set to alliance
+  const [ahKey, setAH] = useState(7); //default ah set to neutral
   const [listings, setListings] = useState();
   const [lastModified, setLastMod] = useState();
   const [totalItems, setTotalItems] = useState();
@@ -12,8 +12,8 @@ export default function Home({realms}) {
   const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
-    setIsLoading(true);
     async function fetchData(){
+      setIsLoading(true);
       const params = new URLSearchParams({
         realmKey,
         ahKey
@@ -25,6 +25,7 @@ export default function Home({realms}) {
       setListings(data.items);
       setTotalItems(data.total);
       setUniqueCount(data.uniqueItems);
+      console.log(data.items);
       setIsLoading(false);
       // console.log(data.items);
   }
@@ -57,33 +58,36 @@ export default function Home({realms}) {
       <div key = {key} onClick={() => setRealm(key) }>{value}</div>
     )
   }
-if(listings){
-  listings.map( (item) => {
-    if(item.itemInfo.levelReq != -1)
-    {
-    // console.log(item.itemInfo);
-    postsArr.push(
-      <div key = {item.id} className= {styles.postsContainer}>
-      <a href={"https://tbc.wowhead.com/item="+item.id}><img src={item.itemInfo.iconURL}/></a>
-      <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
-      <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
-    </div>)
-    }
-    else //item is "Deprecated", item is listed, but can not get its info from blizzard api, info attributes are defaulted to "Deprecated" for strings and -1 for Numbers
-    {
-      postsArr.push(
-        <div key = {item.id} className= {styles.postsContainer}>
-        <a href={"https://tbc.wowhead.com/item="+item.id}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
-        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
-        <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
-      </div>)
-    }
-  })
-}
+// if(listings){
+//   listings.map( (item) => {
+//     if(item.itemInfo.levelReq != -1)
+//     {
+//     // console.log(item.itemInfo);
+//     postsArr.push(
+//       <div key = {item.id} className= {styles.postsContainer}>
+//       <a href={"https://tbc.wowhead.com/item="+item.id}><img src={item.itemInfo.iconURL}/></a>
+//       <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
+//       <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
+//     </div>)
+//     }
+//     else //item is "Deprecated", item is listed, but can not get its info from blizzard api, info attributes are defaulted to "Deprecated" for strings and -1 for Numbers
+//     {
+//       postsArr.push(
+//         <div key = {item.id} className= {styles.postsContainer}>
+//         <a href={"https://tbc.wowhead.com/item="+item.id}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
+//         <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
+//         <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p> 
+//       </div>)
+//     }
+//   })
+// }
 
 if (isLoading)
 {
   postsArr = [];
+  // setTotalItems("Loading...");
+  // setUniqueCount("Loading...");
+  // setLastMod("Loading...");
   postsArr.push(
     <div key = "">Loading</div>
   )

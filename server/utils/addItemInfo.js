@@ -6,16 +6,17 @@ module.exports = async function addItemInfo(itemId) {
   let item = null;
   try{
     const accessToken = await getAccessToken();
-    const nameResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
-    const nameResult = nameResponse.data.name;
-    const levelReq = nameResponse.data.required_level;
-    const itemLevel = nameResponse.data.level;
-    const itemClass = nameResponse.data.item_class.name;
-    const itemSubclass = nameResponse.data.item_subclass.name;
-    const itemEquip = nameResponse.data.inventory_type.name;
-    const itemQuality = nameResponse.data.quality.name;
+    const itemDataResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
+    const nameResult = itemDataResponse.data.name;
+    const levelReq = itemDataResponse.data.required_level;
+    const itemLevel = itemDataResponse.data.level;
+    const itemClass = itemDataResponse.data.item_class.name;
+    const itemSubclass = itemDataResponse.data.item_subclass.name;
+    const itemEquip = itemDataResponse.data.inventory_type.name;
+    const itemQuality = itemDataResponse.data.quality.name;
     const iconResponse = await axios.get(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
     const iconResult = iconResponse.data.assets[0].value;
+
     item = {
       _id: itemId,
       name: nameResult,
@@ -36,14 +37,14 @@ module.exports = async function addItemInfo(itemId) {
         //assume access token expired
         const newAccessToken = refreshToken();
         try{
-          const nameResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
-          const nameResult = nameResponse.data.name;
-          const levelReq = nameResponse.data.required_level;
-          const itemLevel = nameResponse.data.level;
-          const itemClass = nameResponse.data.item_class.name;
-          const itemSubclass = nameResponse.data.item_subclass.name;
-          const itemEquip = nameResponse.data.inventory_type.name;
-          const itemQuality = nameResponse.data.quality.name;
+          const itemDataResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
+          const nameResult = itemDataResponse.data.name;
+          const levelReq = itemDataResponse.data.required_level;
+          const itemLevel = itemDataResponse.data.level;
+          const itemClass = itemDataResponse.data.item_class.name;
+          const itemSubclass = itemDataResponse.data.item_subclass.name;
+          const itemEquip = itemDataResponse.data.inventory_type.name;
+          const itemQuality = itemDataResponse.data.quality.name;
           const iconResponse = await axios.get(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
           const iconResult = iconResponse.data.assets[0].value;
           item = {
@@ -76,8 +77,16 @@ module.exports = async function addItemInfo(itemId) {
           iconURL: "Deprecated"
         }
       }
+      else if (error.response.status === 429) { //going over api call limit of 100/second
+        setTimeout(() => {  
+          addItemInfo(itemId)
+         }, 1500);
+         console.log("waiting");
+      }
+      else { //unknown error
+        console.log(error.response) 
+      }
     }
-    console.log(error)
   }
   
   if(item) {
