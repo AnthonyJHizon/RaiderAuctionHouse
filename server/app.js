@@ -77,9 +77,9 @@ app.get('/api/auctions', async (req,res) => {
     return res.status(400).json(null);
   }
   try{
+    startTime = Date.now();
     const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.realmKey}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&locale=en_US&access_token=${await getAccessToken()}`);
     const minPriceHash = {};
-    const uniqueItems = [];
     response.data && response.data.auctions && response.data.auctions.forEach(item => {
       if(!minPriceHash[item.item.id] && item.buyout > 0){
         minPriceHash[item.item.id] = item.buyout/item.quantity/10000
@@ -91,22 +91,21 @@ app.get('/api/auctions', async (req,res) => {
         }
       }
     })
-    startTime = Date.now();
  
     // const promises = [];
     // Object.keys(minPriceHash).forEach((key) => {
     //   promises.push(queryDBItems(key));
     // })
     // await Promise.all(promises);
-    const endTime = Date.now();
-    console.log(`Elapsed time ${endTime - startTime}`)
     // console.log(promises);
-    iterateDB();
 
     auctionData.lastModified = response.headers.date;
+    auctionData.auctionHouse = req.query.ahKey;
     // auctionData.total = response.data.auctions.length;
-    auctionData.uniqueItems = Object.keys(minPriceHash).length;
+    // auctionData.uniqueItems = Object.keys(minPriceHash).length;
     auctionData.items = minPriceHash
+    const endTime = Date.now();
+    console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
     if(error.response)
@@ -116,7 +115,7 @@ app.get('/api/auctions', async (req,res) => {
         //assume access token expired
         const newAccessToken = refreshToken();
         try{
-          const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.currAH}?namespace=dynamic-classic-us&locale=en_US&access_token=${newAccessToken}`);
+          const response = await axios.get(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.currRealm}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&locale=en_US&access_token=${newAccessToken}`);
           const minPriceHash = {};
           const uniqueItems = [];
           auctionData.total = response.data.auctions.length;
@@ -135,9 +134,10 @@ app.get('/api/auctions', async (req,res) => {
           // Object.keys(minPriceHash).forEach((key) => {
           //   promises.push(queryDBItems(key));
           // })
-          await Promise.all(promises);
-          auctionData.uniqueItems = Object.keys(minPriceHash).length;
-          auctionData.items = minPriceHash
+          // await Promise.all(promises);
+          // auctionData.uniqueItems = Object.keys(minPriceHash).length;
+          auctionData.auctionHouse = req.query.ahKey;
+          auctionData.items = minPriceHash;
           auctionData.lastModified = response.headers.date;
         }
         catch (err) {
@@ -150,8 +150,7 @@ app.get('/api/auctions', async (req,res) => {
   res.json(auctionData);
 })
 
-
-// app.get('/api/itemInfo', async (req,res) => {
+// app.get('/api/defaultItemInfo', async (req,res) => {
 //   let itemInfo = {};
 //   if(!req.query) {
 //     return res.status(400).json(null);
