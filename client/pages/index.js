@@ -35,12 +35,6 @@ export default function Home({data}) {
 //   // let postsArr = [];
 // let realmsArr = [];
 // let ahArr = [];
-//   // let realmMap = new Map();
-//   // let ahMap = new Map();
-
-//   // ahMap.set(2, "Alliance");
-//   // ahMap.set(6, "Horde");
-//   // ahMap.set(7, "Neutral")
 
 // for (const [key,value] of data.auctionHouse.entries()) {
 //   ahArr.push(
@@ -95,7 +89,7 @@ export default function Home({data}) {
 // }
 
 
-  return (
+return (
     <div className={styles.container}>
       <Head>
         <title>Raider Auction House</title>
@@ -105,8 +99,8 @@ export default function Home({data}) {
       </Head>
 
       <main className={styles.main}>
-      <div className= {styles.dropdown}>
-        {/* <button className ={styles.dropbtn}>Realm Select</button>
+      {/* <div className= {styles.dropdown}>
+        <button className ={styles.dropbtn}>Realm Select</button>
         <div className={styles.dropdownContent}>
             {realmsArr}
         </div>
@@ -119,10 +113,10 @@ export default function Home({data}) {
       </div>
       <div className={styles.main} >
         <h1>{realm}{auctionHouse}Auction House</h1>
-        {/* <h1>Last Updated: {lastModified} </h1>
+        <h1>Last Updated: {lastModified} </h1>
         <h2>Total Auctions: {totalItems} Unique Items: {uniqueCount}</h2>
-          {postsArr} */}
-      </div>
+        {postsArr}
+      </div> */}
       </main>
 
       <footer className={styles.footer}>
@@ -181,21 +175,6 @@ export const getStaticProps = async () => {
       auctionHouse: ahHash,
       data:data
     }
-    // for(const [key] of realmMap) {
-    //   const realmKey = key;
-    //   const realmAuctionData = {}
-    //   for(const [key] of ahMap) {
-    //     const ahKey = key;
-    //     const auctionParams = new URLSearchParams({
-    //       realmKey,
-    //       ahKey,
-    //     }).toString();
-    //     const auctionRes =  auctionParams && await fetch(`http://localhost:3000/api/auctions?${auctionParams}`);
-    //     const auctionData = await auctionRes.json();
-    //     realmAuctionData[ahKey] = auctionData;
-    //   }
-    //   data[realmKey] = realmAuctionData
-    // }
     const endTime = Date.now();
     combinedData = {
     realms: realmMap,

@@ -100,6 +100,7 @@ app.get('/api/auctions', async (req,res) => {
       auctionData.items = minPriceHash
       const endTime = Date.now();
       console.log(`Elapsed time ${endTime - startTime}`)
+      econnreset = false;
     }
     catch (error) {
       if(error.response)
@@ -125,6 +126,7 @@ app.get('/api/auctions', async (req,res) => {
             })
             auctionData.items = minPriceHash;
             auctionData.lastModified = response.headers.date;
+            econnreset = false;
           }
           catch (err) {
             console.log(err.response.status)
