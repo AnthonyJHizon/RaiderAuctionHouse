@@ -4,16 +4,41 @@ import React, { useState, useEffect } from 'react'
 
 
 export default function Home({content}) {
+
+  const [realm, setRealm] = useState(4728); //default realm set to benediction
+  const [auctionHouse, setAH] = useState(7); //default ah set to neutral
+  const [listings, setListings] = useState();
+  const [lastModified, setLastMod] = useState();
+  // const [totalItems, setTotalItems] = useState();
+  // const [uniqueCount, setUniqueCount] = useState();
+  // const [isLoading, setIsLoading] = useState();
+
+  useEffect(() => {
+    async function setData(){
+      setLastMod(data[realm][auctionHouse].lastModified);
+      setListings(data[realm][auctionHouse].items);
+      // setTotalItems(data.total);
+      // setUniqueCount(data.uniqueItems);
+      // console.log(data.items);]
+      console.log(data[realm][auctionHouse].items);
+      console.log(listings);
+      console.log("BREAKER");
+  }
+  setData();
+  },[realm, auctionHouse]);
+
+
+
   const {realms, auctionHouses, data} = content;
   // console.log(realms)
   // console.log(auctionHouse)
-  console.log(data)
+  // console.log(data)
 
   let realmsArr = [];
   const realmKeys = Object.keys(realms);
   realmKeys.forEach((realmKey) => {
     realmsArr.push(
-      <div key = {realmKey} onClick={() => setRealm(key) }>{realms[realmKey]}</div>
+      <div key = {realmKey} onClick={() => setRealm(realmKey) }>{realms[realmKey]}</div>
     )
   })
 
@@ -21,7 +46,7 @@ export default function Home({content}) {
   const ahKeys = Object.keys(auctionHouses);
   ahKeys.forEach((ahKey) => {
     ahArr.push(
-      <div key = {ahKey} onClick={() => setRealm(key) }>{auctionHouses[ahKey]}</div>
+      <div key = {ahKey} onClick={() => setAH(ahKey) }>{auctionHouses[ahKey]}</div>
     )
   })
 
@@ -31,25 +56,6 @@ export default function Home({content}) {
     // data.map(realm => {
     //   console.log(realm);
     // })
-//   const [realm, setRealm] = useState(4728); //default realm set to benediction
-//   const [auctionHouse, setAH] = useState(7); //default ah set to neutral
-//   const [listings, setListings] = useState();
-//   const [lastModified, setLastMod] = useState();
-//   // const [totalItems, setTotalItems] = useState();
-//   // const [uniqueCount, setUniqueCount] = useState();
-//   // const [isLoading, setIsLoading] = useState();
-
-//   useEffect(() => {
-//     async function setData(){
-//       setLastMod(data.data.realm.auctionHouse.lastModified);
-//       setListings(data.data.realm.auctionHouse.items);
-//       setTotalItems(data.total);
-//       setUniqueCount(data.uniqueItems);
-//       // console.log(data.items);
-//   }
-
-//   setData();
-//   },[realm, auctionHouse]);
 
 
 //   // fetchData();
@@ -70,30 +76,29 @@ export default function Home({content}) {
 //     <div key = {key} onClick={() => setRealm(key) }>{value}</div>
 //   )
 // }
+let postsArr = [];
+// console.log(data[realm][auctionHouse].items);
+// console.log(listings);
+if(listings){
+  console.log("INSIDE");
+  Object.keys(listings).forEach( (item) => {
+    if(item)
+    {
+      console.log(listings[item]);
+      postsArr.push(
+        <div key = {item} className= {styles.postsContainer}>
+        <a href={"https://tbc.wowhead.com/item="+item}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
+        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>ItemName</a>
+        <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+      </div>)
+    }
+  })
+}
+else
+{
+  console.log("OUTSIDE");
+}
 
-// if(listings){
-//   listings.map( (item) => {
-//     if(item.itemInfo.levelReq != -1)
-//     {
-//     // console.log(item.itemInfo);
-//     postsArr.push(
-//       <div key = {item.id} className= {styles.postsContainer}>
-//       <a href={"https://tbc.wowhead.com/item="+item.id}><img src={item.itemInfo.iconURL}/></a>
-//       <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
-//       <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p>
-//     </div>)
-//     }
-//     else //item is "Deprecated", item is listed, but can not get its info from blizzard api, info attributes are defaulted to "Deprecated" for strings and -1 for Numbers
-//     {
-//       postsArr.push(
-//         <div key = {item.id} className= {styles.postsContainer}>
-//         <a href={"https://tbc.wowhead.com/item="+item.id}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
-//         <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item.id}>{item.itemInfo.name}</a>
-//         <p>Buyout Price: {intToGold(item.buyout.toFixed(4))}</p> 
-//       </div>)
-//     }
-//   })
-// }
 
 // if (isLoading)
 // {
@@ -136,10 +141,9 @@ return (
         </div>
       </div>
       <div className={styles.main} >
-        {/* <h1>{realm}{auctionHouse}Auction House</h1>
+        <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
         <h1>Last Updated: {lastModified} </h1>
-        <h2>Total Auctions: {totalItems} Unique Items: {uniqueCount}</h2>
-        {postsArr} */}
+        {postsArr}
       </div>
       </main>
 
@@ -168,8 +172,7 @@ export const getStaticProps = async () => {
     const realmKeys = Object.keys(realmHash);
     const ahKeys = Object.keys(ahHash);
     let data = {};
-    data = realmKeys && await Promise.all(realmKeys.map(async (realmKey, index) => {
-      const sleepMultiplier = index
+    data = realmKeys && await Promise.all(realmKeys.map(async (realmKey) => {
       let auctionHouseData = ahKeys && await Promise.all(ahKeys.map(async (ahKey) => {
         const auctionParams = new URLSearchParams({
           realmKey,
