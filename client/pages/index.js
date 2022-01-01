@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 
 
 export default function Home({content}) {
-  const {realms, auctionHouse, data} = content;
+  const {realms, auctionHouses, data} = content;
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
@@ -18,10 +18,10 @@ export default function Home({content}) {
   })
 
   let ahArr = [];
-  const ahKeys = Object.keys(auctionHouse);
+  const ahKeys = Object.keys(auctionHouses);
   ahKeys.map((ahKey) => {
     ahArr.push(
-      <div key = {ahKey} onClick={() => setRealm(key) }>{auctionHouse[ahKey]}</div>
+      <div key = {ahKey} onClick={() => setRealm(key) }>{auctionHouses[ahKey]}</div>
     )
   })
 
@@ -153,14 +153,6 @@ export const getStaticProps = async () => {
     const startTime = Date.now();
     const realmRes = await fetch('http://localhost:3000/api/realms');
     const realmData = await realmRes.json();
-    // let realmMap = new Map();
-    // realmData.forEach(realm => {
-    //   realmMap.set(realm.id,realm.name)
-    // })
-    // const ahMap = new Map();
-    // ahMap.set(2,"Alliance");
-    // ahMap.set(6,"Horde");
-    // ahMap.set(7,"Neutral")
 
     let realmHash = {};
     realmData && realmData.map((realm) => {
@@ -191,18 +183,12 @@ export const getStaticProps = async () => {
       return realmData
     }))
 
-    // combinedData = {
-    //   realms: realmHash,
-    //   auctionHouse: ahHash,
-    //   data:data
-    // }
     const endTime = Date.now();
     combinedData = {
     realms: realmHash,
-    auctionHouse: ahHash,
+    auctionHouses: ahHash,
     data: data
     }
-    // console.log(combinedData);
     console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
