@@ -36,7 +36,7 @@ app.get('/api/realms', async (req,res) => {
   try{
     const response = await axios.get(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
     const results = response.data.results;
-    const realmSort = [];
+
     results.forEach(result => {
       realmData.push({
         id: result.data.id,

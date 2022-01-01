@@ -7,11 +7,11 @@ export default function Home({content}) {
   const {realms, auctionHouses, data} = content;
   // console.log(realms)
   // console.log(auctionHouse)
-  // console.log(data)
+  console.log(data)
 
   let realmsArr = [];
   const realmKeys = Object.keys(realms);
-  realmKeys.map((realmKey) => {
+  realmKeys.forEach((realmKey) => {
     realmsArr.push(
       <div key = {realmKey} onClick={() => setRealm(key) }>{realms[realmKey]}</div>
     )
@@ -19,11 +19,14 @@ export default function Home({content}) {
 
   let ahArr = [];
   const ahKeys = Object.keys(auctionHouses);
-  ahKeys.map((ahKey) => {
+  ahKeys.forEach((ahKey) => {
     ahArr.push(
       <div key = {ahKey} onClick={() => setRealm(key) }>{auctionHouses[ahKey]}</div>
     )
   })
+
+  // console.log(data);
+  // console.log(data.length);
 
     // data.map(realm => {
     //   console.log(realm);
@@ -164,7 +167,6 @@ export const getStaticProps = async () => {
 
     const realmKeys = Object.keys(realmHash);
     const ahKeys = Object.keys(ahHash);
-
     let data = {};
     data = realmKeys && await Promise.all(realmKeys.map(async (realmKey, index) => {
       const sleepMultiplier = index
@@ -172,7 +174,6 @@ export const getStaticProps = async () => {
         const auctionParams = new URLSearchParams({
           realmKey,
           ahKey,
-          sleepMultiplier,
         }).toString();
         const auctionRes =  auctionParams && await fetch(`http://localhost:3000/api/auctions?${auctionParams}`);
         const auctionData = await auctionRes.json();
@@ -183,11 +184,24 @@ export const getStaticProps = async () => {
       return realmData
     }))
 
+    let reformattedData = {} //reformatting data, removing arrays from promise
+    data.forEach( (realmData) => {
+      let realmAuctionData = {}
+      let realmID;
+      Object.keys(realmData).forEach((realmKey) => {
+        realmAuctionData["2"] = realmData[realmKey][0];
+        realmAuctionData["6"] = realmData[realmKey][1];
+        realmAuctionData["7"] = realmData[realmKey][2];
+        realmID = realmKey;
+      });
+      reformattedData[realmID] = realmAuctionData;
+    })
+
     const endTime = Date.now();
     combinedData = {
-    realms: realmHash,
-    auctionHouses: ahHash,
-    data: data
+      realms: realmHash,
+      auctionHouses: ahHash,
+      data: reformattedData
     }
     console.log(`Elapsed time ${endTime - startTime}`)
   }
