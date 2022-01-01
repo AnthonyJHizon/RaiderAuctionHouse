@@ -61,7 +61,7 @@ app.get('/api/realms', async (req,res) => {
               name: result.data.realms[0].name.en_US
             })
           });
-          realmData.sort((a,b) => a.name.localeCompare(b.name)) //sort alphabetically
+          // realmData.sort((a,b) => a.name.localeCompare(b.name)) //sort alphabetically
         }
         catch (err) {
           console.log(err)

@@ -3,7 +3,28 @@ import styles from '../styles/Home.module.css'
 import React, { useState, useEffect } from 'react'
 
 
-export default function Home({data}) {
+export default function Home({content}) {
+  const {realms, auctionHouse, data} = content;
+  // console.log(realms)
+  // console.log(auctionHouse)
+  // console.log(data)
+
+  let realmsArr = [];
+  const realmKeys = Object.keys(realms);
+  realmKeys.map((realmKey) => {
+    realmsArr.push(
+      <div key = {realmKey} onClick={() => setRealm(key) }>{realms[realmKey]}</div>
+    )
+  })
+
+  let ahArr = [];
+  const ahKeys = Object.keys(auctionHouse);
+  ahKeys.map((ahKey) => {
+    ahArr.push(
+      <div key = {ahKey} onClick={() => setRealm(key) }>{auctionHouse[ahKey]}</div>
+    )
+  })
+
     // data.map(realm => {
     //   console.log(realm);
     // })
@@ -35,13 +56,13 @@ export default function Home({data}) {
 //   // let postsArr = [];
 // let realmsArr = [];
 // let ahArr = [];
-
-// for (const [key,value] of data.auctionHouse.entries()) {
+// const auctionHouseMap = 
+// for (const [key,value] of data.data.auctionHouse.entries()) {
 //   ahArr.push(
 //     <div key = {key} onClick={() => setAH(key)}>{value}</div>
 //   )
 // }
-// for (const [key,value] of data.realms.entries()) {
+// for (const [key,value] of data.data.realms.entries()) {
 //   realmsArr.push(
 //     <div key = {key} onClick={() => setRealm(key) }>{value}</div>
 //   )
@@ -99,7 +120,7 @@ return (
       </Head>
 
       <main className={styles.main}>
-      {/* <div className= {styles.dropdown}>
+      <div className= {styles.dropdown}>
         <button className ={styles.dropbtn}>Realm Select</button>
         <div className={styles.dropdownContent}>
             {realmsArr}
@@ -112,11 +133,11 @@ return (
         </div>
       </div>
       <div className={styles.main} >
-        <h1>{realm}{auctionHouse}Auction House</h1>
+        {/* <h1>{realm}{auctionHouse}Auction House</h1>
         <h1>Last Updated: {lastModified} </h1>
         <h2>Total Auctions: {totalItems} Unique Items: {uniqueCount}</h2>
-        {postsArr}
-      </div> */}
+        {postsArr} */}
+      </div>
       </main>
 
       <footer className={styles.footer}>
@@ -132,14 +153,14 @@ export const getStaticProps = async () => {
     const startTime = Date.now();
     const realmRes = await fetch('http://localhost:3000/api/realms');
     const realmData = await realmRes.json();
-    let realmMap = new Map();
-    realmData.forEach(realm => {
-      realmMap.set(realm.id,realm.name)
-    })
-    const ahMap = new Map();
-    ahMap.set(2,"Alliance");
-    ahMap.set(6,"Horde");
-    ahMap.set(7,"Neutral")
+    // let realmMap = new Map();
+    // realmData.forEach(realm => {
+    //   realmMap.set(realm.id,realm.name)
+    // })
+    // const ahMap = new Map();
+    // ahMap.set(2,"Alliance");
+    // ahMap.set(6,"Horde");
+    // ahMap.set(7,"Neutral")
 
     let realmHash = {};
     realmData && realmData.map((realm) => {
@@ -170,18 +191,18 @@ export const getStaticProps = async () => {
       return realmData
     }))
 
-    combinedData = {
-      realms: realmHash,
-      auctionHouse: ahHash,
-      data:data
-    }
+    // combinedData = {
+    //   realms: realmHash,
+    //   auctionHouse: ahHash,
+    //   data:data
+    // }
     const endTime = Date.now();
     combinedData = {
-    realms: realmMap,
-    auctionHouse: ahMap,
+    realms: realmHash,
+    auctionHouse: ahHash,
     data: data
     }
-    console.log(combinedData);
+    // console.log(combinedData);
     console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
@@ -191,7 +212,7 @@ export const getStaticProps = async () => {
   // [{'benediction':{'2':{}, '6': {}, '7':{}}}.]
   return {
     props: {
-      data: null
+      content: combinedData
     },
     revalidate: 60
   }
