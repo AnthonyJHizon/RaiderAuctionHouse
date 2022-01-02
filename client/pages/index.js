@@ -64,9 +64,35 @@ export default function Home({content}) {
   // console.log(consumableSubclasses);
   // console.log(gems);
   itemClasses.forEach( (itemClass) => {
-    console.log(itemClass);
+    let subclassArr = [];
+    let subclasses = {};
+    switch (itemClass)
+    {
+      case "Gems":
+        subclasses = gemSubclasses;
+        break;
+      case "Consumables":
+        subclasses = consumableSubclasses;
+        break;
+      case "Trade Goods":
+        subclasses = tradeGoodSubclasses;
+        break;
+    }
+    Object.keys(subclasses).forEach( (subclass) => {
+      subclassArr.push(
+        <div key = {subclass} onClick={() => console.log(subclass) }>{subclass}</div>
+      )
+    })
+    subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
-      <button className = {styles.dropbtn} key = {itemClass} onClick={() => console.log(itemClass) }>{itemClass}</button>
+      <div key = {itemClass} className= {styles.dropdown}>
+        <button className = {styles.dropbtn} onClick={() => console.log(itemClass) }>
+          {itemClass}
+          <div className={styles.dropdownContent}>
+            {subclassArr}
+          </div>
+        </button>
+      </div>
     )
   })
 
