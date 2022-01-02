@@ -216,14 +216,20 @@ app.get('/api/getRelevantItems', async (req,res) => {
       }
     })
     consumableItemData.forEach((consumable) => {
-      relevantConsumables[consumable._id] =  consumable.itemSubclass;
+      if(consumable.itemLevel >= 60)
+      {
+        relevantConsumables[consumable._id] =  consumable.itemSubclass;
+      }
       if(!consumableSubclasses[consumable.itemSubclass])
       {
         consumableSubclasses[consumable.itemSubclass] = consumable.itemClass 
       }
     })
     tradeGoodItemData.forEach((tradeGood) => {
-      relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
+      if(tradeGood.itemLevel >= 60)
+      {
+        relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
+      }
       if(!tradeGoodSubclasses[tradeGood.itemSubclass])
       {
         tradeGoodSubclasses[tradeGood.itemSubclass] = tradeGood.itemClass;  

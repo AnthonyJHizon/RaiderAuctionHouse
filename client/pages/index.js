@@ -9,10 +9,10 @@ export default function Home({content}) {
   const {names, icons} = allItemInfo;
 
   const [realm, setRealm] = useState(4728); //default realm set to benediction
-  const [auctionHouse, setAH] = useState(7); //default ah set to neutral
+  const [auctionHouse, setAH] = useState(2); //default ah set to alliance
   const [listings, setListings] = useState(data[realm][auctionHouse].items);
-  const [itemClassFilter, setItemClassFilter] = useState(gems);
-  const [itemSubclassFilter, setItemSubclassFilter] = useState("Red");
+  const [itemClassFilter, setItemClassFilter] = useState(consumables);
+  const [itemSubclassFilter, setItemSubclassFilter] = useState("Flask");
   const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
 
   // const [totalItems, setTotalItems] = useState();
