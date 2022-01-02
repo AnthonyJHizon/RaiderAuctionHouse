@@ -34,7 +34,7 @@ export default function Home({content}) {
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
   const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
   const {names, icons} = allItemInfo;
-  console.log(names);
+  // console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
@@ -65,8 +65,8 @@ export default function Home({content}) {
   // console.log(gems);
   itemClasses.forEach( (itemClass) => {
     console.log(itemClass);
-    filterArry.push (
-      <div key = {itemClasses[itemClass]} onClick={() => set(itemClass) }>{itemClasses[itemClass]}</div>
+    filterArr.push (
+      <button className = {styles.dropbtn} key = {itemClass} onClick={() => console.log(itemClass) }>{itemClass}</button>
     )
   })
 
@@ -121,6 +121,7 @@ return (
       </div>
       <div className={styles.main} >
         <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
+        {filterArr}
         <h1>Last Updated: {lastModified} </h1>
         {postsArr}
       </div>

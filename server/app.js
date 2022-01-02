@@ -236,7 +236,7 @@ app.get('/api/getRelevantItems', async (req,res) => {
     relevantItems["gemSubclasses"] = gemSubclasses;
     relevantItems["consumableSubclasses"] = consumableSubclasses;
     relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
-    relevantItems["itemClasses"] = { 0:"Gems", 1: "Consumables", 2:"Trade Goods"}
+    relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"]
     // console.log(relevantItems["itemClasses"]);
     // console.log(relevantItems["gemSubclasses"]);
 
