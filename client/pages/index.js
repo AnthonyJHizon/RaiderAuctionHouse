@@ -57,7 +57,7 @@ let postsArr = [];
 // console.log(data[realm][auctionHouse].items);
 // console.log(listings);
 if(listings){
-  Object.keys(listings).forEach( (item) => {
+  Object.keys(listings).forEach( async (item) => {
     if(item)
     {
       if(names[item])
@@ -71,10 +71,6 @@ if(listings){
             <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
           </div>)
         }
-      }
-      else
-      {
-        console.log(item);
       }
     }
   })
@@ -117,7 +113,7 @@ return (
 }
 
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   let combinedData;
   try{
     const startTime = Date.now();
@@ -163,8 +159,45 @@ export const getStaticProps = async () => {
       reformattedData[realmID] = realmAuctionData;
     })
 
-    const allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo');
-    const allItemInfoData = await allItemInfoRes.json();
+    let allItems = {}; //hash that contains all the unique items found in the data.
+    realmKeys.forEach( (realmKey) => {
+      ahKeys.forEach( (ahKey) => {
+        Object.keys(reformattedData[realmKey][ahKey].items).forEach((itemId) => {
+            if(!allItems[itemId])
+            {
+              allItems[itemId] = itemId;
+            }
+          }
+        )
+      })
+    })
+    
+    let newItems = false;
+    let allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //get all items from our database
+    let allItemInfoData = await allItemInfoRes.json();
+    const {names} = allItemInfoData;
+    const allItemKeys = Object.keys(allItems)
+    allItems && await Promise.all(allItemKeys.map( async (itemId) => {
+      if(!names[itemId]) //item not found in our database add item.
+      {
+        if(!newItems)
+        {
+          newItems = true;
+        }
+        const itemParams = new URLSearchParams({
+          itemId
+        }).toString();
+        await fetch(`http://localhost:3000/api/addItem?${itemParams}`)
+      }
+    })
+    )
+
+    if(newItems)
+    {
+      allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //recall updated data
+      allItemInfoData = await allItemInfoRes.json();
+    }
+
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,
@@ -183,7 +216,6 @@ export const getStaticProps = async () => {
     props: {
       content: combinedData
     },
-    revalidate: 60
   }
 }
 

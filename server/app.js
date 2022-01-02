@@ -9,7 +9,7 @@ const axios = require('axios');
 
 const refreshToken = require('./utils/refreshToken');
 const getAccessToken = require('./utils/getAccessToken');
-const getItemInfo = require('./utils/getItemInfo'); //returns all item info in our colleciton
+const getAllItemInfo = require('./utils/getAllItemInfo'); //returns all item info in our colleciton
 const addItemInfo = require('./utils/addItemInfo');
 
 //set up db
@@ -158,7 +158,7 @@ app.get('/api/allItemInfo', async (req,res) => {
   let allItemNameAndIcon = {};
   try {
     const startTime = Date.now();
-    allItemInfoData = await getItemInfo();
+    allItemInfoData = await getAllItemInfo();
     let allItemName = {};
     let allItemIcon = {}
     allItemInfoData.forEach((item) => {
@@ -176,6 +176,20 @@ app.get('/api/allItemInfo', async (req,res) => {
   res.json(allItemNameAndIcon);
 })
 
+app.get('/api/addItem', async (req,res) => {
+  let itemInfo;
+  if(!req.query) {
+    return res.status(400).json(null);
+  }
+  try {
+    itemInfo = await addItemInfo(req.query.itemId);
+    console.log("added item: ", itemInfo.name);
+  }
+  catch (error) {
+    console.log(error);
+  }
+  res.json(itemInfo);
+})
 
 app.listen(3000, () => {
   console.log('server started')

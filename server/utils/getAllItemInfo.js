@@ -1,6 +1,6 @@
 const Item = require("../models/item");
 
-module.exports = async function getItemInfo() {
+module.exports = async function getItemAllInfo() {
   try{
     const results = await Item.find({});
     return results;
