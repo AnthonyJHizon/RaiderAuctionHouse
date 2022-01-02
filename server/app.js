@@ -13,6 +13,7 @@ const getAllItemInfo = require('./utils/getAllItemInfo'); //returns all item inf
 const addItemInfo = require('./utils/addItemInfo');
 const getAllGemItemInfo = require('./utils/getAllGemItemInfo');
 const getAllConsumableItemInfo = require('./utils/getAllConsumableItemInfo');
+const getAllTradeGoodItemInfo = require('./utils/getAllTradeGoodItemInfo')
 
 //set up db
 mongoose.connect(process.env.MONGODB_URI, {
@@ -196,19 +197,27 @@ app.get('/api/addItem', async (req,res) => {
 app.get('/api/getRelevantItems', async (req,res) => {
   let relevantItems = {};
   try {
-    gemItemData = await getAllGemItemInfo();
-    consumableItemData = await getAllConsumableItemInfo();
+    const gemItemData = await getAllGemItemInfo();
+    const consumableItemData = await getAllConsumableItemInfo();
+    const tradeGoodItemData = await getAllTradeGoodItemInfo();
+
     let relevantGems = {};
     let relevantConsumables = {};
+    let relevantTradeGoods = {};
+
     gemItemData.forEach((gem) => {
       relevantGems[gem._id] = gem.itemSubclass;
     })
     consumableItemData.forEach((consumable) => {
       relevantConsumables[consumable._id] = consumable.itemSubclass;
     })
-    console.log(relevantGems);
+    tradeGoodItemData.forEach((tradeGood) => {
+      relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
+    })
+
     relevantItems["gems"] = relevantGems;
     relevantItems["consumables"] = relevantConsumables;
+    relevantItems["tradeGoods"] =  relevantTradeGoods;
   }
   catch (error) {
     console.log(error);

@@ -8,6 +8,7 @@ export default function Home({content}) {
   const [realm, setRealm] = useState(4728); //default realm set to benediction
   const [auctionHouse, setAH] = useState(7); //default ah set to neutral
   const [listings, setListings] = useState();
+  const [listingsFilter, setlistingsFilter] = useState();
   const [lastModified, setLastMod] = useState();
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
@@ -37,7 +38,7 @@ export default function Home({content}) {
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
-  console.log(relevantItems);
+  // console.log(relevantItems);
   // console.log(gems);
   // console.log(consumables);
 
