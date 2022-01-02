@@ -17,19 +17,22 @@ export default function Home({content}) {
     async function setData(){
       setLastMod(data[realm][auctionHouse].lastModified);
       setListings(data[realm][auctionHouse].items);
-      // setTotalItems(data.total);
-      // setUniqueCount(data.uniqueItems);
-      // console.log(data.items);]
-      console.log(data[realm][auctionHouse].items);
-      console.log(listings);
-      console.log("BREAKER");
+      // console.log(data[realm][auctionHouse]);
+      // // setTotalItems(data[realm][auctionHouse].total);
+      // // setUniqueCount(data[realm][auctionHouse].uniqueItems);
+      // // console.log(data.items);
+      // console.log(data[realm][auctionHouse].items);
+      // console.log(listings);
+      // console.log("BREAKER");
   }
   setData();
   },[realm, auctionHouse]);
 
 
 
-  const {realms, auctionHouses, data} = content;
+  const {realms, auctionHouses, data, itemInfo} = content;
+  const {names, icons} = itemInfo;
+  // console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
@@ -50,72 +53,32 @@ export default function Home({content}) {
     )
   })
 
-  // console.log(data);
-  // console.log(data.length);
-
-    // data.map(realm => {
-    //   console.log(realm);
-    // })
-
-
-//   // fetchData();
-//   // },[realmKey, ahKey]);
-
-
-//   // let postsArr = [];
-// let realmsArr = [];
-// let ahArr = [];
-// const auctionHouseMap = 
-// for (const [key,value] of data.data.auctionHouse.entries()) {
-//   ahArr.push(
-//     <div key = {key} onClick={() => setAH(key)}>{value}</div>
-//   )
-// }
-// for (const [key,value] of data.data.realms.entries()) {
-//   realmsArr.push(
-//     <div key = {key} onClick={() => setRealm(key) }>{value}</div>
-//   )
-// }
 let postsArr = [];
 // console.log(data[realm][auctionHouse].items);
 // console.log(listings);
 if(listings){
-  console.log("INSIDE");
   Object.keys(listings).forEach( (item) => {
     if(item)
     {
-      console.log(listings[item]);
-      postsArr.push(
-        <div key = {item} className= {styles.postsContainer}>
-        <a href={"https://tbc.wowhead.com/item="+item}><img src="https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg"/></a>
-        <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>ItemName</a>
-        <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-      </div>)
+      if(names[item])
+      {
+        if(names[item] !== "Deprecated")
+        {
+          postsArr.push(
+            <div key = {item} className= {styles.postsContainer}>
+            <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
+            <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+            <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+          </div>)
+        }
+      }
+      else
+      {
+        console.log(item);
+      }
     }
   })
 }
-else
-{
-  console.log("OUTSIDE");
-}
-
-
-// if (isLoading)
-// {
-//   postsArr = [];
-//   // setTotalItems("Loading...");
-//   // setUniqueCount("Loading...");
-//   // setLastMod("Loading...");
-//   postsArr.push(
-//     <div key = "">Loading</div>
-//   )
-// }
-// else if (!listings) // nothing in auction house for selected realm and ah type
-// {
-//   postsArr.push(
-//     <div key = "">Dead Server Kek</div>
-//   )
-// }
 
 
 return (
@@ -200,11 +163,14 @@ export const getStaticProps = async () => {
       reformattedData[realmID] = realmAuctionData;
     })
 
+    const allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo');
+    const allItemInfoData = await allItemInfoRes.json();
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,
       auctionHouses: ahHash,
-      data: reformattedData
+      data: reformattedData,
+      itemInfo: allItemInfoData,
     }
     console.log(`Elapsed time ${endTime - startTime}`)
   }
