@@ -193,7 +193,7 @@ app.get('/api/addItem', async (req,res) => {
   res.json(itemInfo);
 })
 
-app.get('/api/getRelevantTabItems', async (req,res) => {
+app.get('/api/getRelevantItems', async (req,res) => {
   let relevantItems = {};
   try {
     gemItemData = await getAllGemItemInfo();

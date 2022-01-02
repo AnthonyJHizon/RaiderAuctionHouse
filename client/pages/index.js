@@ -198,19 +198,23 @@ export const getServerSideProps = async () => {
       allItemInfoData = await allItemInfoRes.json();
     }
 
+    const allRelevantItemRes = await fetch('http://localhost:3000/api/getRelevantItems');
+    const allRelevantItemData = await allRelevantItemRes.json();
+
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,
       auctionHouses: ahHash,
       data: reformattedData,
       itemInfo: allItemInfoData,
+      relevantItems : allRelevantItemData,
     }
     console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
     console.log('Error getting data', error);
   }
-  
+
   return {
     props: {
       content: combinedData
