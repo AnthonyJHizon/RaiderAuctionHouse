@@ -204,20 +204,39 @@ app.get('/api/getRelevantItems', async (req,res) => {
     let relevantGems = {};
     let relevantConsumables = {};
     let relevantTradeGoods = {};
+    let gemSubclasses = {};
+    let consumableSubclasses = {};
+    let tradeGoodSubclasses = {};
 
     gemItemData.forEach((gem) => {
       relevantGems[gem._id] = gem.itemSubclass;
+      if(!gemSubclasses[gem.itemSubclass])
+      {
+        gemSubclasses[gem.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+      }
     })
     consumableItemData.forEach((consumable) => {
       relevantConsumables[consumable._id] =  consumable.itemSubclass;
+      if(!consumableSubclasses[consumable.itemSubclass])
+      {
+        consumableSubclasses[consumable.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+      }
     })
     tradeGoodItemData.forEach((tradeGood) => {
       relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
+      if(!tradeGoodSubclasses[tradeGood.itemSubclass])
+      {
+        tradeGoodSubclasses[tradeGood.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+      }
     })
 
     relevantItems["gems"] = relevantGems;
     relevantItems["consumables"] = relevantConsumables;
     relevantItems["tradeGoods"] =  relevantTradeGoods;
+    relevantItems["gemSubclasses"] = gemSubclasses;
+    relevantItems["consumableSubclasses"] = consumableSubclasses;
+    relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
+
   }
   catch (error) {
     console.log(error);

@@ -32,7 +32,7 @@ export default function Home({content}) {
 
 
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
-  const {gems, consumables, tradeGoods} = relevantItems;
+  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses} = relevantItems;
   const {names, icons} = allItemInfo;
   // console.log(names);
   // console.log(realms)
