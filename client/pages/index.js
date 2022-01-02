@@ -177,7 +177,7 @@ export const getServerSideProps = async () => {
     let allItemInfoData = await allItemInfoRes.json();
     const {names} = allItemInfoData;
     const allItemKeys = Object.keys(allItems)
-    allItems && await Promise.all(allItemKeys.map( async (itemId) => {
+    allItems && await Promise.all(allItemKeys.map( async (itemId) => { //go through all itemIds found in all the auction data and check if item is in our database
       if(!names[itemId]) //item not found in our database add item.
       {
         if(!newItems)
@@ -187,7 +187,7 @@ export const getServerSideProps = async () => {
         const itemParams = new URLSearchParams({
           itemId
         }).toString();
-        await fetch(`http://localhost:3000/api/addItem?${itemParams}`)
+        await fetch(`http://localhost:3000/api/addItem?${itemParams}`) //adds item to db
       }
     })
     )
@@ -210,8 +210,7 @@ export const getServerSideProps = async () => {
   catch (error) {
     console.log('Error getting data', error);
   }
-
-  // [{'benediction':{'2':{}, '6': {}, '7':{}}}.]
+  
   return {
     props: {
       content: combinedData

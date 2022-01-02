@@ -11,6 +11,8 @@ const refreshToken = require('./utils/refreshToken');
 const getAccessToken = require('./utils/getAccessToken');
 const getAllItemInfo = require('./utils/getAllItemInfo'); //returns all item info in our colleciton
 const addItemInfo = require('./utils/addItemInfo');
+const getAllGemItemInfo = require('./utils/getAllGemItemInfo');
+const getAllConsumableItemInfo = require('./utils/getAllConsumableItemInfo');
 
 //set up db
 mongoose.connect(process.env.MONGODB_URI, {
@@ -189,6 +191,28 @@ app.get('/api/addItem', async (req,res) => {
     console.log(error);
   }
   res.json(itemInfo);
+})
+
+app.get('/api/getRelevantTabItems', async (req,res) => {
+  let relevantItems = {};
+  try {
+    gemItemData = await getAllGemItemInfo();
+    consumableItemData = await getAllConsumableItemInfo();
+    let relevantGems = {};
+    let relevantConsumables = {};
+    gemItemData.forEach((gem) => {
+      relevantGems[gem._id] = gem.Subclass;
+    })
+    consumableItemData.forEach((consumable) => {
+      relevantConsumables[consumable._id] = consumable.Subclass;
+    })
+    relevantItems["gems"] = relevantGems;
+    relevantItems["consumables"] = relevantConsumables;
+  }
+  catch (error) {
+    console.log(error);
+  }
+  res.json(relevantItems);
 })
 
 app.listen(3000, () => {
