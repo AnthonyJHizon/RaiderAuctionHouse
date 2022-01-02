@@ -4,12 +4,17 @@ import React, { useState, useEffect } from 'react'
 
 
 export default function Home({content}) {
+  const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
+  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
+  const {names, icons} = allItemInfo;
 
   const [realm, setRealm] = useState(4728); //default realm set to benediction
   const [auctionHouse, setAH] = useState(7); //default ah set to neutral
-  const [listings, setListings] = useState();
-  const [listingsFilter, setlistingsFilter] = useState();
-  const [lastModified, setLastMod] = useState();
+  const [listings, setListings] = useState(data[realm][auctionHouse].items);
+  const [itemClassFilter, setItemClassFilter] = useState(gems);
+  const [itemSubclassFilter, setItemSubclassFilter] = useState("Red");
+  const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
+
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
   // const [isLoading, setIsLoading] = useState();
@@ -18,22 +23,12 @@ export default function Home({content}) {
     async function setData(){
       setLastMod(data[realm][auctionHouse].lastModified);
       setListings(data[realm][auctionHouse].items);
-      // console.log(data[realm][auctionHouse]);
-      // // setTotalItems(data[realm][auctionHouse].total);
-      // // setUniqueCount(data[realm][auctionHouse].uniqueItems);
-      // // console.log(data.items);
-      // console.log(data[realm][auctionHouse].items);
-      // console.log(listings);
-      // console.log("BREAKER");
   }
   setData();
   },[realm, auctionHouse]);
 
-
-  console.log(listingsFilter);
-  const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
-  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
-  const {names, icons} = allItemInfo;
+  // console.log(itemClassFilter);
+  // console.log(itemSubclassFilter);
   // console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
@@ -65,45 +60,47 @@ export default function Home({content}) {
   // console.log(gems);
   filterArr.push(
     <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.dropbtn} onClick={() => console.log("All Items") }>All Items</button>
+      <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter()}}>All Items</button>
     </div>
   )
   itemClasses.forEach( (itemClass) => {
     let subclassArr = [];
     let subclasses = {};
+    let itemClassFilter = {};
     switch (itemClass)
     {
       case "Gems":
         subclasses = gemSubclasses;
+        itemClassFilter = gems;
         break;
       case "Consumables":
         subclasses = consumableSubclasses;
+        itemClassFilter = consumables;
         break;
       case "Trade Goods":
         subclasses = tradeGoodSubclasses;
+        itemClassFilter = tradeGoods;
         break;
     }
     Object.keys(subclasses).forEach( (subclass) => {
       subclassArr.push(
-        <div key = {subclass} onClick={() => console.log(subclass) }>{subclass}</div>
+        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter)} }>{subclass}</div>
       )
     })
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
       <div key = {itemClass} className= {styles.dropdown}>
-        <button className = {styles.dropbtn} onClick={() => console.log(itemClass) }>
+        <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter()}}>
           {itemClass}
-          <div className={styles.dropdownContent}>
+        </button>
+        <div className={styles.dropdownContent}>
             {subclassArr}
           </div>
-        </button>
       </div>
     )
   })
 
   let postsArr = [];
-  // console.log(data[realm][auctionHouse].items);
-  // console.log(listings);
   if(listings) {
     Object.keys(listings).forEach( async (item) => {
       if(item)
@@ -112,18 +109,46 @@ export default function Home({content}) {
         {
           if(names[item] !== "Deprecated")
           {
-            postsArr.push(
-              <div key = {names[item]} className= {styles.postsContainer}>
-              <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
-              <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
-              <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-            </div>)
+            if(itemClassFilter && itemSubclassFilter)
+            {
+              if(itemClassFilter[item] === itemSubclassFilter)
+              {
+                postsArr.push(
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                  <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                </div>)
+              }
+            }
+            else if(itemClassFilter)
+            {
+              if(itemClassFilter[item])
+              {
+                postsArr.push(
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}>
+                  <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                </div>)
+              }
+            }
+            else
+            {
+              postsArr.push(
+              <div key = {item} id = {names[item]} className= {styles.postsContainer}>
+                <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
+                <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+              </div>)
+            }
           }
         }
       }
     })
   }
-  postsArr.sort((a,b) => a.key.localeCompare(b.key));
+  postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
+  // console.log(postsArr[0].key);
 
 
 
