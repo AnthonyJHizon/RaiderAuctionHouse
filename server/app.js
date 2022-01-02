@@ -209,7 +209,7 @@ app.get('/api/getRelevantItems', async (req,res) => {
       relevantGems[gem._id] = gem.itemSubclass;
     })
     consumableItemData.forEach((consumable) => {
-      relevantConsumables[consumable._id] = consumable.itemSubclass;
+      relevantConsumables[consumable._id] =  consumable.itemSubclass;
     })
     tradeGoodItemData.forEach((tradeGood) => {
       relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;

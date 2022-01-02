@@ -31,9 +31,9 @@ export default function Home({content}) {
 
 
 
-  const {realms, auctionHouses, data, itemInfo, relevantItems} = content;
-  const {gems, consumables} = relevantItems;
-  const {names, icons} = itemInfo;
+  const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
+  const {gems, consumables, tradeGoods} = relevantItems;
+  const {names, icons} = allItemInfo;
   // console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
@@ -46,9 +46,10 @@ export default function Home({content}) {
   const realmKeys = Object.keys(realms);
   realmKeys.forEach((realmKey) => {
     realmsArr.push(
-      <div key = {realmKey} onClick={() => setRealm(realmKey) }>{realms[realmKey]}</div>
+      <div key = {realms[realmKey]} onClick={() => setRealm(realmKey) }>{realms[realmKey]}</div>
     )
   })
+  realmsArr.sort((a,b) => a.key.localeCompare(b.key)); //sort the array based on div key which is the name of the realm
 
   let ahArr = [];
   const ahKeys = Object.keys(auctionHouses);
@@ -58,28 +59,34 @@ export default function Home({content}) {
     )
   })
 
-let postsArr = [];
-// console.log(data[realm][auctionHouse].items);
-// console.log(listings);
-if(listings){
-  Object.keys(listings).forEach( async (item) => {
-    if(item)
-    {
-      if(names[item])
+  let filterArr = [];
+
+
+  let postsArr = [];
+  // console.log(data[realm][auctionHouse].items);
+  // console.log(listings);
+  if(listings) {
+    Object.keys(listings).forEach( async (item) => {
+      if(item)
       {
-        if(names[item] !== "Deprecated")
+        if(names[item])
         {
-          postsArr.push(
-            <div key = {item} className= {styles.postsContainer}>
-            <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
-            <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
-            <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-          </div>)
+          if(names[item] !== "Deprecated")
+          {
+            postsArr.push(
+              <div key = {names[item]} className= {styles.postsContainer}>
+              <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
+              <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+              <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+            </div>)
+          }
         }
       }
-    }
-  })
-}
+    })
+  }
+  postsArr.sort((a,b) => a.key.localeCompare(b.key));
+
+
 
 
 return (
@@ -211,7 +218,7 @@ export const getServerSideProps = async () => {
       realms: realmHash,
       auctionHouses: ahHash,
       data: reformattedData,
-      itemInfo: allItemInfoData,
+      allItemInfo: allItemInfoData,
       relevantItems : allRelevantItemData,
     }
     console.log(`Elapsed time ${endTime - startTime}`)
