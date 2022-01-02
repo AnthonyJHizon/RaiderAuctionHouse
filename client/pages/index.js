@@ -32,9 +32,9 @@ export default function Home({content}) {
 
 
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
-  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses} = relevantItems;
+  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
   const {names, icons} = allItemInfo;
-  // console.log(names);
+  console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
@@ -60,7 +60,15 @@ export default function Home({content}) {
   })
 
   let filterArr = [];
-
+  // console.log(itemClasses);
+  // console.log(consumableSubclasses);
+  // console.log(gems);
+  itemClasses.forEach( (itemClass) => {
+    console.log(itemClass);
+    filterArry.push (
+      <div key = {itemClasses[itemClass]} onClick={() => set(itemClass) }>{itemClasses[itemClass]}</div>
+    )
+  })
 
   let postsArr = [];
   // console.log(data[realm][auctionHouse].items);
@@ -212,7 +220,7 @@ export const getServerSideProps = async () => {
 
     const allRelevantItemRes = await fetch('http://localhost:3000/api/getRelevantItems');
     const allRelevantItemData = await allRelevantItemRes.json();
-
+    // console.log("HERE", allRelevantItemData.itemClasses);
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,

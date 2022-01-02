@@ -200,7 +200,7 @@ app.get('/api/getRelevantItems', async (req,res) => {
     const gemItemData = await getAllGemItemInfo();
     const consumableItemData = await getAllConsumableItemInfo();
     const tradeGoodItemData = await getAllTradeGoodItemInfo();
-
+  
     let relevantGems = {};
     let relevantConsumables = {};
     let relevantTradeGoods = {};
@@ -212,21 +212,21 @@ app.get('/api/getRelevantItems', async (req,res) => {
       relevantGems[gem._id] = gem.itemSubclass;
       if(!gemSubclasses[gem.itemSubclass])
       {
-        gemSubclasses[gem.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+        gemSubclasses[gem.itemSubclass] = gem.itemClass
       }
     })
     consumableItemData.forEach((consumable) => {
       relevantConsumables[consumable._id] =  consumable.itemSubclass;
       if(!consumableSubclasses[consumable.itemSubclass])
       {
-        consumableSubclasses[consumable.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+        consumableSubclasses[consumable.itemSubclass] = consumable.itemClass 
       }
     })
     tradeGoodItemData.forEach((tradeGood) => {
       relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
       if(!tradeGoodSubclasses[tradeGood.itemSubclass])
       {
-        tradeGoodSubclasses[tradeGood.itemSubclass] = "Placeholder value" //make a object just so checking if exists is O(1)
+        tradeGoodSubclasses[tradeGood.itemSubclass] = tradeGood.itemClass;  
       }
     })
 
@@ -236,6 +236,9 @@ app.get('/api/getRelevantItems', async (req,res) => {
     relevantItems["gemSubclasses"] = gemSubclasses;
     relevantItems["consumableSubclasses"] = consumableSubclasses;
     relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
+    relevantItems["itemClasses"] = { 0:"Gems", 1: "Consumables", 2:"Trade Goods"}
+    // console.log(relevantItems["itemClasses"]);
+    // console.log(relevantItems["gemSubclasses"]);
 
   }
   catch (error) {
