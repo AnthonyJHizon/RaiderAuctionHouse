@@ -30,7 +30,7 @@ export default function Home({content}) {
   },[realm, auctionHouse]);
 
 
-
+  console.log(listingsFilter);
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
   const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
   const {names, icons} = allItemInfo;
