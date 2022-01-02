@@ -201,11 +201,12 @@ app.get('/api/getRelevantItems', async (req,res) => {
     let relevantGems = {};
     let relevantConsumables = {};
     gemItemData.forEach((gem) => {
-      relevantGems[gem._id] = gem.Subclass;
+      relevantGems[gem._id] = gem.itemSubclass;
     })
     consumableItemData.forEach((consumable) => {
-      relevantConsumables[consumable._id] = consumable.Subclass;
+      relevantConsumables[consumable._id] = consumable.itemSubclass;
     })
+    console.log(relevantGems);
     relevantItems["gems"] = relevantGems;
     relevantItems["consumables"] = relevantConsumables;
   }

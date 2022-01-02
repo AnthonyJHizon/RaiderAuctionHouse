@@ -30,12 +30,16 @@ export default function Home({content}) {
 
 
 
-  const {realms, auctionHouses, data, itemInfo} = content;
+  const {realms, auctionHouses, data, itemInfo, relevantItems} = content;
+  const {gems, consumables} = relevantItems;
   const {names, icons} = itemInfo;
   // console.log(names);
   // console.log(realms)
   // console.log(auctionHouse)
   // console.log(data)
+  console.log(relevantItems);
+  // console.log(gems);
+  // console.log(consumables);
 
   let realmsArr = [];
   const realmKeys = Object.keys(realms);
