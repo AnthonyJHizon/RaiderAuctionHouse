@@ -63,6 +63,11 @@ export default function Home({content}) {
   // console.log(itemClasses);
   // console.log(consumableSubclasses);
   // console.log(gems);
+  filterArr.push(
+    <div key = "All Items" className= {styles.dropdown}>
+      <button className = {styles.dropbtn} onClick={() => console.log("All Items") }>All Items</button>
+    </div>
+  )
   itemClasses.forEach( (itemClass) => {
     let subclassArr = [];
     let subclasses = {};
@@ -145,9 +150,11 @@ return (
             {ahArr}
         </div>
       </div>
-      <div className={styles.main} >
+      <div className={styles.main}>
         <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
-        {filterArr}
+        <div className={styles.dropdownContainer}>
+          {filterArr}
+        </div>
         <h1>Last Updated: {lastModified} </h1>
         {postsArr}
       </div>
