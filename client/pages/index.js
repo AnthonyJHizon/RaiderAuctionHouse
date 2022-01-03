@@ -61,7 +61,7 @@ export default function Home({content}) {
   // console.log(gems);
   filterArr.push(
     <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator()}}>All Items</button>
+      <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator()}}>All Items</button>
     </div>
   )
   itemClasses.forEach( (itemClass) => {
@@ -91,7 +91,7 @@ export default function Home({content}) {
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
       <div key = {itemClass} className= {styles.dropdown}>
-        <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass)}}>
+        <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass)}}>
           {itemClass}
         </button>
         <div className={styles.dropdownContent}>
@@ -169,27 +169,29 @@ return (
       </Head>
 
       <main className={styles.main}>
-      <div className= {styles.dropdown}>
-        <button className ={styles.dropbtn}>Realm Select</button>
-        <div className={styles.dropdownContent}>
-            {realmsArr}
+        <div className={styles.main}>
+          <div className={styles.dropdownContainer}>
+          <div className= {styles.dropdown}>
+            <button className ={styles.dropbtn}>Realm</button>
+            <div className={styles.dropdownContent}>
+                {realmsArr}
+            </div>
+          </div>
+          <div className= {styles.dropdown}>
+            <button className ={styles.dropbtn}>Auction House</button>
+            <div className={styles.dropdownContent}>
+                {ahArr}
+            </div>
+          </div>
         </div>
-      </div>
-      <div className= {styles.dropdown}>
-        <button className ={styles.dropbtn}>Auction House Select</button>
-        <div className={styles.dropdownContent}>
-            {ahArr}
+          <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
+          <div className={styles.dropdownContainer}>
+            {filterArr}
+          </div>
+          <h1>Last Updated: {lastModified} </h1>
+          <h1>{filterIndicator}</h1>
+          {postsArr}
         </div>
-      </div>
-      <div className={styles.main}>
-        <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
-        <div className={styles.dropdownContainer}>
-          {filterArr}
-        </div>
-        <h1>Last Updated: {lastModified} </h1>
-        <h1>{filterIndicator}</h1>
-        {postsArr}
-      </div>
       </main>
 
       <footer className={styles.footer}>
