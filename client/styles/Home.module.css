@@ -139,6 +139,7 @@
   font-size: 16px;
   border: none;
 }
+
 .filterDropBtn {
   background-color: #04AA6D;
   color: white;
@@ -183,4 +184,4 @@
 .dropdown:hover .dropdownContent {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn, .dropdown:hover .filterDropBtn {background-color: #3e8e41;}
