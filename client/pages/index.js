@@ -16,18 +16,22 @@ export default function Home({content}) {
   const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
   const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables, Flask");
   const [searchInput, setSearchInput] = useState();
-
+  const [submitSearchInput, setSubmitSearchInput] = useState();
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
   // const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
     async function setData(){
+      if(submitSearchInput){
+        console.log(submitSearchInput)
+        //apicall to get the items according to input
+      }
       setLastMod(data[realm][auctionHouse].lastModified);
       setListings(data[realm][auctionHouse].items);
   }
   setData();
-  },[realm, auctionHouse]);
+  },[realm, auctionHouse, submitSearchInput]);
 
   // console.log(itemClassFilter);
   // console.log(itemSubclassFilter);
@@ -158,9 +162,9 @@ export default function Home({content}) {
       </div>)
   }
 
-  function handleKeyPress(e) {
-    if (e.key === 'Enter') {
-      setSearchInput(e.target.value);
+  function handleSearchSubmit(e) {
+    if (e.key === 'Enter' || e.button === 0) {
+      setSubmitSearchInput(searchInput);
     }
   }
 
@@ -189,8 +193,8 @@ return (
                 {ahArr}
             </div>
           </div>
-          <input type="text" onKeyPress={(e) => handleKeyPress(e)}></input>
-          <button onClick={setSearchInput(e.target.value)}>Search</button>
+          <input id = "searchInput" type="text" onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => handleSearchSubmit(e)}></input>
+          <button onClick={(e) => handleSearchSubmit(e)}>Search</button>
         </div>
           <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
           <div className={styles.dropdownContainer}>
