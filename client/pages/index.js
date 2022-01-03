@@ -14,7 +14,7 @@ export default function Home({content}) {
   const [itemClassFilter, setItemClassFilter] = useState(consumables);
   const [itemSubclassFilter, setItemSubclassFilter] = useState("Flask");
   const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
-  const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables,Flask");
+  const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables, Flask");
 
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
@@ -85,7 +85,7 @@ export default function Home({content}) {
     }
     Object.keys(subclasses).forEach( (subclass) => {
       subclassArr.push(
-        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+","+subclass)} }>{subclass}</div>
+        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+", "+subclass)} }>{subclass}</div>
       )
     })
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
@@ -116,8 +116,8 @@ export default function Home({content}) {
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                  <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
-                  <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -128,8 +128,8 @@ export default function Home({content}) {
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                  <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
-                  <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -138,8 +138,8 @@ export default function Home({content}) {
             {
               postsArr.push(
               <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                <a href={"https://tbc.wowhead.com/item="+item}><img src={icons[item]}/></a>
-                <a className = {styles.itemName} href={"https://tbc.wowhead.com/item="+item}>{names[item]}</a>
+                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
                 <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
               </div>)
             }
@@ -184,7 +184,7 @@ return (
             </div>
           </div>
         </div>
-          <h1>{realms[realm]}{auctionHouses[auctionHouse]}Auction House</h1>
+          <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
           <div className={styles.dropdownContainer}>
             {filterArr}
           </div>
