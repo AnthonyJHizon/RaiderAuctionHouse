@@ -15,6 +15,7 @@ export default function Home({content}) {
   const [itemSubclassFilter, setItemSubclassFilter] = useState("Flask");
   const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
   const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables, Flask");
+  const [searchInput, setSearchInput] = useState();
 
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
@@ -157,6 +158,11 @@ export default function Home({content}) {
       </div>)
   }
 
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      setSearchInput(e.target.value);
+    }
+  }
 
 
 return (
@@ -183,6 +189,8 @@ return (
                 {ahArr}
             </div>
           </div>
+          <input type="text" onKeyPress={(e) => handleKeyPress(e)}></input>
+          <button onClick={setSearchInput(e.target.value)}>Search</button>
         </div>
           <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
           <div className={styles.dropdownContainer}>
