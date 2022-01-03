@@ -14,6 +14,7 @@ export default function Home({content}) {
   const [itemClassFilter, setItemClassFilter] = useState(consumables);
   const [itemSubclassFilter, setItemSubclassFilter] = useState("Flask");
   const [lastModified, setLastMod] = useState(data[realm][auctionHouse].lastModified);
+  const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables,Flask");
 
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
@@ -60,7 +61,7 @@ export default function Home({content}) {
   // console.log(gems);
   filterArr.push(
     <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter()}}>All Items</button>
+      <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator()}}>All Items</button>
     </div>
   )
   itemClasses.forEach( (itemClass) => {
@@ -84,13 +85,13 @@ export default function Home({content}) {
     }
     Object.keys(subclasses).forEach( (subclass) => {
       subclassArr.push(
-        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter)} }>{subclass}</div>
+        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+","+subclass)} }>{subclass}</div>
       )
     })
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
       <div key = {itemClass} className= {styles.dropdown}>
-        <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter()}}>
+        <button className = {styles.dropbtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass)}}>
           {itemClass}
         </button>
         <div className={styles.dropdownContent}>
@@ -149,7 +150,12 @@ export default function Home({content}) {
   }
   postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
   // console.log(postsArr[0].key);
-
+  if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
+    postsArr.push(
+      <div key = "None" className= {styles.postsContainer}>
+        <p>No Items Found</p>
+      </div>)
+  }
 
 
 
@@ -181,6 +187,7 @@ return (
           {filterArr}
         </div>
         <h1>Last Updated: {lastModified} </h1>
+        <h1>{filterIndicator}</h1>
         {postsArr}
       </div>
       </main>
