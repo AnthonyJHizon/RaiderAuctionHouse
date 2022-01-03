@@ -209,7 +209,10 @@ app.get('/api/getRelevantItems', async (req,res) => {
     let tradeGoodSubclasses = {};
 
     gemItemData.forEach((gem) => {
-      relevantGems[gem._id] = gem.itemSubclass;
+      if(gem.itemLevel >= 70)
+      {
+        relevantGems[gem._id] = gem.itemSubclass;
+      }
       if(!gemSubclasses[gem.itemSubclass])
       {
         gemSubclasses[gem.itemSubclass] = gem.itemClass
