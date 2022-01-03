@@ -298,9 +298,12 @@ export const getServerSideProps = async () => {
       allItemInfoData = await allItemInfoRes.json();
     }
 
-    const allRelevantItemRes = await fetch('http://localhost:3000/api/getRelevantItems');
+    const allRelevantItemRes = await fetch('http://localhost:3000/api/relevantItems');
     const allRelevantItemData = await allRelevantItemRes.json();
     // console.log("HERE", allRelevantItemData.itemClasses);
+    const searchedItemInfo = await fetch("http://localhost:3000/api/searchedItems");
+    const searchedItemData = await searchedItemInfo.json();
+    console.log(searchedItemData);
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,

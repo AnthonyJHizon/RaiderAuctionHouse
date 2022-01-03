@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
@@ -13,7 +13,8 @@ const getAllItemInfo = require('./utils/getAllItemInfo'); //returns all item inf
 const addItemInfo = require('./utils/addItemInfo');
 const getAllGemItemInfo = require('./utils/getAllGemItemInfo');
 const getAllConsumableItemInfo = require('./utils/getAllConsumableItemInfo');
-const getAllTradeGoodItemInfo = require('./utils/getAllTradeGoodItemInfo')
+const getAllTradeGoodItemInfo = require('./utils/getAllTradeGoodItemInfo');
+const getSearchedItemInfo = require('./utils/getSearchedItemInfo');
 
 //set up db
 mongoose.connect(process.env.MONGODB_URI, {
@@ -194,7 +195,7 @@ app.get('/api/addItem', async (req,res) => {
   res.json(itemInfo);
 })
 
-app.get('/api/getRelevantItems', async (req,res) => {
+app.get('/api/relevantItems', async (req,res) => {
   let relevantItems = {};
   try {
     const gemItemData = await getAllGemItemInfo();
@@ -255,6 +256,21 @@ app.get('/api/getRelevantItems', async (req,res) => {
   }
   res.json(relevantItems);
 })
+
+app.get('/api/searchedItems', async (req,res) => {
+  let searchedItems= {};
+  try {
+    const searchedItemData = await getSearchedItemInfo();
+    searchedItemData.forEach((item) => {
+      searchedItems[item._id] = item.name ;
+    })
+  }
+  catch (error) {
+    console.log(error);
+  } 
+  res.json(searchedItems)
+})
+
 
 app.listen(3000, () => {
   console.log('server started')
