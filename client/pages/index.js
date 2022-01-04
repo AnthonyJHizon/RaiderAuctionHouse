@@ -74,7 +74,7 @@ export default function Home({content}) {
   // console.log(gems);
   filterArr.push(
     <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator()}}>All Items</button>
+      <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator(), setSearchItems(), setSubmitSearchInput()}}>All Items</button>
     </div>
   )
   itemClasses.forEach( (itemClass) => {
@@ -98,13 +98,13 @@ export default function Home({content}) {
     }
     Object.keys(subclasses).forEach( (subclass) => {
       subclassArr.push(
-        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+", "+subclass)} }>{subclass}</div>
+        <div key = {subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+", "+subclass), setSearchItems(), setSubmitSearchInput()} }>{subclass}</div>
       )
     })
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
       <div key = {itemClass} className= {styles.dropdown}>
-        <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass)}}>
+        <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass), setSearchItems(), setSubmitSearchInput()}}>
           {itemClass}
         </button>
         <div className={styles.dropdownContent}>
@@ -184,7 +184,10 @@ export default function Home({content}) {
 
   function handleSearchSubmit(e) {
     if (e.key === 'Enter' || e.button === 0) {
-      setSubmitSearchInput(searchInput);
+      if(searchInput)
+      {
+        setSubmitSearchInput(searchInput);
+      }
     }
   }
 
@@ -213,7 +216,7 @@ return (
                 {ahArr}
             </div>
           </div>
-          <input id = "searchInput" type="text" onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => handleSearchSubmit(e)}></input>
+          <input id = "searchInput" type="text" placeholder="Search" onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => handleSearchSubmit(e)}></input>
           <button onClick={(e) => handleSearchSubmit(e)}>Search</button>
         </div>
           <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
