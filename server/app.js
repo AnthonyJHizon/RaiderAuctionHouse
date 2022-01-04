@@ -258,17 +258,20 @@ app.get('/api/relevantItems', async (req,res) => {
 })
 
 app.get('/api/searchedItems', async (req,res) => {
-  let searchedItems= {};
+  let searchItems = {};
+  if(!req.query) {
+    return res.status(400).json(null);
+  }
   try {
-    const searchedItemData = await getSearchedItemInfo();
-    searchedItemData.forEach((item) => {
-      searchedItems[item._id] = item.name ;
+    const searchItemData = await getSearchedItemInfo(req.query.submitSearchInput);
+    searchItemData.forEach((item) => {
+      searchItems[item._id] = item.name ;
     })
   }
   catch (error) {
     console.log(error);
   } 
-  res.json(searchedItems)
+  res.json(searchItems)
 })
 
 

@@ -17,15 +17,23 @@ export default function Home({content}) {
   const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables, Flask");
   const [searchInput, setSearchInput] = useState();
   const [submitSearchInput, setSubmitSearchInput] = useState();
+  const [searchItems, setSearchItems] = useState();
   // const [totalItems, setTotalItems] = useState();
   // const [uniqueCount, setUniqueCount] = useState();
   // const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
     async function setData(){
-      if(submitSearchInput){
-        console.log(submitSearchInput)
-        //apicall to get the items according to input
+      if(submitSearchInput) {
+        const searchParams = new URLSearchParams({
+          submitSearchInput
+        }).toString();
+        const searchItemRes = await fetch(`http://localhost:3000/api/searchedItems?${searchParams}`);
+        const searchItemData = await searchItemRes.json();
+        setSearchItems(searchItemData);
+        setItemClassFilter();
+        setItemSubclassFilter();
+        setFilterIndicator("Item containing: \""+submitSearchInput+"\"");
       }
       setLastMod(data[realm][auctionHouse].lastModified);
       setListings(data[realm][auctionHouse].items);
@@ -115,7 +123,19 @@ export default function Home({content}) {
         {
           if(names[item] !== "Deprecated")
           {
-            if(itemClassFilter && itemSubclassFilter)
+            if(searchItems)
+            {
+              if(searchItems[item])
+              {
+                postsArr.push(
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                </div>)
+              }
+            }
+            else if(itemClassFilter && itemSubclassFilter)
             {
               if(itemClassFilter[item] === itemSubclassFilter)
               {
@@ -301,9 +321,6 @@ export const getServerSideProps = async () => {
     const allRelevantItemRes = await fetch('http://localhost:3000/api/relevantItems');
     const allRelevantItemData = await allRelevantItemRes.json();
     // console.log("HERE", allRelevantItemData.itemClasses);
-    const searchedItemInfo = await fetch("http://localhost:3000/api/searchedItems");
-    const searchedItemData = await searchedItemInfo.json();
-    console.log(searchedItemData);
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,
