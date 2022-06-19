@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 
 
 export default function Home({content}) {
@@ -113,74 +113,77 @@ export default function Home({content}) {
       </div>
     )
   })
-
-  let postsArr = [];
-  if(listings) {
-    Object.keys(listings).forEach( async (item) => {
-      if(item)
-      {
-        if(names[item])
+  const displayListings = useMemo(() => {
+    let postsArr = [];
+    if(listings) {
+      Object.keys(listings).forEach( async (item) => {
+        if(item)
         {
-          if(names[item] !== "Deprecated")
+          if(names[item])
           {
-            if(searchItems)
+            if(names[item] !== "Deprecated")
             {
-              if(searchItems[item])
+              if(searchItems)
               {
-                postsArr.push(
-                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                </div>)
+                if(searchItems[item])
+                {
+                  postsArr.push(
+                  <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                    <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                  </div>)
+                }
               }
-            }
-            else if(itemClassFilter && itemSubclassFilter)
-            {
-              if(itemClassFilter[item] === itemSubclassFilter)
+              else if(itemClassFilter && itemSubclassFilter)
               {
-                postsArr.push(
-                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                </div>)
+                if(itemClassFilter[item] === itemSubclassFilter)
+                {
+                  postsArr.push(
+                  <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                    <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                  </div>)
+                }
               }
-            }
-            else if(itemClassFilter)
-            {
-              if(itemClassFilter[item])
+              else if(itemClassFilter)
+              {
+                if(itemClassFilter[item])
+                {
+                  postsArr.push(
+                  <div key = {item} id = {names[item]} className= {styles.postsContainer}>
+                    <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                  </div>)
+                }
+              }
+              else
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}>
                   <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                  <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
               }
             }
-            else
-            {
-              postsArr.push(
-              <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-              </div>)
-            }
           }
         }
-      }
-    })
-  }
-  postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
-  // console.log(postsArr[0].key);
-  if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
-    postsArr.push(
-      <div key = "None" className= {styles.postsContainer}>
-        <p>No Items Found</p>
-      </div>)
-  }
+      })
+    }
+    postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
+    // console.log(postsArr[0].key);
+    if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
+      postsArr.push(
+        <div key = "None" className= {styles.postsContainer}>
+          <p>No Items Found</p>
+        </div>)
+    }
+    return postsArr;
+  }, [listings, searchItems, itemClassFilter, itemSubclassFilter]);
+
 
   function handleSearchSubmit(e) {
     if (e.key === 'Enter' || e.button === 0) {
@@ -225,7 +228,7 @@ return (
           </div>
           <h1>Last Updated: {lastModified} </h1>
           <h1>{filterIndicator}</h1>
-          {postsArr}
+          {displayListings}
         </div>
       </main>
 
