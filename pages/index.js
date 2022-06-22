@@ -1,6 +1,15 @@
+// import Head from 'next/head'
+
+// export default function Home({ isConnected }) {
+//   return (
+//     <div className="container">
+//       Hello
+//     </div>
+//   )
+// }
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 
 export default function Home({content}) {
@@ -113,77 +122,74 @@ export default function Home({content}) {
       </div>
     )
   })
-  const displayListings = useMemo(() => {
-    let postsArr = [];
-    if(listings) {
-      Object.keys(listings).forEach( async (item) => {
-        if(item)
+
+  let postsArr = [];
+  if(listings) {
+    Object.keys(listings).forEach( async (item) => {
+      if(item)
+      {
+        if(names[item])
         {
-          if(names[item])
+          if(names[item] !== "Deprecated")
           {
-            if(names[item] !== "Deprecated")
+            if(searchItems)
             {
-              if(searchItems)
-              {
-                if(searchItems[item])
-                {
-                  postsArr.push(
-                  <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                    <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                  </div>)
-                }
-              }
-              else if(itemClassFilter && itemSubclassFilter)
-              {
-                if(itemClassFilter[item] === itemSubclassFilter)
-                {
-                  postsArr.push(
-                  <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                    <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                  </div>)
-                }
-              }
-              else if(itemClassFilter)
-              {
-                if(itemClassFilter[item])
-                {
-                  postsArr.push(
-                  <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                    <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                    <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
-                    <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                  </div>)
-                }
-              }
-              else
+              if(searchItems[item])
               {
                 postsArr.push(
-                <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
-                  <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
               }
             }
+            else if(itemClassFilter && itemSubclassFilter)
+            {
+              if(itemClassFilter[item] === itemSubclassFilter)
+              {
+                postsArr.push(
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                </div>)
+              }
+            }
+            else if(itemClassFilter)
+            {
+              if(itemClassFilter[item])
+              {
+                postsArr.push(
+                <div key = {item} id = {names[item]} className= {styles.postsContainer}>
+                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+                </div>)
+              }
+            }
+            else
+            {
+              postsArr.push(
+              <div key = {item} id = {names[item]} className= {styles.postsContainer}>
+                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank"><img src={icons[item]}/></a>
+                <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank">{names[item]}</a>
+                <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+              </div>)
+            }
           }
         }
-      })
-    }
-    postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
-    // console.log(postsArr[0].key);
-    if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
-      postsArr.push(
-        <div key = "None" className= {styles.postsContainer}>
-          <p>No Items Found</p>
-        </div>)
-    }
-    return postsArr;
-  }, [listings, searchItems, itemClassFilter, itemSubclassFilter]);
-
+      }
+    })
+  }
+  postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
+  // console.log(postsArr[0].key);
+  if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
+    postsArr.push(
+      <div key = "None" className= {styles.postsContainer}>
+        <p>No Items Found</p>
+      </div>)
+  }
 
   function handleSearchSubmit(e) {
     if (e.key === 'Enter' || e.button === 0) {
@@ -228,7 +234,7 @@ return (
           </div>
           <h1>Last Updated: {lastModified} </h1>
           <h1>{filterIndicator}</h1>
-          {displayListings}
+          {postsArr}
         </div>
       </main>
 
@@ -238,14 +244,12 @@ return (
   )
 }
 
-
-export const getServerSideProps = async () => {
+export async function getServerSideProps() {
   let combinedData;
   try{
     const startTime = Date.now();
     const realmRes = await fetch('http://localhost:3000/api/realms');
     const realmData = await realmRes.json();
-
     let realmHash = {};
     realmData && realmData.map((realm) => {
       const {id, name} = realm
@@ -253,7 +257,6 @@ export const getServerSideProps = async () => {
       return;
     })
     const ahHash = {2:"Alliance",6:"Horde",7:"Neutral"};
-
     const realmKeys = Object.keys(realmHash);
     const ahKeys = Object.keys(ahHash);
     let data = {};
@@ -284,7 +287,6 @@ export const getServerSideProps = async () => {
       });
       reformattedData[realmID] = realmAuctionData;
     })
-
     let allItems = {}; //hash that contains all the unique items found in the data.
     realmKeys.forEach( (realmKey) => {
       ahKeys.forEach( (ahKey) => {
@@ -299,7 +301,7 @@ export const getServerSideProps = async () => {
     })
     
     let newItems = false;
-    let allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //get all items from our database
+    let allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //get all items from our database
     let allItemInfoData = await allItemInfoRes.json();
     const {names} = allItemInfoData;
     const allItemKeys = Object.keys(allItems)
@@ -313,19 +315,20 @@ export const getServerSideProps = async () => {
         const itemParams = new URLSearchParams({
           itemId
         }).toString();
-        await fetch(`http://localhost:3000/api/addItem?${itemParams}`) //adds item to db
+        await fetch(`http://localhost:3000/api/item/add${itemParams}`) //adds item to db
       }
     })
     )
 
     if(newItems)
     {
-      allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //recall updated data
+      allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //recall updated data
       allItemInfoData = await allItemInfoRes.json();
     }
 
-    const allRelevantItemRes = await fetch('http://localhost:3000/api/relevantItems');
+    const allRelevantItemRes = await fetch('http://localhost:3000/api/item/relevant');
     const allRelevantItemData = await allRelevantItemRes.json();
+    // console.log(allRelevantItemData);
     // console.log("HERE", allRelevantItemData.itemClasses);
     const endTime = Date.now();
     combinedData = {
@@ -357,4 +360,3 @@ export const intToGold = (int) =>
 
   return gold + "g " + silver + "s " + copper +"c"
 }
-

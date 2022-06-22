@@ -1,4 +1,4 @@
-const Authorization = require('../models/authorization')
+const Authorization = require("../models/authorization");
 
 module.exports = async () => {
   try{

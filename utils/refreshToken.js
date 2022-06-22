@@ -1,5 +1,4 @@
-const axios = require('axios');
-const updateAuthorization = require('./updateAuthorization');
+const updateAuthorization = require("./updateAuthorization");
 
 module.exports = async () => {
   const url = "https://us.battle.net/oauth/token";
