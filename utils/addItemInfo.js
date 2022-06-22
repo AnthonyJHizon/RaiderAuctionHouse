@@ -1,4 +1,3 @@
-const axios = require('axios');
 const getAccessToken = require('./getAccessToken')
 const Item = require('../models/item');
 
@@ -9,7 +8,7 @@ module.exports = async function addItemInfo(itemId) { //adds itemInfo then retur
   do{
     try{
       const accessToken = await getAccessToken();
-      const itemDataResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
+      const itemDataResponse = await fetch(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
       const nameResult = itemDataResponse.data.name;
       const levelReq = itemDataResponse.data.required_level;
       const itemLevel = itemDataResponse.data.level;
@@ -17,7 +16,7 @@ module.exports = async function addItemInfo(itemId) { //adds itemInfo then retur
       const itemSubclass = itemDataResponse.data.item_subclass.name;
       const itemEquip = itemDataResponse.data.inventory_type.name;
       const itemQuality = itemDataResponse.data.quality.name;
-      const iconResponse = await axios.get(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
+      const iconResponse = await fetch(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`);
       const iconResult = iconResponse.data.assets[0].value;
 
       item = {
@@ -41,7 +40,7 @@ module.exports = async function addItemInfo(itemId) { //adds itemInfo then retur
           //assume access token expired
           const newAccessToken = refreshToken();
           try{
-            const itemDataResponse = await axios.get(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
+            const itemDataResponse = await fetch(`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
             const nameResult = itemDataResponse.data.name;
             const levelReq = itemDataResponse.data.required_level;
             const itemLevel = itemDataResponse.data.level;
@@ -49,7 +48,7 @@ module.exports = async function addItemInfo(itemId) { //adds itemInfo then retur
             const itemSubclass = itemDataResponse.data.item_subclass.name;
             const itemEquip = itemDataResponse.data.inventory_type.name;
             const itemQuality = itemDataResponse.data.quality.name;
-            const iconResponse = await axios.get(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
+            const iconResponse = await fetch(`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${newAccessToken}`);
             const iconResult = iconResponse.data.assets[0].value;
             item = {
               _id: itemId,

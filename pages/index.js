@@ -1,3 +1,12 @@
+// import Head from 'next/head'
+
+// export default function Home({ isConnected }) {
+//   return (
+//     <div className="container">
+//       Hello
+//     </div>
+//   )
+// }
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import React, { useState, useEffect } from 'react'
@@ -235,14 +244,12 @@ return (
   )
 }
 
-
-export const getServerSideProps = async () => {
+export async function getStaticProps() {
   let combinedData;
   try{
     const startTime = Date.now();
     const realmRes = await fetch('http://localhost:3000/api/realms');
     const realmData = await realmRes.json();
-
     let realmHash = {};
     realmData && realmData.map((realm) => {
       const {id, name} = realm
@@ -250,7 +257,6 @@ export const getServerSideProps = async () => {
       return;
     })
     const ahHash = {2:"Alliance",6:"Horde",7:"Neutral"};
-
     const realmKeys = Object.keys(realmHash);
     const ahKeys = Object.keys(ahHash);
     let data = {};
@@ -270,7 +276,7 @@ export const getServerSideProps = async () => {
     }))
 
     let reformattedData = {} //reformatting data, removing arrays from promise
-    data.forEach( (realmData) => {
+    data.forEach((realmData) => {
       let realmAuctionData = {}
       let realmID;
       Object.keys(realmData).forEach((realmKey) => {
@@ -281,7 +287,6 @@ export const getServerSideProps = async () => {
       });
       reformattedData[realmID] = realmAuctionData;
     })
-
     let allItems = {}; //hash that contains all the unique items found in the data.
     realmKeys.forEach( (realmKey) => {
       ahKeys.forEach( (ahKey) => {
@@ -296,7 +301,7 @@ export const getServerSideProps = async () => {
     })
     
     let newItems = false;
-    let allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //get all items from our database
+    let allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //get all items from our database
     let allItemInfoData = await allItemInfoRes.json();
     const {names} = allItemInfoData;
     const allItemKeys = Object.keys(allItems)
@@ -310,19 +315,20 @@ export const getServerSideProps = async () => {
         const itemParams = new URLSearchParams({
           itemId
         }).toString();
-        await fetch(`http://localhost:3000/api/addItem?${itemParams}`) //adds item to db
+        await fetch(`http://localhost:3000/api/item/add${itemParams}`) //adds item to db
       }
     })
     )
 
     if(newItems)
     {
-      allItemInfoRes = await fetch('http://localhost:3000/api/allItemInfo'); //recall updated data
+      allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //recall updated data
       allItemInfoData = await allItemInfoRes.json();
     }
 
-    const allRelevantItemRes = await fetch('http://localhost:3000/api/relevantItems');
+    const allRelevantItemRes = await fetch('http://localhost:3000/api/item/relevant');
     const allRelevantItemData = await allRelevantItemRes.json();
+    // console.log(allRelevantItemData);
     // console.log("HERE", allRelevantItemData.itemClasses);
     const endTime = Date.now();
     combinedData = {
@@ -354,4 +360,3 @@ export const intToGold = (int) =>
 
   return gold + "g " + silver + "s " + copper +"c"
 }
-
