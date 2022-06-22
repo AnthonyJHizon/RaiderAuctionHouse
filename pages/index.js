@@ -139,7 +139,7 @@ export default function Home({content}) {
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt =""/></a>
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt ="" height="56px" width="56px"/></a>
                   <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
@@ -151,7 +151,7 @@ export default function Home({content}) {
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt =""/></a>
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt ="" height="56px" width="56px"/></a>
                   <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
@@ -163,7 +163,7 @@ export default function Home({content}) {
               {
                 postsArr.push(
                 <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt =""/></a>
+                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt ="" height="56px" width="56px"/></a>
                   <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{names[item]}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
@@ -173,7 +173,7 @@ export default function Home({content}) {
             {
               postsArr.push(
               <div key = {item} id = {names[item]} className= {styles.postsContainer}>
-                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt =""/></a>
+                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={icons[item]} alt ="" height="56px" width="56px"/></a>
                 <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{names[item]}</a>
                 <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
               </div>)
