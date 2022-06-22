@@ -3,6 +3,7 @@ const getAccessToken = require("../../utils/getAccessToken");
 const connectToDatabase = require("../../utils/dbConnect");
 
 export default async function getAuctions(req,res) {
+    await connectToDatabase();
     let auctionData = {}
     let econnreset = false;
     let limit = 0;
@@ -11,7 +12,6 @@ export default async function getAuctions(req,res) {
     }
     do{
       try{
-        await connectToDatabase();
         const startTime = Date.now();
         const response = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.realmKey}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
         const data = await response.json();

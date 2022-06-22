@@ -4,9 +4,9 @@ const getRelevantTradeGoodItemInfo = require("../../../utils/getRelevantTradeGoo
 const connectToDatabase = require("../../../utils/dbConnect");
 
 export default async function getRelevevantItems(req,res) {
+    await connectToDatabase();
     let relevantItems = {};
     try {
-        await connectToDatabase();
         const gemItemData = await getRelevantGemItemInfo();
         const consumableItemData = await getRelevantConsumableItemInfo();
         const tradeGoodItemData = await getRelevantTradeGoodItemInfo();

@@ -2,9 +2,9 @@ const getAllItemInfo = require('../../../utils/getAllItemInfo');
 const connectToDatabase = require("../../../utils/dbConnect");
 
 export default async function getAllItems(req,res) {
+    await connectToDatabase();
     let allItemNameAndIcon = {};
     try {
-        await connectToDatabase();
         const startTime = Date.now();
         const allItemInfoData = await getAllItemInfo();
         let allItemName = {};

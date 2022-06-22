@@ -3,9 +3,9 @@ const getAccessToken = require("../../utils/getAccessToken");
 const connectToDatabase = require("../../utils/dbConnect");
 
 export default async function getRealms(req,res) {
+    await connectToDatabase();
     let realmData = [];
     try{
-      await connectToDatabase();
       const response = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
       const data = await response.json();
       const realms = data.results;
@@ -19,7 +19,6 @@ export default async function getRealms(req,res) {
     }
     catch (error) {
       try{
-        await connectToDatabase();
         const newAccessToken = await refreshToken();
         const response = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${newAccessToken}`);
         const data = await response.json();
