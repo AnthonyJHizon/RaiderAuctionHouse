@@ -26,7 +26,7 @@ export default async function getRealms(req,res) {
           const newAccessToken = await refreshToken();
           try{
             await connectToDatabase();
-            const response = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${await getAccessToken()}`);
+            const response = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${newAccessToken}`);
             const data = await response.json();
             const realms = data.results;
             realms && realms.forEach(realm => {

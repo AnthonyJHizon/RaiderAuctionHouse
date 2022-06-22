@@ -39,9 +39,9 @@ export default async function getAuctions(req,res) {
           if(error.response.status === 401)
           {
             //assume access token expired
+            await connectToDatabase();
             const newAccessToken = await refreshToken();
             try{
-                await connectToDatabase();
                 const response = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${req.query.realmKey}/auctions/${req.query.ahKey}?namespace=dynamic-classic-us&access_token=${newAccessToken}`);
                 const data = await response.json();
                 const minPriceHash = {};
@@ -82,7 +82,7 @@ export default async function getAuctions(req,res) {
         }
         else //unknown error
         {
-          console.log(error)
+          console.log("HEREREREREREREREREEEEEEEEEEEERERER",error);
         }
       }
     } while(econnreset && limit < 10);

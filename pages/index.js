@@ -244,7 +244,7 @@ return (
   )
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   let combinedData;
   try{
     const startTime = Date.now();
@@ -276,7 +276,7 @@ export async function getServerSideProps() {
     }))
 
     let reformattedData = {} //reformatting data, removing arrays from promise
-    data.forEach( (realmData) => {
+    data.forEach((realmData) => {
       let realmAuctionData = {}
       let realmID;
       Object.keys(realmData).forEach((realmKey) => {
