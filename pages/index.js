@@ -233,7 +233,7 @@ return (
           <div className={styles.dropdownContainer}>
             {filterArr}
           </div>
-          <h1>Last Updated: {lastModified} </h1>
+          <h1>Last Update: {lastModified} </h1>
           <h1>{filterIndicator}</h1>
           {postsArr}
         </div>

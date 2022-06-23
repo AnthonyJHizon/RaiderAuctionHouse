@@ -27,7 +27,7 @@ export default async function getAuctions(req,res) {
             }
             }
         })
-        // auctionData.lastModified = response.headers.date;
+        auctionData.lastModified = response.headers.get('last-modified');
         auctionData.items = minPriceHash
         const endTime = Date.now();
         console.log(`Elapsed time ${endTime - startTime}`)
@@ -50,7 +50,7 @@ export default async function getAuctions(req,res) {
               }
           }
           })
-          // auctionData.lastModified = response.headers.date;
+          auctionData.lastModified = response.headers.get('last-modified');
           auctionData.items = minPriceHash
           const endTime = Date.now();
           console.log(`Elapsed time ${endTime - startTime}`)
