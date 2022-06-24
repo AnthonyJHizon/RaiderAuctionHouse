@@ -12,7 +12,6 @@ module.exports = async function formatAuctionData(data, lastModified) {
         }
         }
     })
-    console.log(lastModified);
     auctionData.items = minPriceHash;
     auctionData.lastModified = lastModified;
     return auctionData;
