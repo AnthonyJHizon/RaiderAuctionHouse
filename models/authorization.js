@@ -7,6 +7,6 @@ const authorizationSchema = new mongoose.Schema({
   }
 })
 
-const Authorization = mongoose.models.Authorization || mongoose.model("Authorization", authorizationSchema);
+const Authorization = mongoose?.models?.Authorization || mongoose.model("Authorization", authorizationSchema);
 
 module.exports = Authorization;

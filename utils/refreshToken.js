@@ -1,9 +1,11 @@
 const updateAuthorization = require("./updateAuthorization");
+const connectToDatabase = require("./dbConnect");
 
 module.exports = async () => {
   const url = "https://us.battle.net/oauth/token";
   let newToken = null;
   try{
+    await connectToDatabase();
     const response = await fetch(url, {
       method: 'POST',
       body: "grant_type=client_credentials",
@@ -12,7 +14,6 @@ module.exports = async () => {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     });
-      // params,authOptions);
     const result = await response.json();
     newToken = result.access_token;
   }

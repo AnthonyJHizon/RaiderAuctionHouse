@@ -11,7 +11,10 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import React, { useState, useEffect } from 'react'
-
+import getAccessToken from '../utils/getAccessToken'
+import refreshToken from '../utils/refreshToken'
+import formatRealmData from '../utils/formatRealmData'
+import formatAuctionData from '../utils/formatAuctionData'
 
 export default function Home({content}) {
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
@@ -247,10 +250,18 @@ return (
 
 export async function getStaticProps() {
   let combinedData;
+  let errorRes;
   try{
     const startTime = Date.now();
-    const realmRes = await fetch('http://localhost:3000/api/realms');
-    const realmData = await realmRes.json();
+    const accessToken = await getAccessToken();
+    const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    let realmData = await realmRes.json();
+    realmData = await formatRealmData(realmData);
     let realmHash = {};
     realmData && realmData.map((realm) => {
       const {id, name} = realm
@@ -261,19 +272,24 @@ export async function getStaticProps() {
     const realmKeys = Object.keys(realmHash);
     const ahKeys = Object.keys(ahHash);
     let data = {};
+    let timeout = 0;
     data = realmKeys && await Promise.all(realmKeys.map(async (realmKey) => {
+      timeout += 50;
+      await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
       let auctionHouseData = ahKeys && await Promise.all(ahKeys.map(async (ahKey) => {
-        const auctionParams = new URLSearchParams({
-          realmKey,
-          ahKey,
-        }).toString();
-        const auctionRes =  auctionParams && await fetch(`http://localhost:3000/api/auctions?${auctionParams}`);
+        const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realmKey}/auctions/${ahKey}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        errorRes = auctionRes;
         const auctionData = await auctionRes.json();
-        return auctionData 
+        return formatAuctionData(auctionData, auctionRes.headers.get("last-modified")); 
       }))
       const realmData = {}
       realmData[realmKey] = auctionHouseData;
-      return realmData
+      return realmData;
     }))
 
     let reformattedData = {} //reformatting data, removing arrays from promise
@@ -287,7 +303,7 @@ export async function getStaticProps() {
         realmID = realmKey;
       });
       reformattedData[realmID] = realmAuctionData;
-    })
+    })  
     let allItems = {}; //hash that contains all the unique items found in the data.
     realmKeys.forEach( (realmKey) => {
       ahKeys.forEach( (ahKey) => {
@@ -342,6 +358,7 @@ export async function getStaticProps() {
     console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
+    console.log(errorRes);
     console.log('Error getting data', error);
   }
 
