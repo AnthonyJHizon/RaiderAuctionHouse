@@ -10,11 +10,15 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import React, { useState, useEffect } from 'react'
 import getAccessToken from '../utils/getAccessToken'
 import refreshToken from '../utils/refreshToken'
 import formatRealmData from '../utils/formatRealmData'
 import formatAuctionData from '../utils/formatAuctionData'
+import addItemInfo from '../utils/addItemInfo';
+import getAllItemInfo from '../utils/getAllItemInfo'
+import getAllRelevantItemInfo from '../utils/getAllRelevantItemInfo'
+import React, { useState, useEffect } from 'react'
+
 
 export default function Home({content}) {
   const {realms, auctionHouses, data, allItemInfo, relevantItems} = content;
@@ -318,8 +322,7 @@ export async function getStaticProps() {
     })
     
     let newItems = false;
-    let allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //get all items from our database
-    let allItemInfoData = await allItemInfoRes.json();
+    let allItemInfoData = await getAllItemInfo();
     const {names} = allItemInfoData;
     const allItemKeys = Object.keys(allItems)
     allItems && await Promise.all(allItemKeys.map( async (itemId) => { //go through all itemIds found in all the auction data and check if item is in our database
@@ -329,24 +332,15 @@ export async function getStaticProps() {
         {
           newItems = true;
         }
-        const itemParams = new URLSearchParams({
-          itemId
-        }).toString();
-        await fetch(`http://localhost:3000/api/item/add${itemParams}`) //adds item to db
+        await addItemInfo(itemId) //adds item to db
       }
     })
     )
 
-    if(newItems)
-    {
-      allItemInfoRes = await fetch('http://localhost:3000/api/item/all'); //recall updated data
-      allItemInfoData = await allItemInfoRes.json();
-    }
+    if(newItems) allItemInfoData = await getAllItemInfo();
+  
 
-    const allRelevantItemRes = await fetch('http://localhost:3000/api/item/relevant');
-    const allRelevantItemData = await allRelevantItemRes.json();
-    // console.log(allRelevantItemData);
-    // console.log("HERE", allRelevantItemData.itemClasses);
+    const allRelevantItemData = await getAllRelevantItemInfo();
     const endTime = Date.now();
     combinedData = {
       realms: realmHash,
