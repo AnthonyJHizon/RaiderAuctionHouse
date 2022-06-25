@@ -35,9 +35,6 @@ export default function Home({content}) {
   const [searchInput, setSearchInput] = useState();
   const [submitSearchInput, setSubmitSearchInput] = useState();
   const [searchItems, setSearchItems] = useState();
-  // const [totalItems, setTotalItems] = useState();
-  // const [uniqueCount, setUniqueCount] = useState();
-  // const [isLoading, setIsLoading] = useState();
 
   useEffect(() => {
     async function setData(){
@@ -45,7 +42,7 @@ export default function Home({content}) {
         const searchParams = new URLSearchParams({
           submitSearchInput
         }).toString();
-        const searchItemRes = await fetch(`http://localhost:3000/api/item/search?${searchParams}`);
+        const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
         setSearchItems(searchItemData);
         setItemClassFilter();
@@ -57,16 +54,6 @@ export default function Home({content}) {
   }
   setData();
   },[data, realm, auctionHouse, submitSearchInput]);
-
-  // console.log(itemClassFilter);
-  // console.log(itemSubclassFilter);
-  // console.log(names);
-  // console.log(realms)
-  // console.log(auctionHouse)
-  // console.log(data)
-  // console.log(relevantItems);
-  // console.log(gems);
-  // console.log(consumables);
 
   let realmsArr = [];
   const realmKeys = Object.keys(realms);
@@ -86,9 +73,7 @@ export default function Home({content}) {
   })
 
   let filterArr = [];
-  // console.log(itemClasses);
-  // console.log(consumableSubclasses);
-  // console.log(gems);
+
   filterArr.push(
     <div key = "All Items" className= {styles.dropdown}>
       <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator(), setSearchItems(), setSubmitSearchInput()}}>All Items</button>
@@ -191,7 +176,6 @@ export default function Home({content}) {
     })
   }
   postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
-  // console.log(postsArr[0].key);
   if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
     postsArr.push(
       <div key = "None" className= {styles.postsContainer}>
@@ -252,12 +236,22 @@ return (
   )
 }
 
+export const intToGold = (int) =>
+{
+  const valueArr = int.toString().split(".");
+  const gold = valueArr[0]
+  const silver = valueArr[1].substr(0,2);
+  const copper = valueArr[1]. substr(2)
+
+  return gold + "g " + silver + "s " + copper +"c"
+}
+
 export async function getStaticProps() {
   let combinedData;
   let errorRes;
   try{
     const startTime = Date.now();
-    const accessToken = await getAccessToken();
+    const accessToken = await refreshToken();
     const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
       method: 'GET',
       headers: {
@@ -357,17 +351,8 @@ export async function getStaticProps() {
   }
   return {
     props: {
-      content: combinedData
+      content: combinedData,
     },
+    revalidate: 300, //revalidate every 5 minutes
   }
-}
-
-export const intToGold = (int) =>
-{
-  const valueArr = int.toString().split(".");
-  const gold = valueArr[0]
-  const silver = valueArr[1].substr(0,2);
-  const copper = valueArr[1]. substr(2)
-
-  return gold + "g " + silver + "s " + copper +"c"
 }
