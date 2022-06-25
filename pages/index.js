@@ -41,12 +41,12 @@ export default function Home({content}) {
         const searchParams = new URLSearchParams({
           submitSearchInput
         }).toString();
-        const searchItemRes = await fetch(`http://localhost:3000/api/searchedItems?${searchParams}`);
+        const searchItemRes = await fetch(`http://localhost:3000/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
         setSearchItems(searchItemData);
         setItemClassFilter();
         setItemSubclassFilter();
-        setFilterIndicator("Item containing: \""+submitSearchInput+"\"");
+        setFilterIndicator("Search: \""+submitSearchInput+"\"");
       }
       setLastMod(data[realm][auctionHouse].lastModified);
       setListings(data[realm][auctionHouse].items);
@@ -361,7 +361,6 @@ export async function getStaticProps() {
     console.log(errorRes);
     console.log('Error getting data', error);
   }
-  console.log(combinedData);
   return {
     props: {
       content: combinedData
