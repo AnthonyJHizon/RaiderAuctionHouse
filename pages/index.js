@@ -361,7 +361,7 @@ export async function getStaticProps() {
     console.log(errorRes);
     console.log('Error getting data', error);
   }
-
+  console.log(combinedData);
   return {
     props: {
       content: combinedData
