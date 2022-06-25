@@ -1,12 +1,12 @@
-const getRelevantGemItemInfo = require("../../../utils/getRelevantGemItemInfo");
-const getRelevantConsumableItemInfo = require("../../../utils/getRelevantConsumableItemInfo");
-const getRelevantTradeGoodItemInfo = require("../../../utils/getRelevantTradeGoodItemInfo");
-const connectToDatabase = require("../../../utils/dbConnect");
+const getRelevantGemItemInfo = require("./getRelevantGemItemInfo");
+const getRelevantConsumableItemInfo = require("./getRelevantConsumableItemInfo");
+const getRelevantTradeGoodItemInfo = require("./getRelevantTradeGoodItemInfo");
+const connectToDatabase = require("./dbConnect");
 
-export default async function getRelevevantItems(req,res) {
+export default async function getRelevevantItems() {
+    await connectToDatabase();
     let relevantItems = {};
     try {
-        await connectToDatabase();
         const gemItemData = await getRelevantGemItemInfo();
         const consumableItemData = await getRelevantConsumableItemInfo();
         const tradeGoodItemData = await getRelevantTradeGoodItemInfo();
@@ -56,9 +56,9 @@ export default async function getRelevevantItems(req,res) {
         relevantItems["consumableSubclasses"] = consumableSubclasses;
         relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
         relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"]
+        return relevantItems;
     }
     catch (error) {
         console.log(error);
     }
-    res.json(relevantItems);
 }
