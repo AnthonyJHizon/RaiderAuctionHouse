@@ -283,7 +283,7 @@ export async function getStaticProps() {
         });
         errorRes = auctionRes;
         const auctionData = await auctionRes.json();
-        return formatAuctionData(auctionData, auctionRes.headers.get("last-modified")); 
+        return formatAuctionData(auctionData, auctionRes.headers.get("date")); 
       }))
       const realmData = {}
       realmData[realmKey] = auctionHouseData;
