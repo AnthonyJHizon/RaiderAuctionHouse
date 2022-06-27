@@ -301,38 +301,31 @@ export async function getStaticProps() {
         realmID = realmKey;
       });
       reformattedData[realmID] = realmAuctionData;
-    })  
+    })
+
+    let newItems = false;
+    let allItemInfoData = await getAllItemInfo();
+    const { names } = allItemInfoData;
     let allItems = {}; //hash that contains all the unique items found in the data.
     realmKeys.forEach( (realmKey) => {
       ahKeys.forEach( (ahKey) => {
-        Object.keys(reformattedData[realmKey][ahKey].items).forEach((itemId) => {
+        Object.keys(reformattedData[realmKey][ahKey].items).forEach(async (itemId) => {
             if(!allItems[itemId])
             {
               allItems[itemId] = itemId;
+              if(!names[itemId]) //item not found in our database add item.
+              {
+                if(!newItems)
+                {
+                  newItems = true;
+                }
+                await addItemInfo(itemId) //adds item to db
+              }
             }
           }
         )
       })
     })
-    
-    let newItems = false;
-    let allItemInfoData = await getAllItemInfo();
-    const {names} = allItemInfoData;
-    const allItemKeys = Object.keys(allItems)
-    allItems && await Promise.all(allItemKeys.map( async (itemId) => { //go through all itemIds found in all the auction data and check if item is in our database
-      if(!names[itemId]) //item not found in our database add item.
-      {
-        if(!newItems)
-        {
-          newItems = true;
-        }
-        await addItemInfo(itemId) //adds item to db
-      }
-    })
-    )
-
-    if(newItems) allItemInfoData = await getAllItemInfo();
-  
 
     const allRelevantItemData = await getAllRelevantItemInfo();
     const endTime = Date.now();
@@ -353,6 +346,6 @@ export async function getStaticProps() {
     props: {
       content: combinedData,
     },
-    revalidate: 300, //revalidate every 5 minutes
+    revalidate: 180, //revalidate every 3 minutes
   }
 }
