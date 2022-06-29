@@ -16,5 +16,5 @@ export default async function getSearchedItems(req,res) {
     catch (error) {
         console.log(error);
     } 
-    res.json(searchItems)
+    return res.json(searchItems)
 }
