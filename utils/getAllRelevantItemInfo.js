@@ -5,12 +5,14 @@ const connectToDatabase = require("./dbConnect");
 
 export default async function getRelevevantItems() {
     await connectToDatabase();
-    let relevantItems = {};
+    let relevantItemData = {};
     try {
         const gemItemData = await getRelevantGemItemInfo();
         const consumableItemData = await getRelevantConsumableItemInfo();
         const tradeGoodItemData = await getRelevantTradeGoodItemInfo();
-    
+
+        let relevantItems = {};
+        let relevantItemInfo = {};
         let relevantGems = {};
         let relevantConsumables = {};
         let relevantTradeGoods = {};
@@ -22,6 +24,10 @@ export default async function getRelevevantItems() {
           if(gem.itemLevel >= 70)
           {
             relevantGems[gem._id] = gem.itemSubclass;
+            relevantItemInfo[gem._id] = {
+              "name": gem.name,
+              "icon": gem.iconURL,
+            }
           }
           if(!gemSubclasses[gem.itemSubclass])
           {
@@ -31,7 +37,11 @@ export default async function getRelevevantItems() {
         consumableItemData.forEach((consumable) => {
           if(consumable.itemLevel >= 60)
           {
-            relevantConsumables[consumable._id] =  consumable.itemSubclass;
+            relevantConsumables[consumable._id] = consumable.itemSubclass;
+            relevantItemInfo[consumable._id] = {
+              "name": consumable.name,
+              "icon": consumable.iconURL
+            }
           }
           if(!consumableSubclasses[consumable.itemSubclass])
           {
@@ -42,6 +52,10 @@ export default async function getRelevevantItems() {
           if(tradeGood.itemLevel >= 60)
           {
             relevantTradeGoods[tradeGood._id] = tradeGood.itemSubclass;
+            relevantItemInfo[tradeGood._id] = {
+              "name": tradeGood.name,
+              "icon": tradeGood.iconURL
+            }
           }
           if(!tradeGoodSubclasses[tradeGood.itemSubclass])
           {
@@ -55,8 +69,10 @@ export default async function getRelevevantItems() {
         relevantItems["gemSubclasses"] = gemSubclasses;
         relevantItems["consumableSubclasses"] = consumableSubclasses;
         relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
-        relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"]
-        return relevantItems;
+        relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"];
+        relevantItemData["relevantItems"] = relevantItems;
+        relevantItemData["relevantItemInfo"] = relevantItemInfo;
+        return relevantItemData;
     }
     catch (error) {
         console.log(error);
