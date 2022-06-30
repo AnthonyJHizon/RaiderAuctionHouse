@@ -8,9 +8,12 @@ export default async function getSearchedItems(req,res) {
         return res.status(400).json(null);
     }
     try {
-        const searchItemData = await getSearchedItemInfo(req.query.submitSearchInput);
+        const searchItemData = await getSearchedItemInfo(req.query.item);
         searchItemData.forEach((item) => {
-        searchItems[item._id] = item.name ;
+            searchItems[item._id] = {
+                "name": item.name,
+                "icon": item.iconURL
+            }
         })
     }
     catch (error) {

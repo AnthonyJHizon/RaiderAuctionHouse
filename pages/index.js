@@ -38,11 +38,13 @@ export default function Home({content}) {
   useEffect(() => {
     async function setData(){
       if(submitSearchInput) {
+        const item = submitSearchInput;
         const searchParams = new URLSearchParams({
-          submitSearchInput
+          item
         }).toString();
         const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
+        console.log(searchItemData);
         setSearchItems(searchItemData);
         setItemClassFilter();
         setItemSubclassFilter();
@@ -120,23 +122,23 @@ export default function Home({content}) {
     Object.keys(listings).forEach(async (item) => {
       if(item)
       {
-        if(relevantItemInfo[item])
+        if(searchItems)
+        {
+          if(searchItems[item])
+          {
+            postsArr.push(
+            <div key = {item} id = {searchItems[item].name} className= {styles.postsContainer}> 
+              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="56px" width="56px"/></a>
+              <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
+              <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+            </div>)
+          }
+        }
+        else if(relevantItemInfo[item])
         {
           if(relevantItemInfo[item].name !== "Deprecated")
           {
-            if(searchItems)
-            {
-              if(searchItems[item])
-              {
-                postsArr.push(
-                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="56px" width="56px"/></a>
-                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
-                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                </div>)
-              }
-            }
-            else if(itemClassFilter && itemSubclassFilter)
+            if(itemClassFilter && itemSubclassFilter)
             {
               if(itemClassFilter[item] === itemSubclassFilter)
               {
