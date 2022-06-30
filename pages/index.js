@@ -38,11 +38,13 @@ export default function Home({content}) {
   useEffect(() => {
     async function setData(){
       if(submitSearchInput) {
+        const item = submitSearchInput;
         const searchParams = new URLSearchParams({
-          submitSearchInput
+          item
         }).toString();
         const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
+        console.log(searchItemData);
         setSearchItems(searchItemData);
         setItemClassFilter();
         setItemSubclassFilter();
@@ -120,23 +122,23 @@ export default function Home({content}) {
     Object.keys(listings).forEach(async (item) => {
       if(item)
       {
-        if(relevantItemInfo[item])
+        if(searchItems)
+        {
+          if(searchItems[item])
+          {
+            postsArr.push(
+            <div key = {item} id = {searchItems[item].name} className= {styles.postsContainer}> 
+              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="56px" width="56px"/></a>
+              <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
+              <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+            </div>)
+          }
+        }
+        else if(relevantItemInfo[item])
         {
           if(relevantItemInfo[item].name !== "Deprecated")
           {
-            if(searchItems)
-            {
-              if(searchItems[item])
-              {
-                postsArr.push(
-                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="56px" width="56px"/></a>
-                  <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
-                  <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-                </div>)
-              }
-            }
-            else if(itemClassFilter && itemSubclassFilter)
+            if(itemClassFilter && itemSubclassFilter)
             {
               if(itemClassFilter[item] === itemSubclassFilter)
               {
@@ -272,7 +274,7 @@ export async function getStaticProps() {
     let data = {};
     let timeout = 0;
     data = realmKeys && await Promise.all(realmKeys.map(async (realmKey) => {
-      timeout += 50;
+      timeout += 100;
       await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
       let auctionHouseData = ahKeys && await Promise.all(ahKeys.map(async (ahKey) => {
         const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realmKey}/auctions/${ahKey}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
@@ -302,30 +304,6 @@ export async function getStaticProps() {
       });
       reformattedData[realmID] = realmAuctionData;
     })
-
-    // let newItems = false;
-    // let allItemInfoData = await getAllItemInfo();
-    // const { names } = allItemInfoData;
-    // let allItems = {}; //hash that contains all the unique items found in the data.
-    // realmKeys.forEach( (realmKey) => {
-    //   ahKeys.forEach( (ahKey) => {
-    //     Object.keys(reformattedData[realmKey][ahKey].items).forEach(async (itemId) => {
-    //         if(!allItems[itemId])
-    //         {
-    //           allItems[itemId] = itemId;
-    //           if(!names[itemId]) //item not found in our database add item.
-    //           {
-    //             if(!newItems)
-    //             {
-    //               newItems = true;
-    //             }
-    //             await addItemInfo(itemId) //adds item to db
-    //           }
-    //         }
-    //       }
-    //     )
-    //   })
-    // })
 
     const allRelevantItemData = await getAllRelevantItemInfo();
     combinedData = {
