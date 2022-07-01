@@ -1,12 +1,3 @@
-// import Head from 'next/head'
-
-// export default function Home({ isConnected }) {
-//   return (
-//     <div className="container">
-//       Hello
-//     </div>
-//   )
-// }
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
@@ -75,11 +66,11 @@ export default function Home({content}) {
 
   let filterArr = [];
 
-  filterArr.push(
-    <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator(), setSearchItems(), setSubmitSearchInput()}}>All Items</button>
-    </div>
-  )
+  // filterArr.push(
+  //   <div key = "All Items" className= {styles.dropdown}>
+  //     <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator(), setSearchItems(), setSubmitSearchInput()}}>All Items</button>
+  //   </div>
+  // )
   itemClasses.forEach( (itemClass) => {
     let subclassArr = [];
     let subclasses = {};
