@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import getToken from '../utils/getToken'
+import getAccessToken from '../utils/getAccessToken'
 import formatRealmData from '../utils/formatRealmData'
 import formatAuctionData from '../utils/formatAuctionData'
 import getAllRelevantItemInfo from '../utils/getAllRelevantItemInfo'
@@ -227,7 +227,7 @@ export async function getStaticProps() {
   let errorRes;
   try{
     const startTime = Date.now();
-    const accessToken = await getToken();
+    const accessToken = await getAccessToken();
     const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
       method: 'GET',
       headers: {

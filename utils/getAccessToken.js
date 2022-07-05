@@ -1,4 +1,3 @@
-const updateAuthorization = require("./updateAuthorization");
 const connectToDatabase = require("./dbConnect");
 
 module.exports = async () => {
@@ -20,6 +19,5 @@ module.exports = async () => {
   catch (error) {
     console.log('Error getting data', error);
   }
-  updateAuthorization(newToken);
   return newToken;
 }
