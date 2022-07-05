@@ -1,13 +1,23 @@
-const Authorization = require("../models/authorization");
 const connectToDatabase = require("./dbConnect");
 
 module.exports = async () => {
+  const url = "https://us.battle.net/oauth/token";
+  let newToken = null;
   try{
     await connectToDatabase();
-    const results = await Authorization.find({})
-    return results.length > 0 ? results[0].accessToken : null
+    const response = await fetch(url, {
+      method: 'POST',
+      body: "grant_type=client_credentials",
+      headers: {
+        'Authorization': "Basic "+ Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString("base64"),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+    const result = await response.json();
+    newToken = result.access_token;
   }
   catch (error) {
     console.log('Error getting data', error);
   }
+  return newToken;
 }
