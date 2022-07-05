@@ -1,12 +1,3 @@
-// import Head from 'next/head'
-
-// export default function Home({ isConnected }) {
-//   return (
-//     <div className="container">
-//       Hello
-//     </div>
-//   )
-// }
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
@@ -75,11 +66,6 @@ export default function Home({content}) {
 
   let filterArr = [];
 
-  filterArr.push(
-    <div key = "All Items" className= {styles.dropdown}>
-      <button className = {styles.filterDropBtn} onClick={() => {setItemClassFilter(), setItemSubclassFilter(), setFilterIndicator(), setSearchItems(), setSubmitSearchInput()}}>All Items</button>
-    </div>
-  )
   itemClasses.forEach( (itemClass) => {
     let subclassArr = [];
     let subclasses = {};
@@ -127,8 +113,8 @@ export default function Home({content}) {
           if(searchItems[item])
           {
             postsArr.push(
-            <div key = {item} id = {searchItems[item].name} className= {styles.postsContainer}> 
-              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="56px" width="56px"/></a>
+            <div key = {item} id = {searchItems[item].name} className= {styles.postContainer}> 
+              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
               <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
               <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
             </div>)
@@ -143,8 +129,8 @@ export default function Home({content}) {
               if(itemClassFilter[item] === itemSubclassFilter)
               {
                 postsArr.push(
-                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postsContainer}> 
-                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="56px" width="56px"/></a>
+                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postContainer}> 
+                  <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
                   <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
@@ -155,21 +141,12 @@ export default function Home({content}) {
               if(itemClassFilter[item])
               {
                 postsArr.push(
-                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postsContainer}>
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="56px" width="56px"/></a>
+                <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postContainer}>
+                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
                   <a className = {styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
                 </div>)
               }
-            }
-            else
-            {
-              postsArr.push(
-              <div key = {item} id = {relevantItemInfo[item].name} className= {styles.postsContainer}>
-                <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="56px" width="56px"/></a>
-                <a className = {styles.itemName}style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
-                <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-              </div>)
             }
           }
         }
@@ -180,8 +157,8 @@ export default function Home({content}) {
   postsArr.sort((a,b) => (a.props.id).localeCompare(b.props.id)); //change sort to id, some items had same name for different ids, change key back to itemId
   if(postsArr.length < 1) { //No items were pushed into the array, no items matched the filter
     postsArr.push(
-      <div key = "None" className= {styles.postsContainer}>
-        <p>No Items Found</p>
+      <div key = "None" className={styles.postContainer}>
+        <h1>No Items Found</h1>
       </div>)
   }
 
@@ -205,34 +182,34 @@ return (
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.main}>
-          <div className={styles.dropdownContainer}>
-          <div className= {styles.dropdown}>
-            <button className ={styles.dropbtn}>Realm</button>
-            <div className={styles.dropdownContent}>
-                {realmsArr}
-            </div>
+        <div className={styles.dropdownContainer}>
+        <div className= {styles.dropdown}>
+          <button className ={styles.dropbtn}>Realm</button>
+          <div className={styles.dropdownContent}>
+              {realmsArr}
           </div>
-          <div className= {styles.dropdown}>
-            <button className ={styles.dropbtn}>Auction House</button>
-            <div className={styles.dropdownContent}>
-                {ahArr}
-            </div>
-          </div>
-          <input id = "searchInput" type="text" placeholder="Search" onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => handleSearchSubmit(e)}></input>
-          <button onClick={(e) => handleSearchSubmit(e)}>Search</button>
         </div>
-          <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
-          <div className={styles.dropdownContainer}>
-            {filterArr}
+        <div className= {styles.dropdown}>
+          <button className ={styles.dropbtn}>Auction House</button>
+          <div className={styles.dropdownContent}>
+              {ahArr}
           </div>
-          <h1>Last Update: {lastModified} </h1>
-          <h1>{filterIndicator}</h1>
+        </div>
+        <input id = "searchInput" type="text" placeholder="Search" className={styles.searchBar} onChange={(e) => setSearchInput(e.target.value)} onKeyPress={(e) => handleSearchSubmit(e)}></input>
+      </div>
+        <h1>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
+        <div className={styles.dropdownContainer}>
+          {filterArr}
+        </div>
+        <h1>Last Update: {lastModified}</h1>
+        <h2>{filterIndicator}</h2>
+        <div className={styles.postsContainer}>
           {postsArr}
         </div>
       </main>
 
       <footer className={styles.footer}>
+          <p><a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>, 2022</p>
       </footer>
     </div>
   )
