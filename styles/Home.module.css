@@ -3,9 +3,9 @@
   flex-direction: column;
   align-items: center;
   background-image: url('../public/background.jpg');
-  background-repeat:no-repeat;
-  background-size: fill;
-  background-position:center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .main {
