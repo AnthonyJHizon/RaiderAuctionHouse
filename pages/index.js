@@ -111,7 +111,7 @@ export default function Home({content}) {
           {
             postsArr.push(
             <div key={item} id={searchItems[item].name} className={styles.postContainer}> 
-              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
+              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="100%" width="100%"/></a>
               <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
               <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
             </div>)
