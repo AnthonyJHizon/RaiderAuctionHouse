@@ -3,9 +3,10 @@
   flex-direction: column;
   align-items: center;
   background-image: url('../public/background.jpg');
-  background-repeat:no-repeat;
-  background-size: fill;
-  background-position:center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
 }
 
 .main {
@@ -16,63 +17,41 @@
   background-color: white;
   opacity: .925;
   font-weight: bold;
+  height: 100%;
+  width: 50vw;
 }
 
-.footer {
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 25px;
-  width: 100%;
-  bottom: 0;
-  background-color: black;
-  color: white;
-}
-
-.footer a {
-  color: white;
-}
-
-.dropdownContainer
+.dropDownContainer
 {
-  flex-direction: row;
-  justify-content: space-between;
+  display: inline-flex;
   background-color: #04AA6D;
+  height: 5%;
+  width: 100%;  
 }
-/* Dropdown Button */
-.dropbtn {
+
+.dropDown, .searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 33.33%;
+}
+
+.dropDownBtn {
   background-color: #04AA6D;
   color: white;
-  padding: 16px;
-  font-size: 16px;
-  width: 270px;
   border: none;
+  font-size: clamp(.45rem, 1.15vw, .9rem);
+  width: 100%;
 }
 
 .searchBar {
-  width: 270px;
-  font-size: 20px;
+  height: 50%;
+  font-size: clamp(.45rem, 1.15vw, .9rem);
+  width: 80%;
 }
 
-
-.filterDropBtn {
-  background-color: #04AA6D;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  width: 270px;
-}
-
-/* The container <div> - needed to position the dropdown content */
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-/* Dropdown Content (Hidden by Default) */
-.dropdownContent {
+.dropDownContent {
   display: none;
   position: absolute;
   right: 0px;
@@ -85,32 +64,45 @@
   text-align: center;
 }
 
-/* Links inside the dropdown */
-.dropdownContent div {
+.dropDownContent div {
   color: black;
   width: 100%;
   text-decoration: none;
   display: block;
 }
 
-/* Change color of dropdown links on hover */
-.dropdownContent div:hover {
+.dropDownContent div:hover {
   background-color: #ddd;
 }
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdownContent {
+.dropDown:hover .dropDownContent {
   display: block;
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn, .dropdown:hover .filterDropBtn {
+.dropDown:hover .dropbtn, .dropDown:hover .filterDropBtn {
   background-color: #3e8e41;
 }
 
+.headerContainer {
+  display:flex;
+  align-items: center;
+  height: 5%;
+  justify-content: center;
+  text-align: center;
+}
+
+.header1 {
+  font-size: clamp(.8rem, 2.25vw, 1.8rem);
+}
+
+.header2 {
+  font-size: clamp(.6rem, 2vw, 1.6rem);
+}
+
+
 .postsContainer {
-  height: 600px;
-  width: 800px;
+  height: 72.895%;
+  width: 100%;
   overflow-y: auto;
   background-color: whitesmoke;
   color: black;
@@ -121,6 +113,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  font-size: clamp(.6rem, 1vw, 2rem);
   width: 100%;
   height: 58px;
 }
@@ -128,4 +122,26 @@
 .itemName {
   margin: auto;
   color: black;
+}
+
+.footer {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5%;
+  width: 100%;
+  bottom: 0;
+  background-color: black;
+  color: white;
+}
+
+.footer a {
+  color: white;
+}
+
+@media only screen and (max-width: 1000px) {
+  .main {
+    width: 80%;
+  }
 }
