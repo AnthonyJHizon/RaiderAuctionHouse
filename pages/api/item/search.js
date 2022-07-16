@@ -1,13 +1,13 @@
 const getSearchedItemInfo = require('../../../utils/getSearchedItemInfo');
 const connectToDatabase = require("../../../utils/dbConnect");
 
-export default async function getSearchedItems(req,res) {
-    await connectToDatabase();
-    let searchItems = {};
+export default async function handler(req,res) {
     if(!req.query) {
-        return res.status(400).json(null);
+        res.status(400).json({erorr: "Bad Request"});
     }
     try {
+        await connectToDatabase();
+        let searchItems = {};
         const searchItemData = await getSearchedItemInfo(req.query.item);
         searchItemData.forEach((item) => {
             searchItems[item._id] = {
@@ -15,9 +15,11 @@ export default async function getSearchedItems(req,res) {
                 "icon": item.iconURL
             }
         })
+        console.log("HERE");
+        res.status(200).json(searchItems);
     }
     catch (error) {
         console.log(error);
+        res.status(500).json({error: "Server Error"});
     } 
-    return res.json(searchItems)
 }
