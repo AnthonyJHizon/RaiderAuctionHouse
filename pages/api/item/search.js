@@ -15,7 +15,6 @@ export default async function handler(req,res) {
                 "icon": item.iconURL
             }
         })
-        console.log("HERE");
         res.status(200).json(searchItems);
     }
     catch (error) {
