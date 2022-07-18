@@ -1,10 +1,9 @@
 const connectToDatabase = require("./dbConnect");
 
 module.exports = async () => {
-  const url = "https://us.battle.net/oauth/token";
-  let newToken = null;
   try{
     await connectToDatabase();
+    const url = "https://us.battle.net/oauth/token";
     const response = await fetch(url, {
       method: 'POST',
       body: "grant_type=client_credentials",
@@ -14,10 +13,10 @@ module.exports = async () => {
       }
     });
     const result = await response.json();
-    newToken = result.access_token;
+    const newToken = result.access_token;
+    return newToken;
   }
   catch (error) {
     return error;
   }
-  return newToken;
 }
