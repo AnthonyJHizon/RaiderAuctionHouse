@@ -232,7 +232,6 @@ export const intToGold = (int) =>
 
 export async function getStaticProps() {
   let combinedData;
-  let errorRes;
   try{
     const startTime = Date.now();
     const accessToken = await getAccessToken();
@@ -265,7 +264,6 @@ export async function getStaticProps() {
             'Content-Type': 'application/json',
           },
         });
-        errorRes = auctionRes;
         const auctionData = await auctionRes.json();
         return formatAuctionData(auctionData, auctionRes.headers.get("date")); 
       }))
@@ -298,7 +296,6 @@ export async function getStaticProps() {
     console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
-    console.log(errorRes);
     console.log('Error getting data', error);
   }
   return {

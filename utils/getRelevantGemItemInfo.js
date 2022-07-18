@@ -6,6 +6,6 @@ module.exports = async function getAllGemItemInfo() {
     return results;
   }
   catch (error) {
-    console.log('Error getting data', error);
+    return error;
   }
 }

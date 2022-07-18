@@ -6,6 +6,6 @@ module.exports = async function getItemAllInfo() {
     return results;
   }
   catch (error) {
-    console.log('Error getting data', error);
+    return error;
   }
 }

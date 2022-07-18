@@ -75,6 +75,6 @@ export default async function getRelevevantItems() {
         return relevantItemData;
     }
     catch (error) {
-        console.log(error);
+        return error;
     }
 }
