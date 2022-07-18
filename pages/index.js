@@ -233,7 +233,6 @@ export const intToGold = (int) =>
 export async function getStaticProps() {
   let combinedData;
   try{
-    const startTime = Date.now();
     const accessToken = await getAccessToken();
     const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
       method: 'GET',
@@ -292,8 +291,6 @@ export async function getStaticProps() {
       data: reformattedData,
       relevantItemData: allRelevantItemData,
     }
-    const endTime = Date.now();
-    console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
     console.log('Error getting data', error);
