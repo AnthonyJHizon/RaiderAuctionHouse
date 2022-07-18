@@ -109,12 +109,15 @@ export default function Home({content}) {
         {
           if(searchItems[item])
           {
-            postsArr.push(
-            <div key={item} id={searchItems[item].name} className={styles.postContainer}> 
-              <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
-              <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
-              <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
-            </div>)
+            if(searchItems[item].name !== "Deprecated")
+            {
+              postsArr.push(
+              <div key={item} id={searchItems[item].name} className={styles.postContainer}> 
+                <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
+                <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
+                <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
+              </div>)
+            }
           }
         }
         else if(relevantItemInfo[item])
@@ -232,9 +235,7 @@ export const intToGold = (int) =>
 
 export async function getStaticProps() {
   let combinedData;
-  let errorRes;
   try{
-    const startTime = Date.now();
     const accessToken = await getAccessToken();
     const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
       method: 'GET',
@@ -265,7 +266,6 @@ export async function getStaticProps() {
             'Content-Type': 'application/json',
           },
         });
-        errorRes = auctionRes;
         const auctionData = await auctionRes.json();
         return formatAuctionData(auctionData, auctionRes.headers.get("date")); 
       }))
@@ -294,11 +294,8 @@ export async function getStaticProps() {
       data: reformattedData,
       relevantItemData: allRelevantItemData,
     }
-    const endTime = Date.now();
-    console.log(`Elapsed time ${endTime - startTime}`)
   }
   catch (error) {
-    console.log(errorRes);
     console.log('Error getting data', error);
   }
   return {

@@ -17,7 +17,7 @@ module.exports = async () => {
     newToken = result.access_token;
   }
   catch (error) {
-    console.log('Error getting data', error);
+    return error;
   }
   return newToken;
 }

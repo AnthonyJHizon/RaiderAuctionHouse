@@ -6,6 +6,6 @@ module.exports = async function getAllConsumableItemInfo() {
     return results;
   }
   catch (error) {
-    console.log('Error getting data', error);
+    return error;
   }
 }
