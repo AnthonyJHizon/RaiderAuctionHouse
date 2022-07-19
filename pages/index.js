@@ -32,7 +32,6 @@ export default function Home({content}) {
         }).toString();
         const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
-        console.log(searchItemData);
         setSearchItems(searchItemData);
         setItemClassFilter();
         setItemSubclassFilter();
@@ -48,7 +47,7 @@ export default function Home({content}) {
   const realmKeys = Object.keys(realms);
   realmKeys.forEach((realmKey) => {
     realmsArr.push(
-      <div key={realms[realmKey]} onClick={() => setRealm(realmKey) }>{realms[realmKey]}</div>
+      <div key={realms[realmKey].name} onClick={() => setRealm(realmKey) }>{realms[realmKey].name}</div>
     )
   })
   realmsArr.sort((a,b) => a.key.localeCompare(b.key)); //sort the array based on div key which is the name of the realm
@@ -200,7 +199,7 @@ return (
           </div>
         </div>
         <div className={styles.headerContainer}>
-          <h1 className={styles.header1}>{realms[realm]+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
+          <h1 className={styles.header1}>{realms[realm].name+" "+auctionHouses[auctionHouse]+" Auction House"}</h1>
         </div>
         <div className={styles.dropDownContainer}>
           {filterArr}
@@ -247,8 +246,10 @@ export async function getStaticProps() {
     realmData = await formatRealmData(realmData);
     let realmHash = {};
     realmData && realmData.map((realm) => {
-      const {id, name} = realm
-      realmHash[id] = name
+      const {id, name, timeZone} = realm
+      realmHash[id] = { 
+        "name": name,
+        "timeZone": timeZone, }
       return;
     })
     const ahHash = {2:"Alliance",6:"Horde",7:"Neutral"};
@@ -256,7 +257,7 @@ export async function getStaticProps() {
     const ahKeys = Object.keys(ahHash);
     let data = {};
     let timeout = 0;
-    data = realmKeys && await Promise.all(realmKeys.map(async (realmKey) => {
+    data = realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
       timeout += 100;
       await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
       let auctionHouseData = ahKeys && await Promise.all(ahKeys.map(async (ahKey) => {
@@ -267,7 +268,7 @@ export async function getStaticProps() {
           },
         });
         const auctionData = await auctionRes.json();
-        return formatAuctionData(auctionData, auctionRes.headers.get("date")); 
+        return formatAuctionData(auctionData,  new Date(auctionRes.headers.get("date")).toLocaleString('en-US', { timeZone: realmHash[realmKey].timeZone }).toString()); 
       }))
       const realmData = {}
       realmData[realmKey] = auctionHouseData;

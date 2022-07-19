@@ -4,13 +4,13 @@ const getRelevantTradeGoodItemInfo = require("./getRelevantTradeGoodItemInfo");
 const connectToDatabase = require("./dbConnect");
 
 export default async function getRelevevantItems() {
-    await connectToDatabase();
-    let relevantItemData = {};
     try {
+        await connectToDatabase();
         const gemItemData = await getRelevantGemItemInfo();
         const consumableItemData = await getRelevantConsumableItemInfo();
         const tradeGoodItemData = await getRelevantTradeGoodItemInfo();
 
+        let relevantItemData = {};
         let relevantItems = {};
         let relevantItemInfo = {};
         let relevantGems = {};
