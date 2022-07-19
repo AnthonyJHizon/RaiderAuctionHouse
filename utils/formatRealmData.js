@@ -4,8 +4,9 @@ module.exports = async function formatRealmData(data) {
     realms.forEach(realm => {
       if(realm.data.population.name.en_US != "Low") {
         realmData.push({
-        id: realm.data.id,
-        name: realm.data.realms[0].name.en_US
+          id: realm.data.id,
+          name: realm.data.realms[0].name.en_US,
+          timeZone: realm.data.realms[0].timezone,
         })
       }
     });
