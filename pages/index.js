@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import getAccessToken from '../utils/getAccessToken'
-import formatRealmData from '../utils/formatRealmData'
-import formatAuctionData from '../utils/formatAuctionData'
-import getAllRelevantItemInfo from '../utils/getAllRelevantItemInfo'
+import getAccessToken from '../utils/db/getAccessToken'
+import getAllRelevantItemInfo from '../utils/db/getAllRelevantItemInfo'
+import formatRealmData from '../utils/formatData/realm'
+import formatAuctionData from '../utils/formatData/auction'
 import React, { useState, useEffect } from 'react'
 
 

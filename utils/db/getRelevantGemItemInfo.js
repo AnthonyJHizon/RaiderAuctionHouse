@@ -1,4 +1,4 @@
-const Item = require("../models/item");
+const Item = require("../../models/item");
 
 module.exports = async function getAllGemItemInfo() {
   try{

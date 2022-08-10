@@ -1,5 +1,5 @@
 const getAccessToken = require('./getAccessToken')
-const Item = require('../models/item');
+const Item = require('../../models/item');
 
 module.exports = async function addItemInfo(itemId) { //adds itemInfo then returns the added item
   let item = null;
