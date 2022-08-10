@@ -48,7 +48,6 @@ export async function getStaticPaths() {
       }))
     })
   })
-  console.log("END", paths);
   return { paths, fallback: false }
 }
 
