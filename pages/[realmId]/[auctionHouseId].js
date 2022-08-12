@@ -55,7 +55,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({params}) {
   let data = {}; 
   const accessToken = await getAccessToken();
-  const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/4388?namespace=dynamic-classic-us&locale=en_US&access_token=${accessToken}`, {
+  const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${params.realmId}?namespace=dynamic-classic-us&locale=en_US&access_token=${accessToken}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
