@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router'
+import cache from "memory-cache"
 import getAccessToken from '../../utils/db/getAccessToken'
 import getAllRelevantItemInfo from '../../utils/db/getAllRelevantItemInfo'
 import pathsFormatRealmData from '../../utils/formatData/paths/realm'
 import pathsFormatAuctionHousesData from '../../utils/formatData/paths/auctionHouse'
 import propsFormatRealmData from '../../utils/formatData/props/realm'
 import propsFormatAuctionData from '../../utils/formatData/props/auction'
+import cacheRealms from '../../utils/cache/realm'
+import cacheAuctionHouses from '../../utils/cache/auctionHouse'
 
 export default function Auctions({data}) {
     const router = useRouter();
@@ -13,70 +16,45 @@ export default function Auctions({data}) {
 }
 
 
+async function fetchWithCache(key) {
+  const value = cache.get(key);
+  if (value) {
+      console.log("Did not fetch");
+      return value;
+  } else {
+    switch(key) {
+      case "realms":
+        return await cacheRealms();
+      case "auctionHouses":
+        return await cacheAuctionHouses();
+      default:
+        break;
+    }
+  }
+}
+
 export async function getStaticPaths() {
-  const accessToken = await getAccessToken();
-  const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  let realmData = await realmRes.json();
-  realmData = await pathsFormatRealmData(realmData);
-
-  const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realmData[0]}/auctions/index?namespace=dynamic-classic-us&locale=en_US&access_token=${accessToken}`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    },
-  })
-
-  let auctionHouses = await auctionRes.json();
-  auctionHouses = await pathsFormatAuctionHousesData(auctionHouses);
-
+  let realms = await fetchWithCache("realms");
+  let auctionHouses = await fetchWithCache("auctionHouses");
   let paths = [];
-
-  realmData.forEach((realm) => {
-    auctionHouses.forEach((auctionHouse) => {
-      (
-        paths.push({
-          params: 
-          {
-            realmId: realm,
-            auctionHouseId: auctionHouse,
-          }
-      }))
+  Object.keys(realms).forEach((realm) => {
+    Object.keys(auctionHouses).forEach((auctionHouse) => {
+      paths.push({
+        params: 
+        {
+          realmId: realm,
+          auctionHouseId: auctionHouse,
+        }
+      })
     })
   })
   return { paths, fallback: false }
 }
 
 export async function getStaticProps({params}) {
-  let data = {}; 
-  const accessToken = await getAccessToken();
-  const realmRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${params.realmId}?namespace=dynamic-classic-us&locale=en_US&access_token=${accessToken}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  let realmData = await realmRes.json();
-  realmData = await propsFormatRealmData(realmData);
-
-  const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${params.realmId}/auctions/${params.auctionHouseId}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  let auctionData = await auctionRes.json();
-  auctionData = await propsFormatAuctionData(auctionData);
-
-  data["realm"] = realmData.realm;
-  data["lastModified"] = new Date(auctionRes.headers.get('last-modified')).toLocaleString('en-US', { timeZone: realmData.timeZone }).toString();
-  data["auctionHouse"] = auctionData.auctionHouse;
-  data["auctions"] = auctionData.items;
+  let data = {};
+  let auctionHouses = await fetchWithCache("auctionHouses");
+  let realms = await fetchWithCache("realms");
   return {
     props: {
       data,
