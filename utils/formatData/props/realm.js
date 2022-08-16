@@ -1,6 +1,7 @@
-module.exports = async function Realm(data) {
+module.exports = async function Realm(data, self) {
   let realmData = {};
-  realmData["realm"] = data.realms[0].name;
-  realmData["timeZone"] = data.realms[0].timezone;
+  Object.keys(data).forEach(realm => {
+    if(!realm != self) realmData[realm] = data[realm].name;
+  });
   return realmData;
 }

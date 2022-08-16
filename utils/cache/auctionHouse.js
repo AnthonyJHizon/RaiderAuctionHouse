@@ -1,6 +1,6 @@
 import cache from "memory-cache"
 import getAccessToken from '../../utils/db/getAccessToken'
-import pathsFormatAuctionHousesData from '../../utils/formatData/paths/auctionHouse'
+import cacheFormatAuctionHousesData from '../formatData/cache/auctionHouse'
 
 module.exports = async function AuctionHouse() {
   console.log("fetching");
@@ -13,6 +13,6 @@ module.exports = async function AuctionHouse() {
   })
 
   let auctionHouseData = await auctionHouseRes.json();
-  auctionHouseData = await pathsFormatAuctionHousesData(auctionHouseData);
+  auctionHouseData = await cacheFormatAuctionHousesData(auctionHouseData);
   return cache.put("auctionHouses", auctionHouseData);
 }

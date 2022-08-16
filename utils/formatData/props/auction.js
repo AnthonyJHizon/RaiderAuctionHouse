@@ -1,5 +1,4 @@
 module.exports = async function Auction(data) {
-  let auctionData = {};
   let minPriceHash = {};
   data.auctions && data.auctions.forEach(item => {
   if(!minPriceHash[item.item.id] && item.buyout > 0){
@@ -12,7 +11,5 @@ module.exports = async function Auction(data) {
     }
   }
   })
-  auctionData["items"] = minPriceHash;
-  auctionData["auctionHouse"] = data.name.en_US;
-  return auctionData;
+  return minPriceHash;
 }
