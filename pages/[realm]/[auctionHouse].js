@@ -71,7 +71,6 @@ export async function getStaticProps({params}) {
   data["realms"] = await propsFormatRealmData(realms, params.realm);
   data["auctionHouses"] = await propsFormatAuctionHouseData(auctionHouses, params.auctionHouse);
   data["items"] = await getAllRelevantItemInfo();
-  console.log(data);
   return {
     props: {
       data,
