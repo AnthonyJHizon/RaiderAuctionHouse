@@ -70,7 +70,7 @@ export default async function getRelevevantItems() {
         relevantItems["consumableSubclasses"] = consumableSubclasses;
         relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
         relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"];
-        relevantItemData["relevantItems"] = relevantItems;
+        relevantItemData["relevantItemSubclasses"] = relevantItems;
         relevantItemData["relevantItemInfo"] = relevantItemInfo;
         return relevantItemData;
     }

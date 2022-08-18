@@ -10,8 +10,8 @@ import React, { useState, useEffect } from 'react'
 
 export default function Home({content}) {
   const {realms, auctionHouses, data, relevantItemData} = content;
-  const {relevantItems, relevantItemInfo} = relevantItemData;
-  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItems;
+  const {relevantItemSubclasses, relevantItemInfo} = relevantItemData;
+  const {gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses} = relevantItemSubclasses;
   const [realm, setRealm] = useState(4728); //default realm set to benediction
   const [auctionHouse, setAH] = useState(2); //default ah set to alliance
   const [listings, setListings] = useState(data[realm][auctionHouse].items);
@@ -111,7 +111,7 @@ export default function Home({content}) {
             if(searchItems[item].name !== "Deprecated")
             {
               postsArr.push(
-              <div key={item} id={searchItems[item].name} className={styles.postContainer}> 
+              <div key={item} id={searchItems[item].name} className={styles.auctionContainer}> 
                 <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
                 <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
                 <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
@@ -128,7 +128,7 @@ export default function Home({content}) {
               if(itemClassFilter[item] === itemSubclassFilter)
               {
                 postsArr.push(
-                <div key={item} id={relevantItemInfo[item].name} className={styles.postContainer}> 
+                <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}> 
                   <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
                   <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
@@ -140,7 +140,7 @@ export default function Home({content}) {
               if(itemClassFilter[item])
               {
                 postsArr.push(
-                <div key={item} id={relevantItemInfo[item].name} className={styles.postContainer}>
+                <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}>
                   <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
                   <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>Buyout Price: {intToGold(listings[item].toFixed(4))}</p> 
@@ -210,7 +210,7 @@ return (
         <div className={styles.headerContainer}>
           <h2 className={styles.header2}>{filterIndicator}</h2>
         </div>
-        <div className={styles.postsContainer}>
+        <div className={styles.auctionsContainer}>
           {postsArr}
         </div>
       </main>
