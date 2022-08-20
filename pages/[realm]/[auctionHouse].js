@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -11,45 +12,46 @@ import propsFormatRealmData from '../../utils/formatData/props/realm'
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse'
 import cacheRealms from '../../utils/cache/realm'
 import cacheAuctionHouses from '../../utils/cache/auctionHouse'
-import React, { useState, useEffect } from 'react'
 
 export default function Auctions({data}) {
   const router = useRouter();
-  const { realm, auctionHouse } = router.query;
+  const { realm, auctionHouse, filter, subclass, search} = router.query;
   const { self, realms, auctionHouses, auctions, relevantItems } = data;
   const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
   const { gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses } = relevantItemSubclasses;
-
-  const [itemClassFilter, setItemClassFilter] = useState(consumables);
-  const [itemSubclassFilter, setItemSubclassFilter] = useState("Flask");
-  const [filterIndicator, setFilterIndicator] = useState("Filter: Consumables, Flask");
+  
   const [searchInput, setSearchInput] = useState();
   const [submitSearchInput, setSubmitSearchInput] = useState();
   const [searchItems, setSearchItems] = useState();
 
+  let filterIndicator = filter ? filter : subclass ? subclass : search ? search : "";
+  let itemClassFilter = consumables; //default view set to show consumable items
+
   useEffect(() => {
-    async function setData(){
-      if(submitSearchInput) {
-        const item = submitSearchInput;
+    async function setData() {
+      if(search) {
+        const item = search;
         const searchParams = new URLSearchParams({
           item
         }).toString();
         const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
         const searchItemData = await searchItemRes.json();
         setSearchItems(searchItemData);
-        setItemClassFilter();
-        setItemSubclassFilter();
-        setFilterIndicator("Search: \""+submitSearchInput+"\"");
+      }
+      else {
+        setSearchItems();
       }
   }
   setData();
-  },[submitSearchInput]);
+  },[submitSearchInput, search]);
 
   let realmsArr = [];
   const realmKeys = Object.keys(realms);
   realmKeys.forEach((realmKey) => {
+    let queryParams = {};
+    if(filter) queryParams["filter"] = filter; if(subclass) queryParams["subclass"] = subclass; if(search) queryParams["search"] = search;
     realmsArr.push(
-      <Link key={realmKey} href={`../${realmKey}/${auctionHouse}`}>
+      <Link key={realmKey} href={{pathname: `../${realmKey}/${auctionHouse}`, query: queryParams }}>
         <div>{realms[realmKey]}</div>
       </Link>
     )
@@ -59,8 +61,10 @@ export default function Auctions({data}) {
   let auctionHouseArr = [];
   const auctionHouseKeys = Object.keys(auctionHouses);
   auctionHouseKeys.forEach((auctionHouseKey) => {
+    let queryParams = {};
+    if(filter) queryParams["filter"] = filter; if(subclass) queryParams["subclass"] = subclass; if(search) queryParams["search"] = search;
     auctionHouseArr.push(
-      <Link key={auctionHouseKey} href={`../${realm}/${auctionHouseKey}`}>
+      <Link key={auctionHouseKey} href={{pathname: `../${realm}/${auctionHouseKey}`, query: queryParams }}>
         <div>{auctionHouses[auctionHouseKey]}</div>
       </Link>
     )
@@ -71,46 +75,49 @@ export default function Auctions({data}) {
       if(searchInput)
       {
         setSubmitSearchInput(searchInput);
+        router.push(`../${realm}/${auctionHouse}?search=${searchInput}`);
       }
     }
-    console.log(searchInput);
   }
 
   let filterArr = [];
 
-  itemClasses.forEach( (itemClass) => {
+  itemClasses.forEach((itemClass) => {
     let subclassArr = [];
     let subclasses = {};
-    let itemClassFilter = {};
     switch (itemClass)
     {
       case "Gems":
         subclasses = gemSubclasses;
-        itemClassFilter = gems;
+        if(filter && filter === "Gems") itemClassFilter = gems;
         break;
       case "Consumables":
         subclasses = consumableSubclasses;
-        itemClassFilter = consumables;
+        if(filter && filter === "Consumables") itemClassFilter = consumables;
         break;
       case "Trade Goods":
         subclasses = tradeGoodSubclasses;
-        itemClassFilter = tradeGoods;
+        if(filter && filter === "Trade Goods") itemClassFilter = tradeGoods;
         break;
     }
     Object.keys(subclasses).forEach((subclass) => {
       subclassArr.push(
-        <div key={subclass} onClick={() => {setItemSubclassFilter(subclass), setItemClassFilter(itemClassFilter),  setFilterIndicator("Filter: "+itemClass+", "+subclass), setSearchItems(), setSubmitSearchInput()} }>{subclass}</div>
+        <Link key={subclass} href={{ pathname: `../${realm}/${auctionHouse}`, query: { filter: itemClass, subclass: subclass} }}>
+          <div key={subclass}>{subclass}</div>
+        </Link>
       )
     })
     subclassArr.sort((a,b) => a.key.localeCompare(b.key));
     filterArr.push (
       <div key={itemClass} className={styles.dropDown}>
-        <button className={styles.dropDownBtn} onClick={() => {setItemClassFilter(itemClassFilter), setItemSubclassFilter(), setFilterIndicator("Filter: "+itemClass), setSearchItems(), setSubmitSearchInput()}}>
-          {itemClass}
-        </button>
+        <Link key={itemClass} href={{ pathname: `../${realm}/${auctionHouse}`, query: { filter: itemClass} }}>
+          <button className={styles.dropDownBtn}>
+            {itemClass}
+          </button>
+        </Link>
         <div className={styles.dropDownContent}>
             {subclassArr}
-          </div>
+        </div>
       </div>
     )
   })
@@ -139,9 +146,9 @@ export default function Auctions({data}) {
         {
           if(relevantItemInfo[item].name !== "Deprecated")
           {
-            if(itemClassFilter && itemSubclassFilter)
+            if(itemClassFilter && subclass)
             {
-              if(itemClassFilter[item] === itemSubclassFilter)
+              if(itemClassFilter[item] === subclass)
               {
                 auctionsArr.push(
                 <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}> 
@@ -221,17 +228,16 @@ export default function Auctions({data}) {
 }
 
 
-export const intToGold = (int) =>
-{
-  const valueArr = int.toString().split(".");
-  const gold = valueArr[0]
-  const silver = valueArr[1].substr(0,2);
-  const copper = valueArr[1]. substr(2)
+export function intToGold(int) 
+  {
+    const valueArr = int.toString().split(".");
+    const gold = valueArr[0]
+    const silver = valueArr[1].substr(0,2);
+    const copper = valueArr[1]. substr(2)
+    return gold + "g " + silver + "s " + copper +"c"
+  }
 
-  return gold + "g " + silver + "s " + copper +"c"
-}
-
-async function fetchWithCache(key) {
+export async function fetchWithCache(key) {
   const value = cache.get(key);
   if (value) {
       return value;
