@@ -1,7 +1,7 @@
-module.exports = async function Realm(data, self) {
+module.exports = async function Realm(data) {
   let realmData = {};
   Object.keys(data).forEach(realm => {
-    if(realm != self) realmData[realm] = data[realm].name;
+    realmData[realm] = data[realm].name;
   });
   return realmData;
 }

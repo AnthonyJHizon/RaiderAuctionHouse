@@ -4,12 +4,12 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import styles from '../../styles/Home.module.css'
-import cache from "memory-cache"
 import getAccessToken from '../../utils/db/getAccessToken'
 import getAllRelevantItemInfo from '../../utils/db/getAllRelevantItemInfo'
 import propsFormatAuctionData from '../../utils/formatData/props/auction'
 import propsFormatRealmData from '../../utils/formatData/props/realm'
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse'
+import cache from "memory-cache"
 import cacheRealms from '../../utils/cache/realm'
 import cacheAuctionHouses from '../../utils/cache/auctionHouse'
 
@@ -179,7 +179,7 @@ export default function Auctions({data}) {
   return (
     <div className={styles.container}>
     <Head>
-      <title>Raider Auction House</title>
+      <title>{self.realm} {self.auctionHouse}</title>
       <meta name="description" content="Search through filtered TBC Classic auction house data."/>
       <script src="https://wow.zamimg.com/widgets/power.js" async></script>
       <link type="text/css" href="https://wow.zamimg.com/css/basic.css?16" rel="stylesheet"></link> 
@@ -272,10 +272,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}) {
-  const accessToken = await getAccessToken();
   let data = {};
   let auctionHouses = await fetchWithCache("auctionHouses");
   let realms = await fetchWithCache("realms");
+  const accessToken = await getAccessToken();
   const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[params.realm].id}/auctions/${auctionHouses[params.auctionHouse].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
     method: 'GET',
     headers: {
@@ -287,11 +287,13 @@ export async function getStaticProps({params}) {
   data["self"] = { 
     realm: realms[params.realm].name,
     auctionHouse: auctionHouses[params.auctionHouse].name,
-    lastModified: new Date(auctionRes.headers.get("last-modified")).toLocaleString('en-US', { timeZone: realms[params.realm].timeZone }).toString(),
+    lastModified: new Date(auctionRes.headers.get("last-modified")).toLocaleString('en-US', { timeZone: realms[params.realm].timeZone }).toString(), //get last modified header and convert to realm's timezone
   }
   data["auctions"] = auctionData;
-  data["realms"] = await propsFormatRealmData(realms, params.realm);
-  data["auctionHouses"] = await propsFormatAuctionHouseData(auctionHouses, params.auctionHouse);
+  data["realms"] = await propsFormatRealmData(realms);
+  delete data["realms"][params.realm]; //remove current realm from list of navigatable realms
+  data["auctionHouses"] = await propsFormatAuctionHouseData(auctionHouses);
+  delete data["auctionHouses"][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
   data["relevantItems"] = await getAllRelevantItemInfo();
   return {
     props: {
