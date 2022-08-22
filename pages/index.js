@@ -1,13 +1,37 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import Image from 'next/image'
+import Link from 'next/link'
 import getAccessToken from '../utils/db/getAccessToken'
 import cache from "memory-cache"
 import cacheRealms from '../utils/cache/realm'
 import cacheAuctionHouses from '../utils/cache/auctionHouse'
-import propsFormatRealmData from '../utils/formatData/props/realm'
-import propsFormatAuctionHouseData from '../utils/formatData/props/auctionHouse'
 
-export default function Home({}) {
+export default function Home({data}) {
+  let realmsArr = [];
+  Object.keys(data).forEach((realm) => {
+    let auctionHouses = [];
+    Object.keys(data[realm].auctionHouses).forEach((auctionHouse) => {
+      auctionHouses.push(
+        <div className={styles.auctionHouseContainer}>
+          <Image src={`/auctionHouses/${auctionHouse}.webp`} layout="fill" objectFit="cover" alt="" style={{zIndex: "-1"}}/> 
+          <Link href={`/${realm}/${auctionHouse}`}> 
+            <div className={styles.auctionHouseBody}>{data[realm].auctionHouses[auctionHouse].numAuctions} Auctions</div>
+          </Link>
+        </div>
+      )
+    })
+    realmsArr.push(
+      <div key={realm} className={styles.card}>
+        <Image src={`/cards/${realm}.webp`} layout="fill" objectFit="cover" alt="" style={{zIndex: "-1"}}/> 
+        <div className={styles.cardTitle}>{data[realm].realm}</div>
+        <div div className={styles.auctionHousesContainer}> 
+          {auctionHouses}
+        </div>
+      </div>
+    )
+  })
+  realmsArr.sort((a,b) => a.key.localeCompare(b.key)); 
 return (
     <div className={styles.container}>
       <Head>
@@ -16,7 +40,7 @@ return (
       </Head>
 
       <main className={styles.main}>
-
+        {realmsArr}
       </main>
 
       <footer className={styles.footer}>
@@ -26,7 +50,7 @@ return (
   )
 }
 
-export async function fetchWithCache(key) {
+    export async function fetchWithCache(key) {
   const value = cache.get(key);
   if (value) {
       return value;
@@ -54,7 +78,7 @@ export async function getStaticProps() {
 
   let timeout = 0;
   realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
-    timeout += 100;
+    timeout += 150;
     await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
     let auctionHouseData = auctionHouseKeys && await Promise.all(auctionHouseKeys.map(async (auctionHouseKey) => {
       const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
@@ -78,9 +102,6 @@ export async function getStaticProps() {
       auctionHouses: auctionHousesData,
     }
   }))
-
-  console.log(data.benediction.auctionHouses);
-
   return {
     props: {
       data,
