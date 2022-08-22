@@ -55,7 +55,7 @@
   background: black;
   height: 10%;
   overflow: hidden;
-  font-size: clamp(.6rem, 1vw, 2rem);
+  font-size: clamp(.4rem, .9vw, 2rem);
 }
 
 .auctionHouseBody {
