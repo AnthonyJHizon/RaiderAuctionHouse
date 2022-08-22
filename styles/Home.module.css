@@ -10,118 +10,61 @@
 }
 
 .main {
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 50px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: black;
-  background-color: white;
-  opacity: .925;
-  font-weight: bold;
-  height: 100%;
-  width: 50vw;
-}
-
-.dropDownContainer
-{
-  display: inline-flex;
-  background-color: #04AA6D;
-  height: 5%;
-  width: 100%;  
-}
-
-.dropDown, .searchContainer {
-  position: relative;
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  width: 33.33%;
-}
-
-.dropDownBtn {
-  background-color: #04AA6D;
+  gap: 2.5%;
+  align-items: center;
+  background-color: white;
+  opacity: .9;
+  font-weight: bold;
+  height: 100vh;
+  width: 50vw;
+  overflow-y: scroll;
+  font-size: clamp(.2rem, 1vw, 2rem);
   color: white;
-  border: none;
-  font-size: clamp(.45rem, 1.15vw, .9rem);
-  width: 100%;
 }
 
-.searchBar {
-  height: 50%;
-  font-size: clamp(.45rem, 1.15vw, .9rem);
-  width: 80%;
+.card {
+  width: 20.5%;
+  height: 25%;
+  position: relative;
 }
 
-.dropDownContent {
-  display: none;
-  position: absolute;
-  right: 0px;
-  left: 0px;
-  top: 100%;
-  width: 100%;
-  background-color: #f1f1f1;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  text-align: center;
+.auctionHousesContainer {
+  top:35%;
+  position: relative;
+  height: 58%;
 }
 
-.dropDownContent div {
-  color: black;
-  width: 100%;
-  text-decoration: none;
-  display: block;
+.auctionHouseContainer {
+  position: relative;
+  height: 31.5%;
+  opacity: .8;
 }
 
-.dropDownContent div:hover {
-  background-color: #ddd;
-}
-
-.dropDown:hover .dropDownContent {
-  display: block;
-}
-
-.dropDown:hover .dropbtn, .dropDown:hover .filterDropBtn {
-  background-color: #3e8e41;
-}
-
-.headerContainer {
+.cardTitle {
   display:flex;
   align-items: center;
-  height: 5%;
   justify-content: center;
   text-align: center;
+  background: black;
+  height: 10%;
+  overflow: hidden;
+  font-size: clamp(.4rem, .9vw, 2rem);
 }
 
-.header1 {
-  font-size: clamp(.8rem, 2.25vw, 1.8rem);
-}
-
-.header2 {
-  font-size: clamp(.6rem, 2vw, 1.6rem);
-}
-
-
-.postsContainer {
-  height: 72.895%;
-  width: 100%;
-  overflow-y: auto;
-  background-color: whitesmoke;
-  color: black;
-}
-
-.postContainer{
-  display: flex;
-  flex-direction: row;
+.auctionHouseBody {
+  display:flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+  height: 100%;
   font-size: clamp(.6rem, 1vw, 2rem);
-  width: 100%;
-  height: 58px;
-}
-
-.itemName {
-  margin: auto;
-  color: black;
 }
 
 .footer {
@@ -136,8 +79,32 @@
   color: white;
 }
 
+.card:hover {
+  box-shadow: rgba(6, 173, 25, 0.56) 4px 22px 70px 4px;
+}
+
+.auctionHouseContainer:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
 .footer a {
   color: white;
+}
+
+.navbar {
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  width: 100%;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: clamp(1.2rem, 2vw, 4rem);
 }
 
 @media only screen and (max-width: 1000px) {
@@ -145,3 +112,4 @@
     width: 80%;
   }
 }
+

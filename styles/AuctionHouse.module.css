@@ -1,0 +1,162 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url('../public/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: black;
+  background-color: white;
+  opacity: .925;
+  font-weight: bold;
+  height: 95%;
+  width: 50vw;
+}
+
+.dropDownContainer
+{
+  display: inline-flex;
+  background-color: #04AA6D;
+  height: 5%;
+  width: 100%;  
+}
+
+.dropDown, .searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 33.33%;
+}
+
+.dropDownBtn {
+  background-color: #04AA6D;
+  color: white;
+  border: none;
+  font-size: clamp(.45rem, 1.15vw, .9rem);
+  width: 100%;
+  height: 100%;
+}
+
+.searchBar {
+  height: 50%;
+  font-size: clamp(.45rem, 1.15vw, .9rem);
+  width: 80%;
+}
+
+.dropDownContent {
+  display: none;
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  top: 100%;
+  width: 100%;
+  background-color: #f1f1f1;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  text-align: center;
+}
+
+.dropDownContent div {
+  color: black;
+  width: 100%;
+  text-decoration: none;
+  display: block;
+}
+
+.dropDownContent div:hover {
+  background-color: #ddd;
+}
+
+.dropDown:hover .dropDownContent {
+  display: block;
+}
+
+.dropDown:hover .dropDownBtn {
+  background-color: #3e8e41;
+}
+
+.headerContainer {
+  display:flex;
+  align-items: center;
+  height: 5%;
+  justify-content: center;
+  text-align: center;
+}
+
+.header1 {
+  font-size: clamp(.8rem, 2.25vw, 1.8rem);
+}
+
+.header2 {
+  font-size: clamp(.6rem, 2vw, 1.6rem);
+}
+
+
+.auctionsContainer {
+  height: 72.895%;
+  width: 100%;
+  overflow-y: auto;
+  background-color: whitesmoke;
+  color: black;
+}
+
+.auctionContainer{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: clamp(.6rem, 1vw, 2rem);
+  width: 100%;
+  height: 58px;
+}
+
+.itemName {
+  margin: auto;
+  color: black;
+}
+
+.navbar {
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  width: 100%;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: clamp(1.2rem, 2vw, 4rem);
+}
+.footer {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.5%;
+  width: 100%;
+  bottom: 0;
+  background-color: black;
+  color: white;
+}
+
+.footer a {
+  color: white;
+}
+
+@media only screen and (max-width: 1000px) {
+  .main {
+    width: 80%;
+  }
+}

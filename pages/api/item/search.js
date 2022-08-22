@@ -1,5 +1,5 @@
-const getSearchedItemInfo = require('../../../utils/getSearchedItemInfo');
-const connectToDatabase = require("../../../utils/dbConnect");
+const getSearchedItemInfo = require('../../../utils/db/getSearchedItemInfo');
+const connectToDatabase = require("../../../utils/db/dbConnect");
 
 export default async function handler(req,res) {
   if(!req.query) {
