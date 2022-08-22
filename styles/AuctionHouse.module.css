@@ -17,7 +17,7 @@
   background-color: white;
   opacity: .925;
   font-weight: bold;
-  height: 100%;
+  height: 95%;
   width: 50vw;
 }
 
@@ -125,6 +125,20 @@
   color: black;
 }
 
+.navbar {
+  height: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  width: 100%;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: clamp(1.2rem, 2vw, 4rem);
+}
 .footer {
   position: fixed;
   display: flex;

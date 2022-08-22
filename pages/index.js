@@ -38,7 +38,7 @@ return (
         <title>Raider Auction House</title>
         <meta name="description" content="Search through filtered TBC Classic auction house data."/>
       </Head>
-
+      <div className={styles.navbar}> <Link href="/">Raider Auction House</Link> </div>
       <main className={styles.main}>
         {realmsArr}
       </main>

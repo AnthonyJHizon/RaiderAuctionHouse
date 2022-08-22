@@ -184,7 +184,7 @@ export default function Auctions({data}) {
       <script src="https://wow.zamimg.com/widgets/power.js" async></script>
       <link type="text/css" href="https://wow.zamimg.com/css/basic.css?16" rel="stylesheet"></link> 
     </Head>
-
+    <div className={styles.navbar}> <Link href="/">Raider Auction House</Link> </div>
     <main className={styles.main}>
       <div className={styles.dropDownContainer}>
         <div className={styles.dropDown}>
