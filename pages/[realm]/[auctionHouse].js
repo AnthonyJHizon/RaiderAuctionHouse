@@ -24,7 +24,7 @@ export default function Auctions({data}) {
   const [submitSearchInput, setSubmitSearchInput] = useState();
   const [searchItems, setSearchItems] = useState();
 
-  let filterIndicator = filter ? (subclass ?  "Filter: " + filter + ", " + subclass : filter) : search ? "Search: \""+search+"\"" : "";
+  let filterIndicator = filter ? (subclass ?  "Filter: " + filter + ", " + subclass : "Filter: " + filter) : search ? "Search: \""+search+"\"" : "";
   let itemClassFilter = consumables; //default view set to show consumable items
 
   useEffect(() => {
