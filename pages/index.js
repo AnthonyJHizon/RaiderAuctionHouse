@@ -78,7 +78,7 @@ export async function getStaticProps() {
 
   let timeout = 0;
   realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
-    timeout += 150;
+    timeout += 300;
     await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
     let auctionHouseData = auctionHouseKeys && await Promise.all(auctionHouseKeys.map(async (auctionHouseKey) => {
       const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
@@ -87,10 +87,15 @@ export async function getStaticProps() {
           'Content-Type': 'application/json',
         },
       });
-      const auctionData = await auctionRes.json(); auctionData.auctions.length;
+      const auctionData = await auctionRes.json();
       let result = {}
       result["name"] = auctionHouses[auctionHouseKey].name;
-      result["numAuctions"] = auctionData.auctions.length;
+      if(typeof auctionData.auctions === 'undefined') {
+        result["numAuctions"] = 0;
+      }
+      else {
+        result["numAuctions"] = auctionData.auctions.length;
+      }
       return result;
     }))
     let auctionHousesData = {}
