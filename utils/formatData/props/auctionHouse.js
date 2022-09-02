@@ -1,7 +1,7 @@
-module.exports = async function AuctionHouse(data, self) {
+module.exports = async function AuctionHouse(data) {
   let auctionHouses = {};
   Object.keys(data).forEach(auctionHouse => {
-    if(auctionHouse != self) auctionHouses[auctionHouse] = data[auctionHouse].name;
+    auctionHouses[auctionHouse] = data[auctionHouse].name;
   })
   return auctionHouses;
 }
