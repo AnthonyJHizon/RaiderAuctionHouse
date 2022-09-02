@@ -25,7 +25,7 @@ export default function Home({data}) {
       <div key={realm} className={styles.card}>
         <Image src={`/cards/${realm}.webp`} layout="fill" objectFit="cover" alt="" style={{zIndex: "-1"}}/> 
         <div className={styles.cardTitle}>{data[realm].realm}</div>
-        <div div className={styles.auctionHousesContainer}> 
+        <div className={styles.auctionHousesContainer}> 
           {auctionHouses}
         </div>
       </div>
