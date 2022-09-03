@@ -78,7 +78,7 @@ export async function getStaticProps() {
 
   let timeout = 0;
   realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
-    timeout += 150;
+    timeout += 70;
     await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
     let auctionHouseData = auctionHouseKeys && await Promise.all(auctionHouseKeys.map(async (auctionHouseKey) => {
       const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
