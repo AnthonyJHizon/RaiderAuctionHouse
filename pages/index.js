@@ -13,7 +13,7 @@ export default function Home({data}) {
     let auctionHouses = [];
     Object.keys(data[realm].auctionHouses).forEach((auctionHouse) => {
       auctionHouses.push(
-        <Link href={`/${realm}/${auctionHouse}`}> 
+        <Link key={realm+"-"+auctionHouse} href={`/${realm}/${auctionHouse}`}> 
           <div className={styles.auctionHouseContainer}>
             <Image src={`/auctionHouses/${auctionHouse}.webp`} layout="fill" objectFit="cover" alt="" style={{zIndex: "-1"}}/> 
               <div className={styles.auctionHouseBody}>{data[realm].auctionHouses[auctionHouse].numAuctions} Auctions</div>
@@ -78,7 +78,7 @@ export async function getStaticProps() {
 
   let timeout = 0;
   realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
-    timeout += 150;
+    timeout += 70;
     await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
     let auctionHouseData = auctionHouseKeys && await Promise.all(auctionHouseKeys.map(async (auctionHouseKey) => {
       const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
