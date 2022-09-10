@@ -13,7 +13,7 @@ export default function Home({data}) {
     let auctionHouses = [];
     Object.keys(data[realm].auctionHouses).forEach((auctionHouse) => {
       auctionHouses.push(
-        <Link href={`/${realm}/${auctionHouse}`}> 
+        <Link key={realm+"-"+auctionHouse} href={`/${realm}/${auctionHouse}`}> 
           <div className={styles.auctionHouseContainer}>
             <Image src={`/auctionHouses/${auctionHouse}.webp`} layout="fill" objectFit="cover" alt="" style={{zIndex: "-1"}}/> 
               <div className={styles.auctionHouseBody}>{data[realm].auctionHouses[auctionHouse].numAuctions} Auctions</div>
