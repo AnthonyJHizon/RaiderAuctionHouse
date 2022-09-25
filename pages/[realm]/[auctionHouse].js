@@ -12,6 +12,8 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 import cache from "memory-cache"
 import cacheRealms from '../../utils/cache/realm'
 import cacheAuctionHouses from '../../utils/cache/auctionHouse'
+import getAllItem from '../../utils/db/getAllItem'
+import addItemInfo from '../../utils/db/addItemInfo'
 
 export default function Auctions({data}) {
   const router = useRouter();
@@ -272,6 +274,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}) {
+  const beg = Date.now();
   let data = {};
   let auctionHouses = await fetchWithCache("auctionHouses");
   let realms = await fetchWithCache("realms");
@@ -289,12 +292,24 @@ export async function getStaticProps({params}) {
     auctionHouse: auctionHouses[params.auctionHouse].name,
     lastModified: new Date(auctionRes.headers.get("last-modified")).toLocaleString('en-US', { timeZone: realms[params.realm].timeZone }).toString(), //get last modified header and convert to realm's timezone
   }
+
+  let allItems = await getAllItem();
+  let newItems = [];
+  Object.keys(auctionData).forEach((item) => {
+    if(!allItems.has(item)) newItems.push(item);
+  });
+  await Promise.all(newItems.map(async (itemId, index) => {
+    await new Promise(resolve => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
+    await addItemInfo(itemId);
+  }));
+
   data["auctions"] = auctionData;
   data["realms"] = await propsFormatRealmData(realms);
   delete data["realms"][params.realm]; //remove current realm from list of navigatable realms
   data["auctionHouses"] = await propsFormatAuctionHouseData(auctionHouses);
   delete data["auctionHouses"][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
   data["relevantItems"] = await getAllRelevantItemInfo();
+  console.log(Date.now() - beg);
   return {
     props: {
       data,
