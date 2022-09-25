@@ -141,8 +141,8 @@ export default function Auctions({data}) {
             {
               auctionsArr.push(
               <div key={item} id={searchItems[item].name} className={styles.auctionContainer}> 
-                <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
-                <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
+                <a  style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
+                <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlkitem="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
                 <p>{intToGold(auctions[item].toFixed(4))}</p> 
               </div>)
             }
@@ -158,8 +158,8 @@ export default function Auctions({data}) {
               {
                 auctionsArr.push(
                 <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}> 
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
-                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
+                  <a style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
+                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>{intToGold(auctions[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -170,8 +170,8 @@ export default function Auctions({data}) {
               {
                 auctionsArr.push(
                 <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}>
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
-                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
+                  <a style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
+                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>{intToGold(auctions[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -186,7 +186,7 @@ export default function Auctions({data}) {
     <div className={styles.container}>
     <Head>
       <title>{self.realm} {self.auctionHouse}</title>
-      <meta name="description" content="Search through filtered TBC Classic auction house data."/>
+      <meta name="description" content="Search through filtered WOTLK Classic auction house data."/>
       <script src="https://wow.zamimg.com/widgets/power.js" async></script>
       <link type="text/css" href="https://wow.zamimg.com/css/basic.css?16" rel="stylesheet"></link> 
     </Head>
