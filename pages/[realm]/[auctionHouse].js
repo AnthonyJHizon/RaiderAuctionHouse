@@ -278,7 +278,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}) {
-  const beg = Date.now();
   let data = {};
   let auctionHouses = await fetchWithCache("auctionHouses");
   let realms = await fetchWithCache("realms");
@@ -313,7 +312,6 @@ export async function getStaticProps({params}) {
   data["auctionHouses"] = await propsFormatAuctionHouseData(auctionHouses);
   delete data["auctionHouses"][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
   data["relevantItems"] = await getAllRelevantItemInfo();
-  console.log(Date.now() - beg);
   return {
     props: {
       data,
