@@ -20,7 +20,7 @@ export default function Auctions({data}) {
   const { realm, auctionHouse, filter, subclass, search} = router.query;
   const { self, realms, auctionHouses, auctions, relevantItems } = data;
   const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
-  const { gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses } = relevantItemSubclasses;
+  const { gems, consumables, tradeGoods, glyphs, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, glyphSubclasses, itemClasses } = relevantItemSubclasses;
   
   const [searchInput, setSearchInput] = useState();
   const [submitSearchInput, setSubmitSearchInput] = useState();
@@ -100,6 +100,10 @@ export default function Auctions({data}) {
       case "Trade Goods":
         subclasses = tradeGoodSubclasses;
         if(filter && filter === "Trade Goods") itemClassFilter = tradeGoods;
+        break;
+      case "Glyphs":
+        subclasses = glyphSubclasses;
+        if(filter && filter === "Glyphs") itemClassFilter = glyphs;
         break;
     }
     Object.keys(subclasses).forEach((subclass) => {
