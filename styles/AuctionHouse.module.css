@@ -24,7 +24,7 @@
 .dropDownContainer
 {
   display: inline-flex;
-  background-color: #04AA6D;
+  background-color: #04729e;
   height: 5%;
   width: 100%;  
 }
@@ -38,7 +38,7 @@
 }
 
 .dropDownBtn {
-  background-color: #04AA6D;
+  background-color: #04729e;
   color: white;
   border: none;
   font-size: clamp(.45rem, 1.15vw, .9rem);
@@ -81,7 +81,7 @@
 }
 
 .dropDown:hover .dropDownBtn {
-  background-color: #3e8e41;
+  background-color: #058fc5;
 }
 
 .headerContainer {

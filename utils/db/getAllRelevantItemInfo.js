@@ -1,6 +1,7 @@
 const getRelevantGemItemInfo = require("./getRelevantGemItemInfo");
 const getRelevantConsumableItemInfo = require("./getRelevantConsumableItemInfo");
 const getRelevantTradeGoodItemInfo = require("./getRelevantTradeGoodItemInfo");
+const getRelevantGlyphItemInfo = require("./getRelevantGlyphItemInfo");
 const connectToDatabase = require("./dbConnect");
 
 export default async function getRelevevantItems() {
@@ -9,6 +10,7 @@ export default async function getRelevevantItems() {
         const gemItemData = await getRelevantGemItemInfo();
         const consumableItemData = await getRelevantConsumableItemInfo();
         const tradeGoodItemData = await getRelevantTradeGoodItemInfo();
+        const glyphItemData = await getRelevantGlyphItemInfo();
 
         let relevantItemData = {};
         let relevantItems = {};
@@ -16,10 +18,12 @@ export default async function getRelevevantItems() {
         let relevantGems = {};
         let relevantConsumables = {};
         let relevantTradeGoods = {};
+        let relevantGlyphs = {};
         let gemSubclasses = {};
         let consumableSubclasses = {};
         let tradeGoodSubclasses = {};
-    
+        let glyphSubclasses = {};
+
         gemItemData.forEach((gem) => {
           if(gem.itemLevel >= 70)
           {
@@ -62,14 +66,27 @@ export default async function getRelevevantItems() {
             tradeGoodSubclasses[tradeGood.itemSubclass] = tradeGood.itemClass;  
           }
         })
+        glyphItemData.forEach((glyph) => {
+          relevantGlyphs[glyph._id] = glyph.itemSubclass;
+          relevantItemInfo[glyph._id] = {
+            "name": glyph.name,
+            "icon": glyph.iconURL
+          }
+          if(!glyphSubclasses[glyph.itemSubclass])
+          {
+            glyphSubclasses[glyph.itemSubclass] = glyph.itemClass;  
+          }
+        })
     
         relevantItems["gems"] = relevantGems;
         relevantItems["consumables"] = relevantConsumables;
         relevantItems["tradeGoods"] =  relevantTradeGoods;
+        relevantItems["glyphs"] = relevantGlyphs;
         relevantItems["gemSubclasses"] = gemSubclasses;
         relevantItems["consumableSubclasses"] = consumableSubclasses;
         relevantItems["tradeGoodSubclasses"] = tradeGoodSubclasses;
-        relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods"];
+        relevantItems["glyphSubclasses"] = glyphSubclasses;
+        relevantItems["itemClasses"] = ["Gems","Consumables","Trade Goods", "Glyphs"];
         relevantItemData["relevantItemSubclasses"] = relevantItems;
         relevantItemData["relevantItemInfo"] = relevantItemInfo;
         return relevantItemData;

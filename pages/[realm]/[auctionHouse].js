@@ -12,13 +12,15 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 import cache from "memory-cache"
 import cacheRealms from '../../utils/cache/realm'
 import cacheAuctionHouses from '../../utils/cache/auctionHouse'
+import getAllItem from '../../utils/db/getAllItem'
+import addItemInfo from '../../utils/db/addItemInfo'
 
 export default function Auctions({data}) {
   const router = useRouter();
   const { realm, auctionHouse, filter, subclass, search} = router.query;
   const { self, realms, auctionHouses, auctions, relevantItems } = data;
   const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
-  const { gems, consumables, tradeGoods, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, itemClasses } = relevantItemSubclasses;
+  const { gems, consumables, tradeGoods, glyphs, gemSubclasses, consumableSubclasses, tradeGoodSubclasses, glyphSubclasses, itemClasses } = relevantItemSubclasses;
   
   const [searchInput, setSearchInput] = useState();
   const [submitSearchInput, setSubmitSearchInput] = useState();
@@ -99,6 +101,10 @@ export default function Auctions({data}) {
         subclasses = tradeGoodSubclasses;
         if(filter && filter === "Trade Goods") itemClassFilter = tradeGoods;
         break;
+      case "Glyphs":
+        subclasses = glyphSubclasses;
+        if(filter && filter === "Glyphs") itemClassFilter = glyphs;
+        break;
     }
     Object.keys(subclasses).forEach((subclass) => {
       subclassArr.push(
@@ -135,8 +141,8 @@ export default function Auctions({data}) {
             {
               auctionsArr.push(
               <div key={item} id={searchItems[item].name} className={styles.auctionContainer}> 
-                <a  style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
-                <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
+                <a  style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={searchItems[item].icon} alt ="" height="58px" width="58px"/></a>
+                <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlkitem="+item} target="_blank" rel="noreferrer">{searchItems[item].name}</a>
                 <p>{intToGold(auctions[item].toFixed(4))}</p> 
               </div>)
             }
@@ -152,8 +158,8 @@ export default function Auctions({data}) {
               {
                 auctionsArr.push(
                 <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}> 
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
-                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
+                  <a style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
+                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>{intToGold(auctions[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -164,8 +170,8 @@ export default function Auctions({data}) {
               {
                 auctionsArr.push(
                 <div key={item} id={relevantItemInfo[item].name} className={styles.auctionContainer}>
-                  <a style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
-                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://tbc.wowhead.com/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
+                  <a style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer"><Image src={relevantItemInfo[item].icon} alt ="" height="58px" width="58px"/></a>
+                  <a className={styles.itemName} style={{display: "table-cell"}} href={"https://wowhead.com/wotlk/item="+item} target="_blank" rel="noreferrer">{relevantItemInfo[item].name}</a>
                   <p>{intToGold(auctions[item].toFixed(4))}</p> 
                 </div>)
               }
@@ -180,7 +186,7 @@ export default function Auctions({data}) {
     <div className={styles.container}>
     <Head>
       <title>{self.realm} {self.auctionHouse}</title>
-      <meta name="description" content="Search through filtered TBC Classic auction house data."/>
+      <meta name="description" content="Search through filtered WOTLK Classic auction house data."/>
       <script src="https://wow.zamimg.com/widgets/power.js" async></script>
       <link type="text/css" href="https://wow.zamimg.com/css/basic.css?16" rel="stylesheet"></link> 
     </Head>
@@ -289,6 +295,17 @@ export async function getStaticProps({params}) {
     auctionHouse: auctionHouses[params.auctionHouse].name,
     lastModified: new Date(auctionRes.headers.get("last-modified")).toLocaleString('en-US', { timeZone: realms[params.realm].timeZone }).toString(), //get last modified header and convert to realm's timezone
   }
+
+  let allItems = await getAllItem();
+  let newItems = [];
+  Object.keys(auctionData).forEach((item) => {
+    if(!allItems.has(item)) newItems.push(item);
+  });
+  await Promise.all(newItems.map(async (itemId, index) => {
+    await new Promise(resolve => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
+    await addItemInfo(itemId);
+  }));
+
   data["auctions"] = auctionData;
   data["realms"] = await propsFormatRealmData(realms);
   delete data["realms"][params.realm]; //remove current realm from list of navigatable realms
