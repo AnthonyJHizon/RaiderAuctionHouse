@@ -36,7 +36,7 @@ return (
     <div className={styles.container}>
       <Head>
         <title>Raider Auction House</title>
-        <meta name="description" content="Search through filtered TBC Classic auction house data."/>
+        <meta name="description" content="Search through filtered WOTLK Classic auction house data."/>
       </Head>
       <div className={styles.navbar}> <Link href="/">Raider Auction House</Link> </div>
       <main className={styles.main}>
@@ -50,7 +50,7 @@ return (
   )
 }
 
-    export async function fetchWithCache(key) {
+export async function fetchWithCache(key) {
   const value = cache.get(key);
   if (value) {
       return value;
@@ -78,7 +78,7 @@ export async function getStaticProps() {
 
   let timeout = 0;
   realmKeys && await Promise.all(realmKeys.map(async(realmKey) => {
-    timeout += 70;
+    timeout += 100;
     await new Promise(resolve => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
     let auctionHouseData = auctionHouseKeys && await Promise.all(auctionHouseKeys.map(async (auctionHouseKey) => {
       const auctionRes = await fetch(`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`, {
