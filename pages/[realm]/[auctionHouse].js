@@ -42,7 +42,7 @@ export default function Auctions({ data }) {
 		: search
 		? 'Search: "' + search + '"'
 		: '';
-	let itemClassFilter = consumables; //default view set to show consumable items
+	let itemClassFilter = gems; //default view set to show gems
 
 	useEffect(() => {
 		async function setData() {
