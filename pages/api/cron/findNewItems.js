@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 		);
 		let auctionData = await auctionRes.json();
 		auctionData = await propsFormatAuctionData(auctionData);
-		const allItems = await fetchWithCacheAllItem();
+		const allItems = await getAllItem();
 		let newItems = [];
 		Object.keys(auctionData).forEach((item) => {
 			if (!allItems.has(item)) newItems.push(item);
