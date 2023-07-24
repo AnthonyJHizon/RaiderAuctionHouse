@@ -1,8 +1,9 @@
 import addItemInfo from '../../../utils/db/addItemInfo';
 import connectToDatabase from '../../../utils/db/dbConnect';
 import getAccessToken from '../../../utils/db/getAccessToken';
-import getAllItem from '../../../utils/db/getAllItem';
 import propsFormatAuctionData from '../../../utils/formatData/props/auction';
+import fetchWithCacheAllItem from '../../../utils/cache/itemIds';
+import updateCacheAllItem from '../../../utils/cache/updateItemIds';
 
 export default async function handler(req, res) {
 	try {
@@ -20,17 +21,19 @@ export default async function handler(req, res) {
 		);
 		let auctionData = await auctionRes.json();
 		auctionData = await propsFormatAuctionData(auctionData);
-		const allItems = await getAllItem();
+		const allItems = await fetchWithCacheAllItem();
 		let newItems = [];
 		Object.keys(auctionData).forEach((item) => {
 			if (!allItems.has(item)) newItems.push(item);
 		});
 		await Promise.all(
 			newItems.map(async (itemId, index) => {
+				allItems.add(itemId);
 				await new Promise((resolve) => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
 				await addItemInfo(itemId);
 			})
 		);
+		if (newItems.length > 0) updateCacheAllItem();
 		res
 			.status(200)
 			.json({ mesage: 'Finished Search for New Items', success: true });
