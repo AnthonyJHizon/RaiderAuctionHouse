@@ -13,6 +13,7 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 import cache from 'memory-cache';
 import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
+import cacheRelevantItems from '../../utils/cache/relevantItems';
 // import getAllItem from '../../utils/db/getAllItem';
 // import addItemInfo from '../../utils/db/addItemInfo';
 
@@ -388,6 +389,8 @@ export async function fetchWithCache(key) {
 				return await cacheRealms();
 			case 'auctionHouses':
 				return await cacheAuctionHouses();
+			case 'relevantItems':
+				return await cacheRelevantItems();
 			default:
 				break;
 		}
@@ -413,8 +416,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
 	let data = {};
-	let auctionHouses = await fetchWithCache('auctionHouses');
-	let realms = await fetchWithCache('realms');
+	const auctionHouses = await fetchWithCache('auctionHouses');
+	const realms = await fetchWithCache('realms');
 	const accessToken = await getAccessToken();
 	const auctionRes = await fetch(
 		`https://us.api.blizzard.com/data/wow/connected-realm/${
@@ -454,10 +457,10 @@ export async function getStaticProps({ params }) {
 
 	data['auctions'] = auctionData;
 	data['realms'] = await propsFormatRealmData(realms);
-	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
+	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
-	data['relevantItems'] = await getAllRelevantItemInfo();
+	data['relevantItems'] = await fetchWithCache('relevantItems');
 	return {
 		props: {
 			data,
