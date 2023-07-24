@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import styles from '../../styles/AuctionHouse.module.css';
 import getAccessToken from '../../utils/db/getAccessToken';
 import getAllRelevantItemInfo from '../../utils/db/getAllRelevantItemInfo';
@@ -12,8 +13,8 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 import cache from 'memory-cache';
 import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
-import getAllItem from '../../utils/db/getAllItem';
-import addItemInfo from '../../utils/db/addItemInfo';
+// import getAllItem from '../../utils/db/getAllItem';
+// import addItemInfo from '../../utils/db/addItemInfo';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
@@ -43,6 +44,13 @@ export default function Auctions({ data }) {
 		? 'Search: "' + search + '"'
 		: '';
 	let itemClassFilter = gems; //default view set to show gems
+
+	//add blocker to avoid tooltip hover bug
+	// useEffect(() => {
+	// 	setTimeout(function () {
+	// 		document.getElementById('blocker').remove();
+	// 	}, 2000);
+	// }, []);
 
 	useEffect(() => {
 		async function setData() {
@@ -250,38 +258,40 @@ export default function Auctions({ data }) {
 						} else if (itemClassFilter) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
-									<a
-										key={item}
-										id={relevantItemInfo[item].name}
-										className={styles.auctionContainer}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
+									<div key={item}>
 										<a
-											style={{ display: 'table-cell' }}
+											key={item}
+											id={relevantItemInfo[item].name}
+											className={styles.auctionContainer}
 											href={'https://wowhead.com/wotlk/item=' + item}
 											target="_blank"
 											rel="noreferrer"
 										>
-											<Image
-												src={relevantItemInfo[item].icon}
-												alt=""
-												height="58px"
-												width="58px"
-											/>
+											<a
+												style={{ display: 'table-cell' }}
+												href={'https://wowhead.com/wotlk/item=' + item}
+												target="_blank"
+												rel="noreferrer"
+											>
+												<Image
+													src={relevantItemInfo[item].icon}
+													alt=""
+													height="58px"
+													width="58px"
+												/>
+											</a>
+											<a
+												className={styles.itemName}
+												style={{ display: 'table-cell' }}
+												href={'https://wowhead.com/wotlk/item=' + item}
+												target="_blank"
+												rel="noreferrer"
+											>
+												{relevantItemInfo[item].name}
+											</a>
+											<p>{intToGold(auctions[item].toFixed(4))}</p>
 										</a>
-										<a
-											className={styles.itemName}
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{relevantItemInfo[item].name}
-										</a>
-										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</a>
+									</div>
 								);
 							}
 						}
@@ -301,13 +311,11 @@ export default function Auctions({ data }) {
 					name="description"
 					content="Search through filtered WOTLK Classic auction house data."
 				/>
-				<script src="https://wow.zamimg.com/widgets/power.js" async></script>
-				<link
-					type="text/css"
-					href="https://wow.zamimg.com/css/basic.css?16"
-					rel="stylesheet"
-				></link>
 			</Head>
+			<Script
+				src="https://wow.zamimg.com/widgets/power.js"
+				strategy="lazyOnload"
+			/>
 			<div className={styles.navbar}>
 				{' '}
 				<Link href="/">Raider Auction House</Link>{' '}
@@ -352,7 +360,6 @@ export default function Auctions({ data }) {
 					)}
 				</div>
 			</main>
-
 			<footer className={styles.footer}>
 				<p>
 					<a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>,
@@ -432,17 +439,17 @@ export async function getStaticProps({ params }) {
 			.toString(), //get last modified header and convert to realm's timezone
 	};
 
-	let allItems = await getAllItem();
-	let newItems = [];
-	Object.keys(auctionData).forEach((item) => {
-		if (!allItems.has(item)) newItems.push(item);
-	});
-	await Promise.all(
-		newItems.map(async (itemId, index) => {
-			await new Promise((resolve) => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
-			await addItemInfo(itemId);
-		})
-	);
+	// let allItems = await getAllItem();
+	// let newItems = [];
+	// Object.keys(auctionData).forEach((item) => {
+	// 	if (!allItems.has(item)) newItems.push(item);
+	// });
+	// await Promise.all(
+	// 	newItems.map(async (itemId, index) => {
+	// 		await new Promise((resolve) => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
+	// 		await addItemInfo(itemId);
+	// 	})
+	// );
 
 	data['auctions'] = auctionData;
 	data['realms'] = await propsFormatRealmData(realms);
