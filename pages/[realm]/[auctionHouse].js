@@ -250,38 +250,40 @@ export default function Auctions({ data }) {
 						} else if (itemClassFilter) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
-									<a
-										key={item}
-										id={relevantItemInfo[item].name}
-										className={styles.auctionContainer}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
+									<div>
 										<a
-											style={{ display: 'table-cell' }}
+											key={item}
+											id={relevantItemInfo[item].name}
+											className={styles.auctionContainer}
 											href={'https://wowhead.com/wotlk/item=' + item}
 											target="_blank"
 											rel="noreferrer"
 										>
-											<Image
-												src={relevantItemInfo[item].icon}
-												alt=""
-												height="58px"
-												width="58px"
-											/>
+											<a
+												style={{ display: 'table-cell' }}
+												href={'https://wowhead.com/wotlk/item=' + item}
+												target="_blank"
+												rel="noreferrer"
+											>
+												<Image
+													src={relevantItemInfo[item].icon}
+													alt=""
+													height="58px"
+													width="58px"
+												/>
+											</a>
+											<a
+												className={styles.itemName}
+												style={{ display: 'table-cell' }}
+												href={'https://wowhead.com/wotlk/item=' + item}
+												target="_blank"
+												rel="noreferrer"
+											>
+												{relevantItemInfo[item].name}
+											</a>
+											<p>{intToGold(auctions[item].toFixed(4))}</p>
 										</a>
-										<a
-											className={styles.itemName}
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{relevantItemInfo[item].name}
-										</a>
-										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</a>
+									</div>
 								);
 							}
 						}
@@ -302,11 +304,11 @@ export default function Auctions({ data }) {
 					content="Search through filtered WOTLK Classic auction house data."
 				/>
 				<script src="https://wow.zamimg.com/widgets/power.js" async></script>
-				<link
+				{/* <link
 					type="text/css"
 					href="https://wow.zamimg.com/css/basic.css?16"
 					rel="stylesheet"
-				></link>
+				></link> */}
 			</Head>
 			<div className={styles.navbar}>
 				{' '}
