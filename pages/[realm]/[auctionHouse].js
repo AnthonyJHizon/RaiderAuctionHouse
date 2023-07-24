@@ -439,6 +439,7 @@ export async function getStaticProps({ params }) {
 			.toString(), //get last modified header and convert to realm's timezone
 	};
 
+	// converted to cron job for now until vercel makes it a paid feature
 	// let allItems = await getAllItem();
 	// let newItems = [];
 	// Object.keys(auctionData).forEach((item) => {
