@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
+
 import { useRouter } from 'next/router';
+import Script from 'next/script';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Script from 'next/script';
+
+import cache from 'memory-cache';
+
 import styles from '../../styles/AuctionHouse.module.css';
+
 import getAccessToken from '../../utils/db/getAccessToken';
-import getAllRelevantItemInfo from '../../utils/db/getAllRelevantItemInfo';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
-import cache from 'memory-cache';
 import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
-// import getAllItem from '../../utils/db/getAllItem';
-// import addItemInfo from '../../utils/db/addItemInfo';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
@@ -45,13 +46,6 @@ export default function Auctions({ data }) {
 		? 'Search: "' + search + '"'
 		: '';
 	let itemClassFilter = gems; //default view set to show gems
-
-	//add blocker to avoid tooltip hover bug
-	// useEffect(() => {
-	// 	setTimeout(function () {
-	// 		document.getElementById('blocker').remove();
-	// 	}, 2000);
-	// }, []);
 
 	useEffect(() => {
 		async function setData() {
@@ -305,9 +299,7 @@ export default function Auctions({ data }) {
 	return (
 		<div className={styles.container}>
 			<Head>
-				<title>
-					{self.realm} {self.auctionHouse}
-				</title>
+				<title>{/* {self.realm} {self.auctionHouse} */}</title>
 				<meta
 					name="description"
 					content="Search through filtered WOTLK Classic auction house data."
@@ -411,10 +403,11 @@ export async function getStaticPaths() {
 			});
 		});
 	});
-	return { paths, fallback: false };
+	return { paths, fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params }) {
+	const start = Date.now();
 	let data = {};
 	const auctionHouses = await fetchWithCache('auctionHouses');
 	const realms = await fetchWithCache('realms');
@@ -434,6 +427,7 @@ export async function getStaticProps({ params }) {
 	);
 	let auctionData = await auctionRes.json();
 	auctionData = await propsFormatAuctionData(auctionData);
+	const end = Date.now();
 	data['self'] = {
 		realm: realms[params.realm].name,
 		auctionHouse: auctionHouses[params.auctionHouse].name,
@@ -442,25 +436,19 @@ export async function getStaticProps({ params }) {
 			.toString(), //get last modified header and convert to realm's timezone
 	};
 
-	// converted to cron job for now until vercel makes it a paid feature
-	// let allItems = await getAllItem();
-	// let newItems = [];
-	// Object.keys(auctionData).forEach((item) => {
-	// 	if (!allItems.has(item)) newItems.push(item);
-	// });
-	// await Promise.all(
-	// 	newItems.map(async (itemId, index) => {
-	// 		await new Promise((resolve) => setTimeout(resolve, index * 25)); //add delay to prevent going over blizzard api call limit
-	// 		await addItemInfo(itemId);
-	// 	})
-	// );
-
 	data['auctions'] = auctionData;
 	data['realms'] = await propsFormatRealmData(realms);
 	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
+	data['relevantItems'] = await fetchWithCache('relevantItems');
 	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
-	data['relevantItems'] = await fetchWithCache('relevantItems');
+	console.log(
+		realms[params.realm].name +
+			' ' +
+			auctionHouses[params.auctionHouse].name +
+			' ' +
+			(end - start)
+	);
 	return {
 		props: {
 			data,
