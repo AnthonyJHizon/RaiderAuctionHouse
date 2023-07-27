@@ -443,6 +443,7 @@ export async function getStaticProps({ params }) {
 	return {
 		props: {
 			data,
+			fallback: 'blocking',
 		},
 		revalidate: 60, //revalidate every minute.
 	};
