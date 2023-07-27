@@ -1,5 +1,6 @@
+import cache from 'memory-cache';
+
 import addItemInfo from '../../../utils/db/addItemInfo';
-import connectToDatabase from '../../../utils/db/dbConnect';
 import getAccessToken from '../../../utils/db/getAccessToken';
 import propsFormatAuctionData from '../../../utils/formatData/props/auction';
 import fetchWithCacheAllItem from '../../../utils/cache/itemIds';
@@ -7,7 +8,6 @@ import updateCacheAllItem from '../../../utils/cache/updateItemIds';
 
 export default async function handler(req, res) {
 	try {
-		await connectToDatabase();
 		const accessToken = await getAccessToken();
 		const auctionRes = await fetch(
 			//if a new item is discovered it is most likely going to be from this server's auction house
@@ -21,6 +21,8 @@ export default async function handler(req, res) {
 		);
 		let auctionData = await auctionRes.json();
 		auctionData = await propsFormatAuctionData(auctionData);
+		let allItems = cache.get('allItems');
+		if (!allItems) allItems = await fetchWithCacheAllItem();
 		const allItems = await fetchWithCacheAllItem();
 		let newItems = [];
 		Object.keys(auctionData).forEach((item) => {
@@ -34,6 +36,7 @@ export default async function handler(req, res) {
 			})
 		);
 		if (newItems.length > 0) updateCacheAllItem();
+		return res
 		res
 			.status(200)
 			.json({ mesage: 'Finished Search for New Items', success: true });
