@@ -407,7 +407,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-	const start = Date.now();
 	let data = {};
 	const auctionHouses = await fetchWithCache('auctionHouses');
 	const realms = await fetchWithCache('realms');
@@ -427,7 +426,6 @@ export async function getStaticProps({ params }) {
 	);
 	let auctionData = await auctionRes.json();
 	auctionData = await propsFormatAuctionData(auctionData);
-	const end = Date.now();
 	data['self'] = {
 		realm: realms[params.realm].name,
 		auctionHouse: auctionHouses[params.auctionHouse].name,
@@ -442,13 +440,6 @@ export async function getStaticProps({ params }) {
 	data['relevantItems'] = await fetchWithCache('relevantItems');
 	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
-	console.log(
-		realms[params.realm].name +
-			' ' +
-			auctionHouses[params.auctionHouse].name +
-			' ' +
-			(end - start)
-	);
 	return {
 		props: {
 			data,
