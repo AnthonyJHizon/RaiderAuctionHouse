@@ -21,9 +21,9 @@ export default async function handler(req, res) {
 		);
 		let auctionData = await auctionRes.json();
 		auctionData = await propsFormatAuctionData(auctionData);
-		const start = Date.now();
 		let allItems = cache.get('allItems');
 		if (!allItems) allItems = await fetchWithCacheAllItem();
+		const allItems = await fetchWithCacheAllItem();
 		let newItems = [];
 		Object.keys(auctionData).forEach((item) => {
 			if (!allItems.has(item)) newItems.push(item);
@@ -36,9 +36,8 @@ export default async function handler(req, res) {
 			})
 		);
 		if (newItems.length > 0) updateCacheAllItem();
-		const end = Date.now();
-		console.log(end - start);
 		return res
+		res
 			.status(200)
 			.json({ mesage: 'Finished Search for New Items', success: true });
 	} catch (error) {
