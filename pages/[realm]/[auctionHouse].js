@@ -45,6 +45,7 @@ export default function Auctions({ data }) {
 		: search
 		? 'Search: "' + search + '"'
 		: '';
+
 	let itemClassFilter = gems; //default view set to show gems
 
 	useEffect(() => {
@@ -176,7 +177,7 @@ export default function Auctions({ data }) {
 					if (searchItems[item]) {
 						if (searchItems[item].name !== 'Deprecated') {
 							auctionsArr.push(
-								<a
+								<div
 									key={item}
 									id={searchItems[item].name}
 									className={styles.auctionContainer}
@@ -207,7 +208,7 @@ export default function Auctions({ data }) {
 										{searchItems[item].name}
 									</a>
 									<p>{intToGold(auctions[item].toFixed(4))}</p>
-								</a>
+								</div>
 							);
 						}
 					}
@@ -216,7 +217,7 @@ export default function Auctions({ data }) {
 						if (itemClassFilter && subclass) {
 							if (itemClassFilter[item] === subclass) {
 								auctionsArr.push(
-									<a
+									<div
 										key={item}
 										id={relevantItemInfo[item].name}
 										className={styles.auctionContainer}
@@ -247,45 +248,43 @@ export default function Auctions({ data }) {
 											{relevantItemInfo[item].name}
 										</a>
 										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</a>
+									</div>
 								);
 							}
 						} else if (itemClassFilter) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
-									<div key={item}>
+									<div
+										key={item}
+										id={relevantItemInfo[item].name}
+										className={styles.auctionContainer}
+										href={'https://wowhead.com/wotlk/item=' + item}
+										target="_blank"
+										rel="noreferrer"
+									>
 										<a
-											key={item}
-											id={relevantItemInfo[item].name}
-											className={styles.auctionContainer}
+											style={{ display: 'table-cell' }}
 											href={'https://wowhead.com/wotlk/item=' + item}
 											target="_blank"
 											rel="noreferrer"
 										>
-											<a
-												style={{ display: 'table-cell' }}
-												href={'https://wowhead.com/wotlk/item=' + item}
-												target="_blank"
-												rel="noreferrer"
-											>
-												<Image
-													src={relevantItemInfo[item].icon}
-													alt=""
-													height="58px"
-													width="58px"
-												/>
-											</a>
-											<a
-												className={styles.itemName}
-												style={{ display: 'table-cell' }}
-												href={'https://wowhead.com/wotlk/item=' + item}
-												target="_blank"
-												rel="noreferrer"
-											>
-												{relevantItemInfo[item].name}
-											</a>
-											<p>{intToGold(auctions[item].toFixed(4))}</p>
+											<Image
+												src={relevantItemInfo[item].icon}
+												alt=""
+												height="58px"
+												width="58px"
+											/>
 										</a>
+										<a
+											className={styles.itemName}
+											style={{ display: 'table-cell' }}
+											href={'https://wowhead.com/wotlk/item=' + item}
+											target="_blank"
+											rel="noreferrer"
+										>
+											{relevantItemInfo[item].name}
+										</a>
+										<p>{intToGold(auctions[item].toFixed(4))}</p>
 									</div>
 								);
 							}
@@ -299,7 +298,9 @@ export default function Auctions({ data }) {
 	return (
 		<div className={styles.container}>
 			<Head>
-				<title>{/* {self.realm} {self.auctionHouse} */}</title>
+				<title>
+					{self.realm} {self.auctionHouse}
+				</title>
 				<meta
 					name="description"
 					content="Search through filtered WOTLK Classic auction house data."
@@ -310,8 +311,7 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<div className={styles.navbar}>
-				{' '}
-				<Link href="/">Raider Auction House</Link>{' '}
+				<Link href="/">Raider Auction House</Link>
 			</div>
 			<main className={styles.main}>
 				<div className={styles.dropDownContainer}>
