@@ -18,6 +18,9 @@ import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
 
+import Auction from '../../components/auction';
+import Footer from '../../components/footer';
+
 export default function Auctions({ data }) {
 	const router = useRouter();
 	const { realm, auctionHouse, filter, subclass, search } = router.query;
@@ -177,38 +180,12 @@ export default function Auctions({ data }) {
 					if (searchItems[item]) {
 						if (searchItems[item].name !== 'Deprecated') {
 							auctionsArr.push(
-								<div
-									key={item}
-									id={searchItems[item].name}
-									className={styles.auctionContainer}
-									href={'https://wowhead.com/wotlk/item=' + item}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<a
-										style={{ display: 'table-cell' }}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<Image
-											src={searchItems[item].icon}
-											alt=""
-											height="58px"
-											width="58px"
-										/>
-									</a>
-									<a
-										className={styles.itemName}
-										style={{ display: 'table-cell' }}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										{searchItems[item].name}
-									</a>
-									<p>{intToGold(auctions[item].toFixed(4))}</p>
-								</div>
+								<Auction
+									itemId={item}
+									itemName={searchItems[item].name}
+									itemIcon={searchItems[item].icon}
+									itemVal={auctions[item].toFixed(4)}
+								/>
 							);
 						}
 					}
@@ -217,75 +194,23 @@ export default function Auctions({ data }) {
 						if (itemClassFilter && subclass) {
 							if (itemClassFilter[item] === subclass) {
 								auctionsArr.push(
-									<div
-										key={item}
-										id={relevantItemInfo[item].name}
-										className={styles.auctionContainer}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<a
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											<Image
-												src={relevantItemInfo[item].icon}
-												alt=""
-												height="58px"
-												width="58px"
-											/>
-										</a>
-										<a
-											className={styles.itemName}
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{relevantItemInfo[item].name}
-										</a>
-										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</div>
+									<Auction
+										itemId={item}
+										itemName={relevantItemInfo[item].name}
+										itemIcon={relevantItemInfo[item].icon}
+										itemVal={auctions[item].toFixed(4)}
+									/>
 								);
 							}
 						} else if (itemClassFilter) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
-									<div
-										key={item}
-										id={relevantItemInfo[item].name}
-										className={styles.auctionContainer}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<a
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											<Image
-												src={relevantItemInfo[item].icon}
-												alt=""
-												height="58px"
-												width="58px"
-											/>
-										</a>
-										<a
-											className={styles.itemName}
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{relevantItemInfo[item].name}
-										</a>
-										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</div>
+									<Auction
+										itemId={item}
+										itemName={relevantItemInfo[item].name}
+										itemIcon={relevantItemInfo[item].icon}
+										itemVal={auctions[item].toFixed(4)}
+									/>
 								);
 							}
 						}
@@ -353,12 +278,7 @@ export default function Auctions({ data }) {
 					)}
 				</div>
 			</main>
-			<footer className={styles.footer}>
-				<p>
-					<a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>,
-					2022
-				</p>
-			</footer>
+			<Footer />
 		</div>
 	);
 }

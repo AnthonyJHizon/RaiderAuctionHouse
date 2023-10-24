@@ -1,11 +1,16 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import getAccessToken from '../utils/db/getAccessToken';
+
 import cache from 'memory-cache';
-import cacheRealms from '../utils/cache/realm';
+
+import styles from '../styles/Home.module.css';
+
+import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
+import cacheRealms from '../utils/cache/realm';
+
+import Footer from '../components/footer';
 
 export default function Home({ data }) {
 	let realmsArr = [];
@@ -61,13 +66,7 @@ export default function Home({ data }) {
 				<Link href="/">Raider Auction House</Link>{' '}
 			</div>
 			<main className={styles.main}>{realmsArr}</main>
-
-			<footer className={styles.footer}>
-				<p>
-					<a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>,
-					2022
-				</p>
-			</footer>
+			<Footer />
 		</div>
 	);
 }
