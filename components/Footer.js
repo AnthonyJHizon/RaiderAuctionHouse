@@ -4,8 +4,9 @@ export default function Footer() {
 			<p>
 				<a
 					href="https://github.com/AnthonyJHizon"
-					target="_blank"
 					className="text-white underline"
+					target="_blank"
+					rel="noreferrer"
 				>
 					Anthony Joshua Hizon
 				</a>
