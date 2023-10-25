@@ -139,27 +139,6 @@
 	width: 100%;
 }
 
-.navbar a {
-	color: white;
-	text-decoration: none;
-	font-size: clamp(1.2rem, 2vw, 4rem);
-}
-.footer {
-	position: fixed;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 2.5%;
-	width: 100%;
-	bottom: 0;
-	background-color: black;
-	color: white;
-}
-
-.footer a {
-	color: white;
-}
-
 @media only screen and (max-width: 1000px) {
 	.main {
 		width: 80%;

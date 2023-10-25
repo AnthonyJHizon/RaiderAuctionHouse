@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import cache from 'memory-cache';
@@ -19,10 +18,12 @@ import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
 
 import Auction from '../../components/auction';
+import Dropdown from '../../components/dropdown/dropdown';
 import Footer from '../../components/footer';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
+
 	const { realm, auctionHouse, filter, subclass, search } = router.query;
 	const { self, realms, auctionHouses, auctions, relevantItems } = data;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
@@ -51,6 +52,11 @@ export default function Auctions({ data }) {
 
 	let itemClassFilter = gems; //default view set to show gems
 
+	let queryParams = {};
+	if (filter) queryParams['filter'] = filter;
+	if (subclass) queryParams['subclass'] = subclass;
+	if (search) queryParams['search'] = search;
+
 	useEffect(() => {
 		async function setData() {
 			if (search) {
@@ -70,47 +76,6 @@ export default function Auctions({ data }) {
 		setData();
 	}, [search]);
 
-	let realmsArr = [];
-	const realmKeys = Object.keys(realms);
-	realmKeys.forEach((realmKey) => {
-		let queryParams = {};
-		if (filter) queryParams['filter'] = filter;
-		if (subclass) queryParams['subclass'] = subclass;
-		if (search) queryParams['search'] = search;
-		realmsArr.push(
-			<Link
-				key={realmKey}
-				href={{
-					pathname: `../${realmKey}/${auctionHouse}`,
-					query: queryParams,
-				}}
-			>
-				<div>{realms[realmKey]}</div>
-			</Link>
-		);
-	});
-	realmsArr.sort((a, b) => a.key.localeCompare(b.key)); //sort the array based on div key which is the name of the realm
-
-	let auctionHouseArr = [];
-	const auctionHouseKeys = Object.keys(auctionHouses);
-	auctionHouseKeys.forEach((auctionHouseKey) => {
-		let queryParams = {};
-		if (filter) queryParams['filter'] = filter;
-		if (subclass) queryParams['subclass'] = subclass;
-		if (search) queryParams['search'] = search;
-		auctionHouseArr.push(
-			<Link
-				key={auctionHouseKey}
-				href={{
-					pathname: `../${realm}/${auctionHouseKey}`,
-					query: queryParams,
-				}}
-			>
-				<div>{auctionHouses[auctionHouseKey]}</div>
-			</Link>
-		);
-	});
-
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
 			if (e.target.value && !loading) {
@@ -122,7 +87,6 @@ export default function Auctions({ data }) {
 	let filterArr = [];
 
 	itemClasses.forEach((itemClass) => {
-		let subclassArr = [];
 		let subclasses = {};
 		switch (itemClass) {
 			case 'Gems':
@@ -142,37 +106,19 @@ export default function Auctions({ data }) {
 				if (filter && filter === 'Glyphs') itemClassFilter = glyphs;
 				break;
 		}
-		Object.keys(subclasses).forEach((subclass) => {
-			subclassArr.push(
-				<Link
-					key={subclass}
-					href={{
-						pathname: `../${realm}/${auctionHouse}`,
-						query: { filter: itemClass, subclass: subclass },
-					}}
-				>
-					<div key={subclass}>{subclass}</div>
-				</Link>
-			);
-		});
-		subclassArr.sort((a, b) => a.key.localeCompare(b.key));
 		filterArr.push(
-			<div key={itemClass} className={styles.dropDown}>
-				<Link
-					key={itemClass}
-					href={{
-						pathname: `../${realm}/${auctionHouse}`,
-						query: { filter: itemClass },
-					}}
-				>
-					<button className={styles.dropDownBtn}>{itemClass}</button>
-				</Link>
-				<div className={styles.dropDownContent}>{subclassArr}</div>
-			</div>
+			<Dropdown
+				key={itemClass}
+				name={itemClass}
+				itemClass={itemClass}
+				content={Object.keys(subclasses).sort()}
+				type="Filter"
+			/>
 		);
 	});
 
 	let auctionsArr = [];
+
 	if (auctions) {
 		Object.keys(auctions).forEach(async (item) => {
 			if (item) {
@@ -240,14 +186,18 @@ export default function Auctions({ data }) {
 			</div>
 			<main className={styles.main}>
 				<div className={styles.dropDownContainer}>
-					<div className={styles.dropDown}>
-						<button className={styles.dropDownBtn}>Realm</button>
-						<div className={styles.dropDownContent}>{realmsArr}</div>
-					</div>
-					<div className={styles.dropDown}>
-						<button className={styles.dropDownBtn}>Auction House</button>
-						<div className={styles.dropDownContent}>{auctionHouseArr}</div>
-					</div>
+					<Dropdown
+						name={'Realm'}
+						queryParams={queryParams}
+						content={Object.keys(realms).sort()}
+						type="Realm"
+					/>
+					<Dropdown
+						name={'Auction House'}
+						queryParams={queryParams}
+						content={Object.keys(auctionHouses)}
+						type="AuctionHouse"
+					/>
 					<div className={styles.searchContainer}>
 						<input
 							id="searchInput"
@@ -281,14 +231,6 @@ export default function Auctions({ data }) {
 			<Footer />
 		</div>
 	);
-}
-
-export function intToGold(int) {
-	const valueArr = int.toString().split('.');
-	const gold = valueArr[0];
-	const silver = valueArr[1].substr(0, 2);
-	const copper = valueArr[1].substr(2);
-	return gold + 'g ' + silver + 's ' + copper + 'c';
 }
 
 export async function fetchWithCache(key) {
