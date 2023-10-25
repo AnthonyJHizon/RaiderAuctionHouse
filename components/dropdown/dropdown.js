@@ -6,6 +6,8 @@ export default function Dropdown({
 	content,
 	queryParams,
 	itemClass,
+	realms,
+	auctionHouses,
 	type,
 }) {
 	let contentArr = [];
@@ -16,6 +18,8 @@ export default function Dropdown({
 				element={element}
 				queryParams={queryParams}
 				itemClass={itemClass}
+				realms={realms}
+				auctionHouses={auctionHouses}
 				type={type}
 			/>
 		);

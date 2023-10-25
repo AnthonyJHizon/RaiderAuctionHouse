@@ -28,7 +28,6 @@
 	width: 100%;
 }
 
-.dropDown,
 .searchContainer {
 	position: relative;
 	display: flex;
@@ -37,51 +36,10 @@
 	width: 33.33%;
 }
 
-.dropDownBtn {
-	background-color: #04729e;
-	color: white;
-	border: none;
-	font-size: clamp(0.45rem, 1.15vw, 0.9rem);
-	width: 100%;
-	height: 100%;
-}
-
 .searchBar {
 	height: 50%;
 	font-size: clamp(0.45rem, 1.15vw, 0.9rem);
 	width: 80%;
-}
-
-.dropDownContent {
-	display: none;
-	position: absolute;
-	right: 0px;
-	left: 0px;
-	top: 100%;
-	width: 100%;
-	background-color: #f1f1f1;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-	z-index: 1;
-	text-align: center;
-}
-
-.dropDownContent div {
-	color: black;
-	width: 100%;
-	text-decoration: none;
-	display: block;
-}
-
-.dropDownContent div:hover {
-	background-color: #ddd;
-}
-
-.dropDown:hover .dropDownContent {
-	display: block;
-}
-
-.dropDown:hover .dropDownBtn {
-	background-color: #058fc5;
 }
 
 .headerContainer {

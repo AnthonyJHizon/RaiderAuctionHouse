@@ -190,12 +190,14 @@ export default function Auctions({ data }) {
 						name={'Realm'}
 						queryParams={queryParams}
 						content={Object.keys(realms).sort()}
+						realms={realms}
 						type="Realm"
 					/>
 					<Dropdown
 						name={'Auction House'}
 						queryParams={queryParams}
 						content={Object.keys(auctionHouses)}
+						auctionHouses={auctionHouses}
 						type="AuctionHouse"
 					/>
 					<div className={styles.searchContainer}>
