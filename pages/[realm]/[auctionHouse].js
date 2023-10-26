@@ -6,8 +6,6 @@ import Head from 'next/head';
 
 import cache from 'memory-cache';
 
-import styles from '../../styles/AuctionHouse.module.css';
-
 import getAccessToken from '../../utils/db/getAccessToken';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
@@ -170,7 +168,7 @@ export default function Auctions({ data }) {
 	}
 
 	return (
-		<div className={styles.container}>
+		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
 			<Head>
 				<title>
 					{self.realm} {self.auctionHouse}
@@ -185,8 +183,8 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className={styles.main}>
-				<div className={styles.dropDownContainer}>
+			<main className="flex flex-col items-center text-black bg-white opacity-95 h-[95%] w-[50vw]">
+				<div className="inline-flex bg-royal-blue h-[5%] w-full">
 					<Dropdown
 						name={'Realm'}
 						queryParams={queryParams}
@@ -201,31 +199,35 @@ export default function Auctions({ data }) {
 						auctionHouses={auctionHouses}
 						type="AuctionHouse"
 					/>
-					<div className={styles.searchContainer}>
+					<div className="relative flex items-center justify-center w-[33.33%]">
 						<input
 							id="searchInput"
 							type="text"
 							placeholder="Search"
-							className={styles.searchBar}
+							className="h-[50%] w-[80%]"
 							onKeyPress={(e) => handleSearchSubmit(e)}
 						></input>
 					</div>
 				</div>
-				<div className={styles.headerContainer}>
-					<h1 className={styles.header1}>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h1 className="text-header-1">
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className={styles.dropDownContainer}>{filterArr}</div>
-				<div className={styles.headerContainer}>
-					<h1 className={styles.header1}>Last Update: {self.lastModified}</h1>
+				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+					{filterArr}
 				</div>
-				<div className={styles.headerContainer}>
-					<h2 className={styles.header2}>{filterIndicator}</h2>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h1 className="text-header-1">Last Update: {self.lastModified}</h1>
 				</div>
-				<div className={styles.auctionsContainer}>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h2 className="text-header-2">{filterIndicator}</h2>
+				</div>
+				<div className="h-[72.9%] w-full overflow-y-auto bg-neutral-50">
 					{loading ? (
-						<div className={styles.loadingContainer}>Loading...</div>
+						<div className="flex items-center justify-center text-center text-header-2">
+							<p className="animate-pulse">Loading...</p>
+						</div>
 					) : (
 						auctionsArr
 					)}
