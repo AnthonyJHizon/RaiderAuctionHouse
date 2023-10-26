@@ -76,21 +76,6 @@
 	opacity: 1;
 }
 
-.navbar {
-	height: 5%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: black;
-	width: 100%;
-}
-
-.navbar a {
-	color: white;
-	text-decoration: none;
-	font-size: clamp(1.2rem, 2vw, 4rem);
-}
-
 @media only screen and (max-width: 1000px) {
 	.main {
 		width: 80%;

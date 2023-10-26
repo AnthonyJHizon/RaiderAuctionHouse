@@ -10,6 +10,7 @@ import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
 import cacheRealms from '../utils/cache/realm';
 
+import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
 export default function Home({ data }) {
@@ -61,10 +62,7 @@ export default function Home({ data }) {
 					content="Search through filtered WOTLK Classic auction house data."
 				/>
 			</Head>
-			<div className={styles.navbar}>
-				{' '}
-				<Link href="/">Raider Auction House</Link>{' '}
-			</div>
+			<Navbar />
 			<main className={styles.main}>{realmsArr}</main>
 			<Footer />
 		</div>

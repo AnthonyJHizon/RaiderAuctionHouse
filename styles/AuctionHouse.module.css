@@ -88,15 +88,6 @@
 	color: black;
 }
 
-.navbar {
-	height: 5%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background-color: black;
-	width: 100%;
-}
-
 @media only screen and (max-width: 1000px) {
 	.main {
 		width: 80%;

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
-import Link from 'next/link';
 
 import cache from 'memory-cache';
 
@@ -19,6 +18,7 @@ import cacheRelevantItems from '../../utils/cache/relevantItems';
 
 import Auction from '../../components/auction';
 import Dropdown from '../../components/dropdown/dropdown';
+import Navbar from '../../components/navbar';
 import Footer from '../../components/footer';
 
 export default function Auctions({ data }) {
@@ -127,6 +127,7 @@ export default function Auctions({ data }) {
 						if (searchItems[item].name !== 'Deprecated') {
 							auctionsArr.push(
 								<Auction
+									key={item}
 									itemId={item}
 									itemName={searchItems[item].name}
 									itemIcon={searchItems[item].icon}
@@ -141,6 +142,7 @@ export default function Auctions({ data }) {
 							if (itemClassFilter[item] === subclass) {
 								auctionsArr.push(
 									<Auction
+										key={item}
 										itemId={item}
 										itemName={relevantItemInfo[item].name}
 										itemIcon={relevantItemInfo[item].icon}
@@ -152,6 +154,7 @@ export default function Auctions({ data }) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
 									<Auction
+										key={item}
 										itemId={item}
 										itemName={relevantItemInfo[item].name}
 										itemIcon={relevantItemInfo[item].icon}
@@ -181,9 +184,7 @@ export default function Auctions({ data }) {
 				src="https://wow.zamimg.com/widgets/power.js"
 				strategy="lazyOnload"
 			/>
-			<div className={styles.navbar}>
-				<Link href="/">Raider Auction House</Link>
-			</div>
+			<Navbar />
 			<main className={styles.main}>
 				<div className={styles.dropDownContainer}>
 					<Dropdown
