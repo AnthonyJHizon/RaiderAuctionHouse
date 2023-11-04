@@ -5,7 +5,7 @@ module.exports = async function addItemInfo(itemId) {
 	try {
 		const accessToken = await getAccessToken();
 		const itemDataRes = await fetch(
-			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-3.4.1_47245-classic-us&locale=en_US&access_token=${accessToken}`
+			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=${accessToken}`
 		);
 		const itemData = await itemDataRes.json();
 		const name = itemData.name;
@@ -16,7 +16,7 @@ module.exports = async function addItemInfo(itemId) {
 		const itemEquip = itemData.inventory_type.name;
 		const itemQuality = itemData.quality.name;
 		const iconRes = await fetch(
-			`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-3.4.1_47245-classic-us&locale=en_US&access_token=${accessToken}`
+			`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`
 		);
 		const iconData = await iconRes.json();
 		const iconResult = iconData.assets[0].value;
@@ -52,9 +52,9 @@ module.exports = async function addItemInfo(itemId) {
 			}
 		}
 		const accessToken = await getAccessToken();
-		console.log(error + itemId);
+		console.log(error + ' ' + itemId);
 		console.log(
-			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-3.4.1_47245-classic-us&locale=en_US&access_token=${accessToken}`
+			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=${accessToken}`
 		);
 	}
 };

@@ -3,12 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
 
 import cache from 'memory-cache';
-
-import styles from '../../styles/AuctionHouse.module.css';
 
 import getAccessToken from '../../utils/db/getAccessToken';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
@@ -18,8 +14,14 @@ import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
 
+import Auction from '../../components/auction';
+import Dropdown from '../../components/dropdown/dropdown';
+import Navbar from '../../components/navbar';
+import Footer from '../../components/footer';
+
 export default function Auctions({ data }) {
 	const router = useRouter();
+
 	const { realm, auctionHouse, filter, subclass, search } = router.query;
 	const { self, realms, auctionHouses, auctions, relevantItems } = data;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
@@ -45,7 +47,13 @@ export default function Auctions({ data }) {
 		: search
 		? 'Search: "' + search + '"'
 		: '';
+
 	let itemClassFilter = gems; //default view set to show gems
+
+	let queryParams = {};
+	if (filter) queryParams['filter'] = filter;
+	if (subclass) queryParams['subclass'] = subclass;
+	if (search) queryParams['search'] = search;
 
 	useEffect(() => {
 		async function setData() {
@@ -66,47 +74,6 @@ export default function Auctions({ data }) {
 		setData();
 	}, [search]);
 
-	let realmsArr = [];
-	const realmKeys = Object.keys(realms);
-	realmKeys.forEach((realmKey) => {
-		let queryParams = {};
-		if (filter) queryParams['filter'] = filter;
-		if (subclass) queryParams['subclass'] = subclass;
-		if (search) queryParams['search'] = search;
-		realmsArr.push(
-			<Link
-				key={realmKey}
-				href={{
-					pathname: `../${realmKey}/${auctionHouse}`,
-					query: queryParams,
-				}}
-			>
-				<div>{realms[realmKey]}</div>
-			</Link>
-		);
-	});
-	realmsArr.sort((a, b) => a.key.localeCompare(b.key)); //sort the array based on div key which is the name of the realm
-
-	let auctionHouseArr = [];
-	const auctionHouseKeys = Object.keys(auctionHouses);
-	auctionHouseKeys.forEach((auctionHouseKey) => {
-		let queryParams = {};
-		if (filter) queryParams['filter'] = filter;
-		if (subclass) queryParams['subclass'] = subclass;
-		if (search) queryParams['search'] = search;
-		auctionHouseArr.push(
-			<Link
-				key={auctionHouseKey}
-				href={{
-					pathname: `../${realm}/${auctionHouseKey}`,
-					query: queryParams,
-				}}
-			>
-				<div>{auctionHouses[auctionHouseKey]}</div>
-			</Link>
-		);
-	});
-
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
 			if (e.target.value && !loading) {
@@ -118,7 +85,6 @@ export default function Auctions({ data }) {
 	let filterArr = [];
 
 	itemClasses.forEach((itemClass) => {
-		let subclassArr = [];
 		let subclasses = {};
 		switch (itemClass) {
 			case 'Gems':
@@ -138,37 +104,19 @@ export default function Auctions({ data }) {
 				if (filter && filter === 'Glyphs') itemClassFilter = glyphs;
 				break;
 		}
-		Object.keys(subclasses).forEach((subclass) => {
-			subclassArr.push(
-				<Link
-					key={subclass}
-					href={{
-						pathname: `../${realm}/${auctionHouse}`,
-						query: { filter: itemClass, subclass: subclass },
-					}}
-				>
-					<div key={subclass}>{subclass}</div>
-				</Link>
-			);
-		});
-		subclassArr.sort((a, b) => a.key.localeCompare(b.key));
 		filterArr.push(
-			<div key={itemClass} className={styles.dropDown}>
-				<Link
-					key={itemClass}
-					href={{
-						pathname: `../${realm}/${auctionHouse}`,
-						query: { filter: itemClass },
-					}}
-				>
-					<button className={styles.dropDownBtn}>{itemClass}</button>
-				</Link>
-				<div className={styles.dropDownContent}>{subclassArr}</div>
-			</div>
+			<Dropdown
+				key={itemClass}
+				name={itemClass}
+				itemClass={itemClass}
+				content={Object.keys(subclasses).sort()}
+				type="Filter"
+			/>
 		);
 	});
 
 	let auctionsArr = [];
+
 	if (auctions) {
 		Object.keys(auctions).forEach(async (item) => {
 			if (item) {
@@ -176,38 +124,13 @@ export default function Auctions({ data }) {
 					if (searchItems[item]) {
 						if (searchItems[item].name !== 'Deprecated') {
 							auctionsArr.push(
-								<a
+								<Auction
 									key={item}
-									id={searchItems[item].name}
-									className={styles.auctionContainer}
-									href={'https://wowhead.com/wotlk/item=' + item}
-									target="_blank"
-									rel="noreferrer"
-								>
-									<a
-										style={{ display: 'table-cell' }}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<Image
-											src={searchItems[item].icon}
-											alt=""
-											height="58px"
-											width="58px"
-										/>
-									</a>
-									<a
-										className={styles.itemName}
-										style={{ display: 'table-cell' }}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										{searchItems[item].name}
-									</a>
-									<p>{intToGold(auctions[item].toFixed(4))}</p>
-								</a>
+									itemId={item}
+									itemName={searchItems[item].name}
+									itemIcon={searchItems[item].icon}
+									itemVal={auctions[item].toFixed(4)}
+								/>
 							);
 						}
 					}
@@ -216,77 +139,25 @@ export default function Auctions({ data }) {
 						if (itemClassFilter && subclass) {
 							if (itemClassFilter[item] === subclass) {
 								auctionsArr.push(
-									<a
+									<Auction
 										key={item}
-										id={relevantItemInfo[item].name}
-										className={styles.auctionContainer}
-										href={'https://wowhead.com/wotlk/item=' + item}
-										target="_blank"
-										rel="noreferrer"
-									>
-										<a
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											<Image
-												src={relevantItemInfo[item].icon}
-												alt=""
-												height="58px"
-												width="58px"
-											/>
-										</a>
-										<a
-											className={styles.itemName}
-											style={{ display: 'table-cell' }}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											{relevantItemInfo[item].name}
-										</a>
-										<p>{intToGold(auctions[item].toFixed(4))}</p>
-									</a>
+										itemId={item}
+										itemName={relevantItemInfo[item].name}
+										itemIcon={relevantItemInfo[item].icon}
+										itemVal={auctions[item].toFixed(4)}
+									/>
 								);
 							}
 						} else if (itemClassFilter) {
 							if (itemClassFilter[item]) {
 								auctionsArr.push(
-									<div key={item}>
-										<a
-											key={item}
-											id={relevantItemInfo[item].name}
-											className={styles.auctionContainer}
-											href={'https://wowhead.com/wotlk/item=' + item}
-											target="_blank"
-											rel="noreferrer"
-										>
-											<a
-												style={{ display: 'table-cell' }}
-												href={'https://wowhead.com/wotlk/item=' + item}
-												target="_blank"
-												rel="noreferrer"
-											>
-												<Image
-													src={relevantItemInfo[item].icon}
-													alt=""
-													height="58px"
-													width="58px"
-												/>
-											</a>
-											<a
-												className={styles.itemName}
-												style={{ display: 'table-cell' }}
-												href={'https://wowhead.com/wotlk/item=' + item}
-												target="_blank"
-												rel="noreferrer"
-											>
-												{relevantItemInfo[item].name}
-											</a>
-											<p>{intToGold(auctions[item].toFixed(4))}</p>
-										</a>
-									</div>
+									<Auction
+										key={item}
+										itemId={item}
+										itemName={relevantItemInfo[item].name}
+										itemIcon={relevantItemInfo[item].icon}
+										itemVal={auctions[item].toFixed(4)}
+									/>
 								);
 							}
 						}
@@ -297,9 +168,11 @@ export default function Auctions({ data }) {
 	}
 
 	return (
-		<div className={styles.container}>
+		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
 			<Head>
-				<title>{/* {self.realm} {self.auctionHouse} */}</title>
+				<title>
+					{self.realm} {self.auctionHouse}
+				</title>
 				<meta
 					name="description"
 					content="Search through filtered WOTLK Classic auction house data."
@@ -309,66 +182,60 @@ export default function Auctions({ data }) {
 				src="https://wow.zamimg.com/widgets/power.js"
 				strategy="lazyOnload"
 			/>
-			<div className={styles.navbar}>
-				{' '}
-				<Link href="/">Raider Auction House</Link>{' '}
-			</div>
-			<main className={styles.main}>
-				<div className={styles.dropDownContainer}>
-					<div className={styles.dropDown}>
-						<button className={styles.dropDownBtn}>Realm</button>
-						<div className={styles.dropDownContent}>{realmsArr}</div>
-					</div>
-					<div className={styles.dropDown}>
-						<button className={styles.dropDownBtn}>Auction House</button>
-						<div className={styles.dropDownContent}>{auctionHouseArr}</div>
-					</div>
-					<div className={styles.searchContainer}>
+			<Navbar />
+			<main className="flex flex-col items-center text-black bg-white h-[95%] w-[50vw]">
+				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+					<Dropdown
+						name={'Realm'}
+						queryParams={queryParams}
+						content={Object.keys(realms).sort()}
+						realms={realms}
+						type="Realm"
+					/>
+					<Dropdown
+						name={'Auction House'}
+						queryParams={queryParams}
+						content={Object.keys(auctionHouses)}
+						auctionHouses={auctionHouses}
+						type="AuctionHouse"
+					/>
+					<div className="relative flex items-center justify-center w-[33.33%]">
 						<input
 							id="searchInput"
 							type="text"
 							placeholder="Search"
-							className={styles.searchBar}
+							className="h-[50%] w-[80%]"
 							onKeyPress={(e) => handleSearchSubmit(e)}
 						></input>
 					</div>
 				</div>
-				<div className={styles.headerContainer}>
-					<h1 className={styles.header1}>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h1 className="text-header-1">
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className={styles.dropDownContainer}>{filterArr}</div>
-				<div className={styles.headerContainer}>
-					<h1 className={styles.header1}>Last Update: {self.lastModified}</h1>
+				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+					{filterArr}
 				</div>
-				<div className={styles.headerContainer}>
-					<h2 className={styles.header2}>{filterIndicator}</h2>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h1 className="text-header-1">Last Update: {self.lastModified}</h1>
 				</div>
-				<div className={styles.auctionsContainer}>
+				<div className="flex items-center h-[5%] justify-center text-center">
+					<h2 className="text-header-2">{filterIndicator}</h2>
+				</div>
+				<div className="h-[72.9%] w-full overflow-y-auto bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
 					{loading ? (
-						<div className={styles.loadingContainer}>Loading...</div>
+						<div className="flex items-center justify-center text-center text-header-2">
+							<p className="animate-pulse">Loading...</p>
+						</div>
 					) : (
 						auctionsArr
 					)}
 				</div>
 			</main>
-			<footer className={styles.footer}>
-				<p>
-					<a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>,
-					2022
-				</p>
-			</footer>
+			<Footer />
 		</div>
 	);
-}
-
-export function intToGold(int) {
-	const valueArr = int.toString().split('.');
-	const gold = valueArr[0];
-	const silver = valueArr[1].substr(0, 2);
-	const copper = valueArr[1].substr(2);
-	return gold + 'g ' + silver + 's ' + copper + 'c';
 }
 
 export async function fetchWithCache(key) {

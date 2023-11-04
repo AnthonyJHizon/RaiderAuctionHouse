@@ -1,11 +1,15 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import getAccessToken from '../utils/db/getAccessToken';
+
 import cache from 'memory-cache';
-import cacheRealms from '../utils/cache/realm';
+
+import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
+import cacheRealms from '../utils/cache/realm';
+
+import Navbar from '../components/navbar';
+import Footer from '../components/footer';
 
 export default function Home({ data }) {
 	let realmsArr = [];
@@ -17,7 +21,7 @@ export default function Home({ data }) {
 					key={realm + '-' + auctionHouse}
 					href={`/${realm}/${auctionHouse}`}
 				>
-					<div className={styles.auctionHouseContainer}>
+					<div className="relative h-[33.34%] opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">
 						<Image
 							src={`/auctionHouses/${auctionHouse}.webp`}
 							layout="fill"
@@ -25,30 +29,46 @@ export default function Home({ data }) {
 							alt=""
 							style={{ zIndex: '-1' }}
 						/>
-						<div className={styles.auctionHouseBody}>
-							{data[realm].auctionHouses[auctionHouse].numAuctions} Auctions
+						<div className="flex items-center justify-center text-center h-full text-normal-1">
+							{data[realm].auctionHouses[auctionHouse].numAuctions}{' '}
+							{data[realm].auctionHouses[auctionHouse].numAuctions != 1
+								? 'Auctions'
+								: 'Auction'}
 						</div>
 					</div>
 				</Link>
 			);
 		});
 		realmsArr.push(
-			<div key={realm} className={styles.card}>
+			<div key={realm} className="group relative flex flex-col w-[30%] h-[65%]">
 				<Image
 					src={`/cards/${realm}.webp`}
 					layout="fill"
 					objectFit="cover"
 					alt=""
-					style={{ zIndex: '-1' }}
+					className="absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30"
 				/>
-				<div className={styles.cardTitle}>{data[realm].realm}</div>
-				<div className={styles.auctionHousesContainer}>{auctionHouses}</div>
+				<div className="flex items-center justify-center text-center bg-black h-[10%] overflow-hidden text-normal-1 z-40">
+					{data[realm].realm}
+				</div>
+				<div className="flex relative flex-col overflow-hidden h-[90%] w-full">
+					<Image
+						src={`/cards/${realm}.webp`}
+						layout="fill"
+						objectFit="cover"
+						alt=""
+						className="z-0"
+					/>
+				</div>
+				<div className="relative h-[55%] transition-all duration-700 ease-in-out cursor-pointer group-hover:h-[65%] group-hover:z-30 group-hover:translate-y-[-75%]">
+					{auctionHouses}
+				</div>
 			</div>
 		);
 	});
 	realmsArr.sort((a, b) => a.key.localeCompare(b.key));
 	return (
-		<div className={styles.container}>
+		<div className="flex flex-col items-center bg-icecrown bg-cover bg-no-repeat bg-center h-screen">
 			<Head>
 				<title>Raider Auction House</title>
 				<meta
@@ -56,18 +76,11 @@ export default function Home({ data }) {
 					content="Search through filtered WOTLK Classic auction house data."
 				/>
 			</Head>
-			<div className={styles.navbar}>
-				{' '}
-				<Link href="/">Raider Auction House</Link>{' '}
-			</div>
-			<main className={styles.main}>{realmsArr}</main>
-
-			<footer className={styles.footer}>
-				<p>
-					<a href="https://github.com/AnthonyJHizon">Anthony Joshua Hizon</a>,
-					2022
-				</p>
-			</footer>
+			<Navbar />
+			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-neutral-100 opacity-[.99] font-bold h-screen w-[50vw] overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
+				{realmsArr}
+			</main>
+			<Footer />
 		</div>
 	);
 }

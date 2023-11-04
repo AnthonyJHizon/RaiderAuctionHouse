@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 		const accessToken = await getAccessToken();
 		const auctionRes = await fetch(
 			//if a new item is discovered it is most likely going to be from this server's auction house
-			`https://us.api.blizzard.com/data/wow/connected-realm/4728/auctions/7?namespace=dynamic-classic-us&access_token=${accessToken}`,
+			`https://us.api.blizzard.com/data/wow/connected-realm/4728/auctions/2?namespace=dynamic-classic-us&access_token=${accessToken}`,
 			{
 				method: 'GET',
 				headers: {
