@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import intToGold from '../utils/formatData/props/intToGold';
+import floatToGold from '../utils/formatData/props/floatToGold';
 
 export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 	return (
@@ -25,7 +25,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 			>
 				{itemName}
 			</a>
-			<p className="justify-self-end">{intToGold(itemVal)}</p>
+			<p className="justify-self-end">{floatToGold(itemVal)}</p>
 		</div>
 	);
 }
