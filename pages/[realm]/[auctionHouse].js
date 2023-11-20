@@ -223,7 +223,7 @@ export default function Auctions({ data }) {
 				<div className="flex items-center h-[5%] justify-center text-center">
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
-				<div className="h-[72.9%] w-full overflow-y-auto bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
+				<div className="h-[72.9%] w-full overflow-y-scroll bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
 					{loading ? (
 						<div className="flex items-center justify-center text-center text-header-2">
 							<p className="animate-pulse">Loading...</p>
