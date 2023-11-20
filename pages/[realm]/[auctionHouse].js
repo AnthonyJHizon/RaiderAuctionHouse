@@ -170,9 +170,7 @@ export default function Auctions({ data }) {
 	return (
 		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
 			<Head>
-				<title>
-					{self.realm} {self.auctionHouse}
-				</title>
+				<title>{self.realm + ' ' + self.auctionHouse}</title>
 				<meta
 					name="description"
 					content="Search through filtered WOTLK Classic auction house data."
