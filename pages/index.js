@@ -24,10 +24,10 @@ export default function Home({ data }) {
 					<div className="relative h-[33.34%] opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">
 						<Image
 							src={`/auctionHouses/${auctionHouse}.webp`}
-							layout="fill"
-							objectFit="cover"
 							alt=""
-							style={{ zIndex: '-1' }}
+							fill
+							sizes="100%"
+							style={{ zIndex: '-1', objectFit: 'cover' }}
 						/>
 						<div className="flex items-center justify-center text-center h-full text-normal-1">
 							{data[realm].auctionHouses[auctionHouse].numAuctions}{' '}
@@ -43,9 +43,10 @@ export default function Home({ data }) {
 			<div key={realm} className="group relative flex flex-col w-[30%] h-[65%]">
 				<Image
 					src={`/cards/${realm}.webp`}
-					layout="fill"
-					objectFit="cover"
 					alt=""
+					fill
+					sizes="100%"
+					style={{ objectFit: 'cover' }}
 					className="absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30"
 				/>
 				<div className="flex items-center justify-center text-center bg-black h-[10%] overflow-hidden text-normal-1 z-40">
@@ -54,9 +55,11 @@ export default function Home({ data }) {
 				<div className="flex relative flex-col overflow-hidden h-[90%] w-full">
 					<Image
 						src={`/cards/${realm}.webp`}
-						layout="fill"
-						objectFit="cover"
 						alt=""
+						fill
+						sizes="100%"
+						priority={true}
+						style={{ objectFit: 'cover' }}
 						className="z-0"
 					/>
 				</div>

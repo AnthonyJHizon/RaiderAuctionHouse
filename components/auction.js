@@ -15,7 +15,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 				target="_blank"
 				rel="noreferrer"
 			>
-				<Image src={itemIcon} alt="" height="58px" width="58px" />
+				<Image src={itemIcon} alt="" height="58" width="58" />
 			</a>
 			<a
 				href={'https://wowhead.com/wotlk/item=' + itemId}
@@ -25,7 +25,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 			>
 				{itemName}
 			</a>
-			<p className="justify-self-end">{floatToGold(itemVal)}</p>
+			<p className="mr-2 justify-self-end">{floatToGold(itemVal)}</p>
 		</div>
 	);
 }
