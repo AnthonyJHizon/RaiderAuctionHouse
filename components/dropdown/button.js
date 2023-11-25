@@ -9,11 +9,11 @@ export default function Button({ name, itemClass }) {
 	return (
 		<>
 			{itemClass ? (
-				<button className="flex justify-center items-center bg-royal-blue group-hover:bg-cyan text-white w-full h-full">
+				<button className="flex justify-center items-center bg-royal-blue group-hover:bg-cyan hover:bg-cyan text-white w-full h-full">
 					<Link
 						href={{
 							pathname: `../${realm}/${auctionHouse}`,
-							query: { filter: itemClass },
+							query: itemClass === 'All' ? {} : { filter: itemClass },
 						}}
 						style={{
 							display: 'inline',

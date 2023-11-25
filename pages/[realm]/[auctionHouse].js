@@ -15,6 +15,7 @@ import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
 
 import Auction from '../../components/auction';
+import Button from '../../components/dropdown/button';
 import Dropdown from '../../components/dropdown/dropdown';
 import Footer from '../../components/footer';
 import InfiniteScroll from '../../components/infiniteScroll';
@@ -214,6 +215,9 @@ export default function Auctions({ data }) {
 					</h1>
 				</div>
 				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+					<div className="w-[33.33%]">
+						<Button name={'All'} itemClass={'All'} />
+					</div>
 					{filterArr}
 				</div>
 				<div className="flex items-center h-[5%] justify-center text-center">
