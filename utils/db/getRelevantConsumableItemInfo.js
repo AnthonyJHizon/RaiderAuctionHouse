@@ -1,11 +1,10 @@
-const Item = require("../../models/item");
+import Item from '../../models/item';
 
 module.exports = async function getAllConsumableItemInfo() {
-  try{
-    const results = await Item.find({itemClass: "Consumable"});
-    return results;
-  }
-  catch (error) {
-    return error;
-  }
-}
+	try {
+		const results = await Item.find({ itemClass: 'Consumable' });
+		return results;
+	} catch (error) {
+		return error;
+	}
+};

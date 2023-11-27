@@ -1,8 +1,8 @@
-const getRelevantGemItemInfo = require('./getRelevantGemItemInfo');
-const getRelevantConsumableItemInfo = require('./getRelevantConsumableItemInfo');
-const getRelevantTradeGoodItemInfo = require('./getRelevantTradeGoodItemInfo');
-const getRelevantGlyphItemInfo = require('./getRelevantGlyphItemInfo');
-const connectToDatabase = require('./dbConnect');
+import getRelevantGemItemInfo from './getRelevantGemItemInfo';
+import getRelevantConsumableItemInfo from './getRelevantConsumableItemInfo';
+import getRelevantTradeGoodItemInfo from './getRelevantTradeGoodItemInfo';
+import getRelevantGlyphItemInfo from './getRelevantGlyphItemInfo';
+import connectToDatabase from './dbConnect';
 
 export default async function getRelevevantItems() {
 	try {

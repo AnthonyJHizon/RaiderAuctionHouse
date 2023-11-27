@@ -1,5 +1,5 @@
-const getAccessToken = require('./getAccessToken');
-const Item = require('../../models/item');
+import getAccessToken from '../db/getAccessToken';
+import Item from '../../models/item';
 
 module.exports = async function addItemInfo(itemId) {
 	try {

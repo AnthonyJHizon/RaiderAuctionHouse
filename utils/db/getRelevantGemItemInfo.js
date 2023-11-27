@@ -1,11 +1,10 @@
-const Item = require("../../models/item");
+import Item from '../../models/item';
 
 module.exports = async function getAllGemItemInfo() {
-  try{
-    const results = await Item.find({itemClass: "Gem"});
-    return results;
-  }
-  catch (error) {
-    return error;
-  }
-}
+	try {
+		const results = await Item.find({ itemClass: 'Gem' });
+		return results;
+	} catch (error) {
+		return error;
+	}
+};
