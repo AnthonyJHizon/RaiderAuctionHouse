@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 import floatToGold from '../utils/formatData/props/floatToGold';
 
 export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
@@ -15,7 +13,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 				target="_blank"
 				rel="noreferrer"
 			>
-				<Image src={itemIcon} alt="" height="58" width="58" />
+				<img src={itemIcon} alt="" height="58" width="58" />
 			</a>
 			<a
 				href={'https://wowhead.com/wotlk/item=' + itemId}
