@@ -20,6 +20,7 @@ import Dropdown from '../../components/dropdown/dropdown';
 import Footer from '../../components/footer';
 import InfiniteScroll from '../../components/infiniteScroll';
 import Navbar from '../../components/navbar';
+import LoadSpinner from '../../components/loadSpinner';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
@@ -229,7 +230,7 @@ export default function Auctions({ data }) {
 				<div className="h-[72.9%] w-full overflow-y-scroll bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
 					{loading ? (
 						<div className="flex items-center justify-center text-center text-header-2">
-							<p className="animate-pulse">Loading...</p>
+							<LoadSpinner />
 						</div>
 					) : Object.keys(queryParams).length !== 0 ? (
 						auctionsArr
