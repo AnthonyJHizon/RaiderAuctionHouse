@@ -2,12 +2,10 @@ const Item = require('../../models/item');
 
 module.exports = async function findItem(id) {
 	try {
-		console.log('checking: ' + id);
-		const results = await Item.find({ _id: id });
-		console.log(results);
-		if (results) return;
-		else return id;
+		const result = await Item.findOne({ _id: id });
+		if (result) return result;
+		else return 'Could not find item: ' + id;
 	} catch (error) {
-		console.log('Error getting data', error);
+		console.log('Error getting data:', error);
 	}
 };

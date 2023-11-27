@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -15,9 +15,12 @@ import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
 
 import Auction from '../../components/auction';
+import Button from '../../components/dropdown/button';
 import Dropdown from '../../components/dropdown/dropdown';
-import Navbar from '../../components/navbar';
 import Footer from '../../components/footer';
+import InfiniteScroll from '../../components/infiniteScroll';
+import Navbar from '../../components/navbar';
+import LoadSpinner from '../../components/loadSpinner';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
@@ -51,6 +54,9 @@ export default function Auctions({ data }) {
 	let itemClassFilter = gems; //default view set to show gems
 
 	let queryParams = {};
+	let filterArr = [];
+	let auctionsArr = [];
+
 	if (filter) queryParams['filter'] = filter;
 	if (subclass) queryParams['subclass'] = subclass;
 	if (search) queryParams['search'] = search;
@@ -82,8 +88,6 @@ export default function Auctions({ data }) {
 		}
 	}
 
-	let filterArr = [];
-
 	itemClasses.forEach((itemClass) => {
 		let subclasses = {};
 		switch (itemClass) {
@@ -104,6 +108,7 @@ export default function Auctions({ data }) {
 				if (filter && filter === 'Glyphs') itemClassFilter = glyphs;
 				break;
 		}
+
 		filterArr.push(
 			<Dropdown
 				key={itemClass}
@@ -115,10 +120,8 @@ export default function Auctions({ data }) {
 		);
 	});
 
-	let auctionsArr = [];
-
 	if (auctions) {
-		Object.keys(auctions).forEach(async (item) => {
+		Object.keys(auctions).forEach((item) => {
 			if (item) {
 				if (searchItems) {
 					if (searchItems[item]) {
@@ -213,6 +216,9 @@ export default function Auctions({ data }) {
 					</h1>
 				</div>
 				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+					<div className="w-[33.33%]">
+						<Button name={'All'} itemClass={'All'} />
+					</div>
 					{filterArr}
 				</div>
 				<div className="flex items-center h-[5%] justify-center text-center">
@@ -224,10 +230,12 @@ export default function Auctions({ data }) {
 				<div className="h-[72.9%] w-full overflow-y-scroll bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
 					{loading ? (
 						<div className="flex items-center justify-center text-center text-header-2">
-							<p className="animate-pulse">Loading...</p>
+							<LoadSpinner />
 						</div>
-					) : (
+					) : Object.keys(queryParams).length !== 0 ? (
 						auctionsArr
+					) : (
+						<InfiniteScroll auctions={auctions} />
 					)}
 				</div>
 			</main>
