@@ -22,22 +22,24 @@ export default function InfiniteScroll({ auctions }) {
 	}, [inView]);
 
 	async function loadInitialData() {
-		const end = start + 20;
-		let newItemData = {};
-		await Promise.all(
-			Object.keys(auctions)
-				.slice(start, end)
-				.map(async (id) => {
-					const idParams = new URLSearchParams({
-						id,
-					}).toString();
-					const itemRes = await fetch(`/api/item/id?${idParams}`);
-					const itemData = await itemRes.json();
-					Object.assign(newItemData, itemData);
-				})
-		);
-		setItemsData(Object.assign(itemsData, newItemData));
-		setStart(end);
+		if (auctions) {
+			const end = start + 20;
+			let newItemData = {};
+			await Promise.all(
+				Object.keys(auctions)
+					.slice(start, end)
+					.map(async (id) => {
+						const idParams = new URLSearchParams({
+							id,
+						}).toString();
+						const itemRes = await fetch(`/api/item/id?${idParams}`);
+						const itemData = await itemRes.json();
+						Object.assign(newItemData, itemData);
+					})
+			);
+			setItemsData(Object.assign(itemsData, newItemData));
+			setStart(end);
+		}
 	}
 
 	async function loadMoreData() {
@@ -61,16 +63,16 @@ export default function InfiniteScroll({ auctions }) {
 		}
 	}
 
-	if (itemsData) {
+	if (itemsData && auctions) {
 		Object.keys(itemsData).forEach((item) => {
-			if (itemsData[item].name !== 'Deprecated') {
+			if (itemsData[item].name !== 'Deprecated' && auctions[item]) {
 				auctionsArr.push(
 					<Auction
 						key={item}
 						itemId={item}
 						itemName={itemsData[item].name}
 						itemIcon={itemsData[item].icon}
-						itemVal={auctions[item].toFixed(4)}
+						itemVal={auctions[item]?.toFixed(4)}
 					/>
 				);
 			}
