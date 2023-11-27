@@ -1,4 +1,4 @@
-const floatToGold = require('../formatData/props/floatToGold');
+import floatToGold from '../formatData/props/floatToGold';
 
 test('convert float value to gold/silver/copper representation', () => {
 	expect(floatToGold(999.9999)).toBe('999g 99s 99c');

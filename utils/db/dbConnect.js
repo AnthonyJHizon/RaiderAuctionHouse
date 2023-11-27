@@ -14,7 +14,7 @@ module.exports = async function dbConnect() {
 	if (!cached.promise) {
 		mongoose.set('strictQuery', true);
 		cached.promise = await mongoose.connect(process.env.MONGODB_URI);
-		console.log('connected to mongoDB!');
+		// console.log('connected to mongoDB!');
 	}
 
 	cached.conn = await cached.promise;

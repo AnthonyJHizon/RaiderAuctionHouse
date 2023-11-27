@@ -1,4 +1,4 @@
-const Item = require('../../models/item');
+import Item from '../../models/item';
 
 module.exports = async function findItem(id) {
 	try {
