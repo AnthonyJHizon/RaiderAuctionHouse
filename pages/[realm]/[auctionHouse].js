@@ -232,10 +232,16 @@ export default function Auctions({ data }) {
 						<div className="flex items-center justify-center text-center text-header-2">
 							<LoadSpinner />
 						</div>
-					) : Object.keys(queryParams).length !== 0 ? (
-						auctionsArr
+					) : auctionsArr.length > 0 ? (
+						Object.keys(queryParams).length !== 0 ? (
+							auctionsArr
+						) : (
+							<InfiniteScroll auctions={auctions} />
+						)
 					) : (
-						<InfiniteScroll auctions={auctions} />
+						<div className="flex items-center justify-center text-center text-header-1">
+							No Auctions Found
+						</div>
 					)}
 				</div>
 			</main>
