@@ -22,48 +22,49 @@ export default function Home({ data }) {
 					href={`/${realm}/${auctionHouse}`}
 				>
 					<div className="relative h-[33.34%] opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">
-						<Image
-							src={`/auctionHouses/${auctionHouse}.webp`}
-							alt=""
-							fill
-							sizes="100%"
-							style={{ zIndex: '-1', objectFit: 'cover' }}
-						/>
-						<div className="flex items-center justify-center text-center h-full text-normal-1">
+						<div className="absolute flex items-center justify-center text-center h-full w-full text-normal-1 z-50">
 							{data[realm].auctionHouses[auctionHouse].numAuctions}{' '}
 							{data[realm].auctionHouses[auctionHouse].numAuctions != 1
 								? 'Auctions'
 								: 'Auction'}
 						</div>
+						<img
+							src={`/auctionHouses/${auctionHouse}.webp`}
+							alt=""
+							// fill
+							// sizes="100%"
+							// style={{ zIndex: '-1', objectFit: 'cover' }}
+							className="z-[-10] h-full w-full object-cover"
+						/>
 					</div>
 				</Link>
 			);
 		});
 		realmsArr.push(
 			<div key={realm} className="group relative flex flex-col w-[30%] h-[65%]">
-				<Image
+				<img
 					src={`/cards/${realm}.webp`}
 					alt=""
-					fill
-					sizes="100%"
-					style={{ objectFit: 'cover' }}
-					className="absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30"
+					// fill
+					// sizes="100%"
+					// style={{ objectFit: 'cover' }}
+					className="h-full w-full absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30 object-cover"
 				/>
 				<div className="flex items-center justify-center text-center bg-black h-[10%] overflow-hidden text-normal-1 z-40">
 					{data[realm].realm}
 				</div>
 				<div className="flex relative flex-col overflow-hidden h-[90%] w-full">
-					<Image
+					<img
 						src={`/cards/${realm}.webp`}
 						alt=""
-						fill
-						sizes="100%"
-						priority={true}
-						style={{ objectFit: 'cover' }}
-						className="z-0"
+						// fill
+						// sizes="100%"
+						// priority={true}
+						// style={{ objectFit: 'cover' }}
+						className="h-full w-full object-cover"
 					/>
 				</div>
-				<div className="relative h-[55%] transition-all duration-700 ease-in-out cursor-pointer group-hover:h-[65%] group-hover:z-30 group-hover:translate-y-[-75%]">
+				<div className="relative h-[37.5%] transition-all duration-700 ease-in-out cursor-pointer group-hover:z-30 group-hover:translate-y-[-75%]">
 					{auctionHouses}
 				</div>
 			</div>
