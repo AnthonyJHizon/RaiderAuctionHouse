@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -228,20 +228,26 @@ export default function Auctions({ data }) {
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
 				<div className="h-[72.9%] w-full overflow-y-scroll bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
-					{loading ? (
-						<div className="flex items-center justify-center text-center text-header-2">
-							<LoadSpinner />
-						</div>
-					) : auctionsArr.length > 0 ? (
-						Object.keys(queryParams).length !== 0 ? (
+					{Object.keys(queryParams).length !== 0 ? (
+						loading ? (
+							<div className="flex items-center justify-center text-center text-header-2">
+								<LoadSpinner />
+							</div>
+						) : auctionsArr.length > 0 ? (
 							auctionsArr
 						) : (
-							<InfiniteScroll auctions={auctions} />
+							<div className="flex items-center justify-center text-center text-header-1">
+								No Auctions Found
+							</div>
 						)
 					) : (
-						<div className="flex items-center justify-center text-center text-header-1">
-							No Auctions Found
-						</div>
+						<InfiniteScroll
+							loading={loading}
+							setLoading={setLoading}
+							realm={realm}
+							auctions={auctions}
+							auctionHouse={auctionHouse}
+						/>
 					)}
 				</div>
 			</main>
