@@ -31,9 +31,6 @@ export default function Home({ data }) {
 						<img
 							src={`/auctionHouses/${auctionHouse}.webp`}
 							alt=""
-							// fill
-							// sizes="100%"
-							// style={{ zIndex: '-1', objectFit: 'cover' }}
 							className="z-[-10] h-full w-full object-cover"
 						/>
 					</div>
@@ -45,9 +42,6 @@ export default function Home({ data }) {
 				<img
 					src={`/cards/${realm}.webp`}
 					alt=""
-					// fill
-					// sizes="100%"
-					// style={{ objectFit: 'cover' }}
 					className="h-full w-full absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30 object-cover"
 				/>
 				<div className="flex items-center justify-center text-center bg-black h-[10%] overflow-hidden text-normal-1 z-40">
@@ -57,10 +51,6 @@ export default function Home({ data }) {
 					<img
 						src={`/cards/${realm}.webp`}
 						alt=""
-						// fill
-						// sizes="100%"
-						// priority={true}
-						// style={{ objectFit: 'cover' }}
 						className="h-full w-full object-cover"
 					/>
 				</div>

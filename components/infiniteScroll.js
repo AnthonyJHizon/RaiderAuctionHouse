@@ -4,7 +4,13 @@ import { useInView } from 'react-intersection-observer';
 import Auction from './auction';
 import LoadSpinner from './loadSpinner';
 
-export default function InfiniteScroll({ auctions }) {
+export default function InfiniteScroll({
+	loading,
+	setLoading,
+	realm,
+	auctionHouse,
+	auctions,
+}) {
 	const [itemsData, setItemsData] = useState({});
 	const [start, setStart] = useState(0);
 	const { ref, inView } = useInView();
@@ -13,7 +19,7 @@ export default function InfiniteScroll({ auctions }) {
 
 	useEffect(() => {
 		loadInitialData();
-	}, []);
+	}, [realm, auctionHouse]);
 
 	useEffect(() => {
 		if (inView) {
@@ -22,12 +28,13 @@ export default function InfiniteScroll({ auctions }) {
 	}, [inView]);
 
 	async function loadInitialData() {
+		setLoading(true);
 		if (auctions) {
-			const end = start + 20;
+			const end = 20;
 			let newItemData = {};
 			await Promise.all(
 				Object.keys(auctions)
-					.slice(start, end)
+					.slice(0, end)
 					.map(async (id) => {
 						const idParams = new URLSearchParams({
 							id,
@@ -37,8 +44,9 @@ export default function InfiniteScroll({ auctions }) {
 						Object.assign(newItemData, itemData);
 					})
 			);
-			setItemsData(Object.assign(itemsData, newItemData));
+			setItemsData(newItemData);
 			setStart(end);
+			setLoading(false);
 		}
 	}
 
@@ -81,10 +89,22 @@ export default function InfiniteScroll({ auctions }) {
 
 	return (
 		<>
-			{auctionsArr}
-			{start < Object.keys(auctions).length && (
-				<div ref={ref} className="text-center mt-2 mb-0">
+			{loading ? (
+				<div className="text-center mt-2 mb-0">
 					<LoadSpinner />
+				</div>
+			) : Object.keys(auctions).length > 0 ? (
+				<>
+					{auctionsArr}
+					{start < Object.keys(auctions).length && (
+						<div ref={ref} className="text-center mt-2 mb-0">
+							<LoadSpinner />
+						</div>
+					)}
+				</>
+			) : (
+				<div className="flex items-center justify-center text-center text-header-1">
+					No Auctions Found
 				</div>
 			)}
 		</>
