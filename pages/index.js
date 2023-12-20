@@ -71,7 +71,7 @@ export default function Home({ data }) {
 				/>
 			</Head>
 			<Navbar />
-			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen w-[50vw] overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
+			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen w-[50vw] overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-none">
 				{realmsArr}
 			</main>
 			<Footer />
