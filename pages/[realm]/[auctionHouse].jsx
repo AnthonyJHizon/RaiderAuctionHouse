@@ -49,7 +49,7 @@ export default function Auctions({ data }) {
 			: 'Filter: ' + filter
 		: search
 		? 'Search: "' + search + '"'
-		: '';
+		: 'Filter: All';
 
 	let itemClassFilter = gems; //default view set to show gems
 
@@ -185,7 +185,7 @@ export default function Auctions({ data }) {
 			/>
 			<Navbar />
 			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-[95%] w-[50vw]">
-				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+				<div className="inline-flex bg-royal-blue h-10 w-full">
 					<Dropdown
 						name={'Realm'}
 						queryParams={queryParams}
@@ -200,7 +200,7 @@ export default function Auctions({ data }) {
 						auctionHouses={auctionHouses}
 						type="AuctionHouse"
 					/>
-					<div className="relative flex items-center justify-center w-[33.33%]">
+					<div className="basis-full flex items-center justify-center w-[33.33%] text-normal-1">
 						<input
 							id="searchInput"
 							type="text"
@@ -210,24 +210,24 @@ export default function Auctions({ data }) {
 						></input>
 					</div>
 				</div>
-				<div className="flex items-center h-[5%] justify-center text-center">
+				<div className="flex items-center h-10 justify-center text-center">
 					<h1 className="text-header-1">
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className="inline-flex bg-royal-blue h-[5%] w-full">
-					<div className="w-[33.33%]">
+				<div className="flex bg-royal-blue h-10 w-full">
+					<div className="basis-full text-normal-1">
 						<Button name={'All'} itemClass={'All'} />
 					</div>
 					{filterArr}
 				</div>
-				<div className="flex items-center h-[5%] justify-center text-center">
+				<div className="flex items-center h-10 justify-center text-center">
 					<h1 className="text-header-1">Last Update: {self.lastModified}</h1>
 				</div>
 				<div className="flex items-center h-[5%] justify-center text-center">
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
-				<div className="h-[72.9%] w-full overflow-y-scroll bg-white/50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
+				<div className="h-[72.9%] w-full overflow-y-scroll bg-white/50  scrollbar-none">
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
 							<div className="flex items-center justify-center text-center text-header-2">

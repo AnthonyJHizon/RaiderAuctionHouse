@@ -25,7 +25,7 @@ export default function Dropdown({
 		);
 	});
 	return (
-		<div className="group relative flex items-center justify-center w-[33.33%]">
+		<div className="group relative flex items-center justify-center basis-full text-normal-1">
 			<Button name={name} itemClass={itemClass} />
 			<div className="hidden absolute w-full right-0 left-0 top-[100%] z-10 text-center bg-neutral-100 group-hover:block">
 				{contentArr}

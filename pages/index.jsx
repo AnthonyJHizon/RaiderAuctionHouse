@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import cache from 'memory-cache';
@@ -8,6 +7,7 @@ import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
 import cacheRealms from '../utils/cache/realm';
 
+import Banner from '../components/banner/banner';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
@@ -38,7 +38,10 @@ export default function Home({ data }) {
 			);
 		});
 		realmsArr.push(
-			<div key={realm} className="group relative flex flex-col w-[30%] h-[65%]">
+			<div
+				key={realm}
+				className="group relative flex flex-col w-[250px] h-[500px]"
+			>
 				<img
 					src={`/cards/${realm}.webp`}
 					alt=""
@@ -71,7 +74,8 @@ export default function Home({ data }) {
 				/>
 			</Head>
 			<Navbar />
-			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen w-[50vw] overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-none">
+			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen w-9/12 overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-none">
+				<Banner />
 				{realmsArr}
 			</main>
 			<Footer />
