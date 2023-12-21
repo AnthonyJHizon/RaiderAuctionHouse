@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -25,6 +25,7 @@ import LoadSpinner from '../../components/loadSpinner';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
+	const auctionsContainerRef = useRef(null);
 
 	const { realm, auctionHouse, filter, subclass, search } = router.query;
 	const {
@@ -87,6 +88,10 @@ export default function Auctions({ data }) {
 		}
 		setData();
 	}, [search]);
+
+	useEffect(() => {
+		auctionsContainerRef.current.scroll({ top: 0, behavior: 'smooth' });
+	}, [router]);
 
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
@@ -235,7 +240,10 @@ export default function Auctions({ data }) {
 				<div className="flex items-center h-[5%] justify-center text-center">
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
-				<div className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-none">
+				<div
+					ref={auctionsContainerRef}
+					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-none"
+				>
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
 							<div className="flex items-center justify-center text-center text-header-2">
