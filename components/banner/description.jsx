@@ -2,17 +2,17 @@ import Typewriter from 'typewriter-effect';
 
 export default function Description() {
 	return (
-		<h1 className="w-6/12 h-40 text-black font-bold text-header-1 text-wrap">
+		<div className="w-4/12 h-40 font-bold text-header-1 text-wrap text-cyan">
 			<Typewriter
 				options={{
 					strings:
-						'Collections and filtered auction house data for WOTLK Classic!',
+						'<span style="color: black">Filtered auction house data and collections for </span>WOTLK Classic',
 					autoStart: true,
-					loop: true,
 					delay: 30,
-					pauseFor: 20000,
+					loop: true,
+					pauseFor: 30000,
 				}}
 			/>
-		</h1>
+		</div>
 	);
 }

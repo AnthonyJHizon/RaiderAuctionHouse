@@ -15,9 +15,9 @@ module.exports = {
 				cyan: '#058fc5',
 			},
 			fontSize: {
-				'normal-1': 'clamp(.65rem, 1vw, 2rem)',
+				'normal-1': 'clamp(.75rem, .9vw, 2rem)',
 				'header-1': 'clamp(1rem, 2.25vw, 2.5rem)',
-				'header-2': 'clamp(.75rem, 1.5vw, 2.25rem)',
+				'header-2': 'clamp(1rem, 1.5vw, 2.25rem)',
 			},
 		},
 	},

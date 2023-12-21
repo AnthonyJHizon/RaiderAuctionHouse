@@ -5,7 +5,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 		<div
 			key={itemId}
 			id={itemName}
-			className="grid grid-cols-3 w-full h-[58px] items-center hover:bg-gray-50/80 text-normal-1"
+			className="grid grid-cols-3 w-full h-[58px] items-center hover:bg-gray-50/80 text-normal-1 overflow-hidden"
 		>
 			<a
 				href={'https://wowhead.com/wotlk/item=' + itemId}
@@ -17,7 +17,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 			</a>
 			<a
 				href={'https://wowhead.com/wotlk/item=' + itemId}
-				className="justify-self-center"
+				className="ml-[20%]"
 				target="_blank"
 				rel="noreferrer"
 			>
