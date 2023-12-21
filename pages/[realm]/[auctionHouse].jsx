@@ -7,13 +7,13 @@ import Head from 'next/head';
 import cache from 'memory-cache';
 
 import getAccessToken from '../../utils/db/getAccessToken';
-import findItem from '../../utils/db/findItem';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
 import cacheRealms from '../../utils/cache/realm';
 import cacheAuctionHouses from '../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../utils/cache/relevantItems';
+import loadInitialAuctions from '../../utils/db/loadInitialAuctions';
 
 import Auction from '../../components/auction';
 import Button from '../../components/dropdown/button';
@@ -266,27 +266,6 @@ export default function Auctions({ data }) {
 	);
 }
 
-export async function loadInitialData(auctions) {
-	if (auctions) {
-		const end = 20;
-		let newItemData = {};
-		await Promise.all(
-			Object.keys(auctions)
-				.slice(0, end)
-				.map(async (id) => {
-					let item = {};
-					const itemData = await findItem(id);
-					item[itemData._id] = {
-						name: itemData.name,
-						icon: itemData.iconURL,
-					};
-					Object.assign(newItemData, item);
-				})
-		);
-		return newItemData;
-	}
-}
-
 export async function fetchWithCache(key) {
 	const value = cache.get(key);
 	if (value) {
@@ -359,7 +338,7 @@ export async function getStaticProps({ params }) {
 	data['realms'] = await propsFormatRealmData(realms);
 	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
 	data['relevantItems'] = await fetchWithCache('relevantItems');
-	data['initialAuctions'] = await loadInitialData(auctionData);
+	data['initialAuctions'] = await loadInitialAuctions(auctionData);
 
 	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
