@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 	}
 	try {
 		await connectToDatabase();
-		const item = {};
+		let item = {};
 		const itemData = await findItem(req.query.id);
 		item[itemData._id] = {
 			name: itemData.name,

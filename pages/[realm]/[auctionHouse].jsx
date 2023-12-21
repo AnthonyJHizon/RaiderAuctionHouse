@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { useRouter } from 'next/router';
 import Script from 'next/script';
@@ -7,6 +7,7 @@ import Head from 'next/head';
 import cache from 'memory-cache';
 
 import getAccessToken from '../../utils/db/getAccessToken';
+import findItem from '../../utils/db/findItem';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
@@ -24,9 +25,17 @@ import LoadSpinner from '../../components/loadSpinner';
 
 export default function Auctions({ data }) {
 	const router = useRouter();
+	const auctionsContainerRef = useRef(null);
 
 	const { realm, auctionHouse, filter, subclass, search } = router.query;
-	const { self, realms, auctionHouses, auctions, relevantItems } = data;
+	const {
+		self,
+		realms,
+		auctionHouses,
+		auctions,
+		relevantItems,
+		initialAuctions,
+	} = data;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
 	const {
 		gems,
@@ -49,7 +58,7 @@ export default function Auctions({ data }) {
 			: 'Filter: ' + filter
 		: search
 		? 'Search: "' + search + '"'
-		: '';
+		: 'Filter: All';
 
 	let itemClassFilter = gems; //default view set to show gems
 
@@ -79,6 +88,10 @@ export default function Auctions({ data }) {
 		}
 		setData();
 	}, [search]);
+
+	useEffect(() => {
+		auctionsContainerRef.current.scroll({ top: 0, behavior: 'smooth' });
+	}, [router]);
 
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
@@ -184,7 +197,7 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className="flex flex-col items-center text-black bg-white h-[95%] w-[50vw]">
+			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full w-[100vw] sm:w-[50vw] overflow-hidden">
 				<div className="inline-flex bg-royal-blue h-[5%] w-full">
 					<Dropdown
 						name={'Realm'}
@@ -200,7 +213,7 @@ export default function Auctions({ data }) {
 						auctionHouses={auctionHouses}
 						type="AuctionHouse"
 					/>
-					<div className="relative flex items-center justify-center w-[33.33%]">
+					<div className="basis-full flex items-center justify-center w-[33.33%] text-normal-1">
 						<input
 							id="searchInput"
 							type="text"
@@ -215,8 +228,8 @@ export default function Auctions({ data }) {
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className="inline-flex bg-royal-blue h-[5%] w-full">
-					<div className="w-[33.33%]">
+				<div className="flex bg-royal-blue h-[5%] w-full">
+					<div className="basis-full text-normal-1">
 						<Button name={'All'} itemClass={'All'} />
 					</div>
 					{filterArr}
@@ -227,7 +240,10 @@ export default function Auctions({ data }) {
 				<div className="flex items-center h-[5%] justify-center text-center">
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
-				<div className="h-[72.9%] w-full overflow-y-scroll bg-neutral-50  scrollbar-thin scrollbar-thumb-cyan scrollbar-track-inherit">
+				<div
+					ref={auctionsContainerRef}
+					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-none"
+				>
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
 							<div className="flex items-center justify-center text-center text-header-2">
@@ -241,19 +257,34 @@ export default function Auctions({ data }) {
 							</div>
 						)
 					) : (
-						<InfiniteScroll
-							loading={loading}
-							setLoading={setLoading}
-							realm={realm}
-							auctions={auctions}
-							auctionHouse={auctionHouse}
-						/>
+						<InfiniteScroll auctions={auctions} initialData={initialAuctions} />
 					)}
 				</div>
 			</main>
 			<Footer />
 		</div>
 	);
+}
+
+export async function loadInitialData(auctions) {
+	if (auctions) {
+		const end = 20;
+		let newItemData = {};
+		await Promise.all(
+			Object.keys(auctions)
+				.slice(0, end)
+				.map(async (id) => {
+					let item = {};
+					const itemData = await findItem(id);
+					item[itemData._id] = {
+						name: itemData.name,
+						icon: itemData.iconURL,
+					};
+					Object.assign(newItemData, item);
+				})
+		);
+		return newItemData;
+	}
 }
 
 export async function fetchWithCache(key) {
@@ -328,6 +359,7 @@ export async function getStaticProps({ params }) {
 	data['realms'] = await propsFormatRealmData(realms);
 	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
 	data['relevantItems'] = await fetchWithCache('relevantItems');
+	data['initialAuctions'] = await loadInitialData(auctionData);
 
 	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
 	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
