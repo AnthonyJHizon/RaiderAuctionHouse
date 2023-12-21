@@ -9,5 +9,6 @@
 // }
 
 export default function WowToken() {
+	// useEffect(() => {}, []);
 	return <></>;
 }

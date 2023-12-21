@@ -45,19 +45,19 @@ export default function Home({ data }) {
 				<img
 					src={`/cards/${realm}.webp`}
 					alt=""
-					className="h-full w-full absolute top-1 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30 object-cover"
+					className="h-full w-full absolute top-0 left-0 transition-all ease-in-out duration-1000 opacity-0 z-0 group-hover:opacity-100 group-hover:blur group-hover:z-30 object-cover"
 				/>
 				<div className="flex items-center justify-center text-center bg-black h-[10%] overflow-hidden text-normal-1 z-40">
 					{data[realm].realm}
 				</div>
-				<div className="flex relative flex-col overflow-hidden h-[90%] w-full">
+				<div className="flex relative flex-col overflow-hidden h-[90%] w-full transition-all ease-in-out duration-1000 group-hover:opacity-0">
 					<img
 						src={`/cards/${realm}.webp`}
 						alt=""
 						className="h-full w-full object-cover"
 					/>
 				</div>
-				<div className="relative h-[37.5%] transition-all duration-700 ease-in-out cursor-pointer group-hover:z-30 group-hover:translate-y-[-75%]">
+				<div className="relative h-[35%] transition-all duration-700 ease-in-out cursor-pointer group-hover:z-30 group-hover:translate-y-[-75%]">
 					{auctionHouses}
 				</div>
 			</div>
@@ -75,7 +75,7 @@ export default function Home({ data }) {
 			</Head>
 			<Navbar />
 			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen lg:w-6/12 w-9/12 overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-none">
-				<Banner />
+				{/* <Banner /> */}
 				{realmsArr}
 			</main>
 			<Footer />
@@ -108,12 +108,10 @@ export async function getStaticProps() {
 	const realmKeys = Object.keys(realms);
 	const auctionHouseKeys = Object.keys(auctionHouses);
 
-	let timeout = 0;
 	realmKeys &&
 		(await Promise.all(
 			realmKeys.map(async (realmKey) => {
-				timeout += 100;
-				await new Promise((resolve) => setTimeout(resolve, timeout)); //add delay to prevent going over blizzard api call limit
+				await new Promise((resolve) => setTimeout(resolve, 0));
 				let auctionHouseData =
 					auctionHouseKeys &&
 					(await Promise.all(
