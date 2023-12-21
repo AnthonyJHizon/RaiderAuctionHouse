@@ -8,7 +8,7 @@ module.exports = {
 		extend: {
 			backgroundImage: {
 				icecrown: "url('../public/background.jpg')",
-				lk: "url('../public/banner.jpg)",
+				banner: "url('../public/banner.jpg')",
 			},
 			colors: {
 				'royal-blue': '#04729e',

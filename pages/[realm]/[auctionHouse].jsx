@@ -184,8 +184,8 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-[95%] w-[50vw]">
-				<div className="inline-flex bg-royal-blue h-10 w-full">
+			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full w-[100vw] sm:w-[50vw] overflow-hidden">
+				<div className="inline-flex bg-royal-blue h-[10%] w-full">
 					<Dropdown
 						name={'Realm'}
 						queryParams={queryParams}
@@ -210,24 +210,24 @@ export default function Auctions({ data }) {
 						></input>
 					</div>
 				</div>
-				<div className="flex items-center h-10 justify-center text-center">
+				<div className="flex items-center h-[5%] justify-center text-center">
 					<h1 className="text-header-1">
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className="flex bg-royal-blue h-10 w-full">
+				<div className="flex bg-royal-blue h-[10%] w-full">
 					<div className="basis-full text-normal-1">
 						<Button name={'All'} itemClass={'All'} />
 					</div>
 					{filterArr}
 				</div>
-				<div className="flex items-center h-10 justify-center text-center">
+				<div className="flex items-center h-[5%] justify-center text-center">
 					<h1 className="text-header-1">Last Update: {self.lastModified}</h1>
 				</div>
 				<div className="flex items-center h-[5%] justify-center text-center">
 					<h2 className="text-header-2">{filterIndicator}</h2>
 				</div>
-				<div className="h-[72.9%] w-full overflow-y-scroll bg-white/50  scrollbar-none">
+				<div className="w-full overflow-y-scroll pb-6 bg-white/50  scrollbar-none">
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
 							<div className="flex items-center justify-center text-center text-header-2">

@@ -1,4 +1,4 @@
-// https://us.api.blizzard.com/data/wow/token/index?namespace=dynamic-classic-us&locale=en_US&access_token=UScwtteWsLUZWHi7G5zIfbxSQ528JibHd7{
+// https://us.api.blizzard.com/data/wow/token/index?namespace=dynamic-classic-us&locale=en_US&access_token={
 // "_links": {
 //     "self": {
 //       "href": "https://us.api.blizzard.com/data/wow/token/?namespace=dynamic-classic-us"
