@@ -8,7 +8,12 @@
 //   "price": 104450000
 // }
 
+import { useEffect } from 'react';
+
+import { getWowToken } from '../../actions/getWowToken';
+
 export default function WowToken() {
-	// useEffect(() => {}, []);
+	// const wowToken = getWowToken();
+	// console.log(wowToken);
 	return <></>;
 }

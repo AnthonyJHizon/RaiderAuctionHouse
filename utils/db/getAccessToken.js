@@ -8,7 +8,6 @@ module.exports = async () => {
 		await connectToDatabase();
 		const now = new Date();
 		if (cache.get('expiresIn') && now < cache.get('expiresIn')) {
-			cache.put('expiresIn', new Date(now.getTime() + 86399 * 500));
 			const token = await AccessToken.findOne({ _id: 1 });
 			return token.credentials;
 		} else {
@@ -32,7 +31,7 @@ module.exports = async () => {
 				{ $set: { credentials: newToken } },
 				{ upsert: true }
 			);
-			cache.put('expiresIn', new Date(now.getTime() + result.expires_in * 500));
+			cache.put('expiresIn', new Date(now.getTime() + result.expires_in * 750));
 			return newToken;
 		}
 	} catch (error) {
