@@ -14,7 +14,12 @@ import InfiniteScroll from '../../../components/infiniteScroll';
 import Navbar from '../../../components/navbar';
 import LoadSpinner from '../../../components/loadSpinner';
 
-export default function AuctionPage({ data }) {
+export default function AuctionPage({
+	data,
+	relevantItems,
+	realms,
+	auctionHouses,
+}) {
 	const router = useRouter();
 	const pathname = usePathname().split('/');
 	const searchParams = useSearchParams();
@@ -27,14 +32,7 @@ export default function AuctionPage({ data }) {
 	const subclass = searchParams.get('subclass');
 	const search = searchParams.get('search');
 
-	const {
-		self,
-		realms,
-		auctionHouses,
-		auctions,
-		relevantItems,
-		initialAuctions,
-	} = data;
+	const { self, auctions, initialAuctions } = data;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
 	const {
 		gems,

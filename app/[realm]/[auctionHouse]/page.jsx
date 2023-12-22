@@ -8,9 +8,10 @@ import propsFormatAuctionHouseData from '../../../utils/formatData/props/auction
 import cacheRealms from '../../../utils/cache/realm';
 import cacheAuctionHouses from '../../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../../utils/cache/relevantItems';
+
 import AuctionPage from './auctionPage';
 
-export async function fetchWithCache(key) {
+async function fetchWithCache(key) {
 	const value = cache.get(key);
 	if (value) {
 		return value;
@@ -28,7 +29,7 @@ export async function fetchWithCache(key) {
 	}
 }
 
-export async function loadInitialData(auctions) {
+async function loadInitialData(auctions) {
 	if (auctions) {
 		const end = 20;
 		let newItemData = {};
@@ -76,7 +77,8 @@ export async function getData(realms, auctionHouses, realm, auctionHouse) {
 			headers: {
 				'Content-Type': 'application/json',
 			},
-		}
+		},
+		{ next: { revalidate: 60 } }
 	);
 	let auctionData = await auctionRes.json();
 	auctionData = await propsFormatAuctionData(auctionData);
@@ -88,20 +90,39 @@ export async function getData(realms, auctionHouses, realm, auctionHouse) {
 			.toString(), //get last modified header and convert to realm's timezone
 	};
 	data['auctions'] = auctionData;
-	data['realms'] = await propsFormatRealmData(realms);
-	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
-	data['relevantItems'] = await fetchWithCache('relevantItems');
 	data['initialAuctions'] = await loadInitialData(auctionData);
-	delete data['realms'][realm]; //remove current realm from list of navigatable realms
-	delete data['auctionHouses'][auctionHouse]; //remove current auction house from list of navigatable auction houses
 	return data;
+}
+
+export async function generateMetadata({ params }) {
+	return {
+		title: (params.realm + '-' + params.auctionHouse).replace(
+			/(^|-)[a-z]/g,
+			(a) => {
+				return (a[1] ? ' ' + a[1] : a[0]).toUpperCase();
+			}
+		),
+	};
 }
 
 export default async function Page({ params }) {
 	const { realm, auctionHouse } = params;
 	const auctionHouses = await fetchWithCache('auctionHouses');
 	const realms = await fetchWithCache('realms');
+	const formattedRealms = await propsFormatRealmData(realms);
+	const formattedAuctionHouses = await propsFormatAuctionHouseData(
+		auctionHouses
+	);
+	const relevantItems = await fetchWithCache('relevantItems');
 	const data = await getData(realms, auctionHouses, realm, auctionHouse);
-
-	return <AuctionPage data={data} />;
+	delete formattedRealms[realm]; //remove current realm from list of navigatable realms
+	delete formattedAuctionHouses[auctionHouse]; //remove current auction house from list of navigatable auction houses
+	return (
+		<AuctionPage
+			data={data}
+			relevantItems={relevantItems}
+			realms={formattedRealms}
+			auctionHouses={formattedAuctionHouses}
+		/>
+	);
 }
