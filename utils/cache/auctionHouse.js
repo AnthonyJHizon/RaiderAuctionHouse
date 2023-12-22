@@ -2,7 +2,7 @@ import cache from 'memory-cache';
 import getAccessToken from '../../utils/db/getAccessToken';
 import cacheFormatAuctionHousesData from '../formatData/cache/auctionHouse';
 
-module.exports = async function AuctionHouse() {
+export default async function AuctionHouse() {
 	const accessToken = await getAccessToken();
 	const auctionHouseRes = await fetch(
 		`https://us.api.blizzard.com/data/wow/connected-realm/4728/auctions/index?namespace=dynamic-classic-us&locale=en_US&access_token=${accessToken}`,
@@ -17,4 +17,4 @@ module.exports = async function AuctionHouse() {
 	let auctionHouseData = await auctionHouseRes.json();
 	auctionHouseData = await cacheFormatAuctionHousesData(auctionHouseData);
 	return cache.put('auctionHouses', auctionHouseData);
-};
+}

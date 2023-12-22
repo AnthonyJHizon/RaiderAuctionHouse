@@ -1,7 +1,7 @@
 import getAccessToken from '../db/getAccessToken';
 import Item from '../../models/item';
 
-module.exports = async function addItemInfo(itemId) {
+export default async function addItemInfo(itemId) {
 	try {
 		const accessToken = await getAccessToken();
 		const itemDataRes = await fetch(
@@ -57,4 +57,4 @@ module.exports = async function addItemInfo(itemId) {
 			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=${accessToken}`
 		);
 	}
-};
+}

@@ -13,4 +13,4 @@ const AccessToken =
 	mongoose?.models?.AccessToken ||
 	mongoose.model('AccessToken', accessTokenSchema);
 
-module.exports = AccessToken;
+export default AccessToken;

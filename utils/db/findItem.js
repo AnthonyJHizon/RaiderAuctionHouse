@@ -1,6 +1,6 @@
 import Item from '../../models/item';
 
-module.exports = async function findItem(id) {
+export default async function findItem(id) {
 	try {
 		const result = await Item.findOne({ _id: id });
 		if (result) return result;
@@ -8,4 +8,4 @@ module.exports = async function findItem(id) {
 	} catch (error) {
 		console.log('Error getting data:', error);
 	}
-};
+}

@@ -3,7 +3,7 @@ import cache from 'memory-cache';
 import AccessToken from '../../models/accessToken';
 import connectToDatabase from './dbConnect';
 
-module.exports = async () => {
+export default async () => {
 	try {
 		await connectToDatabase();
 		const now = new Date();

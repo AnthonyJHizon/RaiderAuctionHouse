@@ -1,4 +1,4 @@
-module.exports = function floatToGold(float) {
+export default function floatToGold(float) {
 	const valueArr = float.toString().split('.');
 
 	const gold = valueArr[0];
@@ -21,4 +21,4 @@ module.exports = function floatToGold(float) {
 		(silver > '0' ? silver + 's ' : '') +
 		(copper > '0' ? copper + 'c ' : '')
 	).slice(0, -1);
-};
+}
