@@ -27,7 +27,6 @@ export default function AuctionPage({
 	const auctionsContainerRef = useRef(null);
 	const realm = pathname[1];
 	const auctionHouse = pathname[2];
-
 	const filter = searchParams.get('filter');
 	const subclass = searchParams.get('subclass');
 	const search = searchParams.get('search');

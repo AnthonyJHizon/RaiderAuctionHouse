@@ -6,11 +6,7 @@ import cacheRealms from '../utils/cache/realm';
 
 import HomePage from './homePage';
 
-// export const config = {
-// 	api: {
-// 		responseLimit: '8mb',
-// 	},
-// };
+export const revalidate = 60;
 
 async function fetchWithCache(key) {
 	const value = cache.get(key);
@@ -52,8 +48,7 @@ async function getData() {
 									headers: {
 										'Content-Type': 'application/json',
 									},
-								},
-								{ next: { revalidate: 60 } }
+								}
 							);
 							const auctionData = await auctionRes.json();
 							let result = {};
