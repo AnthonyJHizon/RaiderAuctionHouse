@@ -9,7 +9,7 @@ export async function getAuction(realmId, auctionId) {
 }
 
 export async function getAuctionHouse(realmId) {
-    const url = `https://us.api.blizzard.com/data/wow/connected-realm/${realmId}/auctions/index?namespace=dynamic-classic-us`;
+    const url = `https://us.api.blizzard.com/data/wow/connected-realm/${realmId}/auctions/index?namespace=dynamic-classic-us&locale=en_US`;
     return await performRequest(url);
 }
 
