@@ -1,6 +1,5 @@
 import cache from 'memory-cache';
 
-import getAccessToken from '../../../utils/db/getAccessToken';
 import findItem from '../../../utils/db/findItem';
 import propsFormatAuctionData from '../../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../../utils/formatData/props/realm';
@@ -8,6 +7,7 @@ import propsFormatAuctionHouseData from '../../../utils/formatData/props/auction
 import cacheRealms from '../../../utils/cache/realm';
 import cacheAuctionHouses from '../../../utils/cache/auctionHouse';
 import cacheRelevantItems from '../../../utils/cache/relevantItems';
+import { getAuction } from '../../../utils/clients/blizzard/client';
 
 import AuctionPage from './auctionPage';
 
@@ -67,25 +67,14 @@ export async function generateStaticParams() {
 }
 
 export async function getData(realms, auctionHouses, realm, auctionHouse) {
+	const response = await getAuction(realms[realm].id, auctionHouses[auctionHouse].id);
+	let auctionData = await response.json();
 	let data = {};
-
-	const accessToken = await getAccessToken();
-	const auctionRes = await fetch(
-		`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realm].id}/auctions/${auctionHouses[auctionHouse].id}?namespace=dynamic-classic-us&access_token=${accessToken}`,
-		{
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		},
-		{ next: { revalidate: 60 } }
-	);
-	let auctionData = await auctionRes.json();
 	auctionData = await propsFormatAuctionData(auctionData);
 	data['self'] = {
 		realm: realms[realm].name,
 		auctionHouse: auctionHouses[auctionHouse].name,
-		lastModified: new Date(auctionRes.headers.get('last-modified'))
+		lastModified: new Date(response.headers.get('last-modified'))
 			.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
 			.toString(), //get last modified header and convert to realm's timezone
 	};
