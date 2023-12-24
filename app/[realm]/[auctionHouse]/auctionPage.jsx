@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
-import Head from 'next/head';
 
 import Auction from '../../../components/auction';
 import Button from '../../../components/dropdown/button';
@@ -181,13 +180,6 @@ export default function AuctionPage({
 
 	return (
 		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
-			<Head>
-				<title>{self.realm + ' ' + self.auctionHouse}</title>
-				<meta
-					name="description"
-					content="Search through filtered WOTLK Classic auction house data."
-				/>
-			</Head>
 			<Script
 				src="https://wow.zamimg.com/widgets/power.js"
 				strategy="lazyOnload"

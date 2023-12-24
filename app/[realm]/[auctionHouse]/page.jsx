@@ -67,7 +67,10 @@ export async function generateStaticParams() {
 }
 
 export async function getData(realms, auctionHouses, realm, auctionHouse) {
-	const response = await getAuction(realms[realm].id, auctionHouses[auctionHouse].id);
+	const response = await getAuction(
+		realms[realm].id,
+		auctionHouses[auctionHouse].id
+	);
 	let auctionData = await response.json();
 	let data = {};
 	auctionData = await propsFormatAuctionData(auctionData);

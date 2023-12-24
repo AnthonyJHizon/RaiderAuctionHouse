@@ -1,6 +1,5 @@
 import cache from 'memory-cache';
 
-import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
 import cacheRealms from '../utils/cache/realm';
 import { getAuction } from '../utils/clients/blizzard/client';
@@ -30,7 +29,6 @@ async function getData() {
 	let auctionHouses = await fetchWithCache('auctionHouses');
 	let realms = await fetchWithCache('realms');
 
-	const accessToken = await getAccessToken();
 	const realmKeys = Object.keys(realms);
 	const auctionHouseKeys = Object.keys(auctionHouses);
 
@@ -42,7 +40,10 @@ async function getData() {
 					auctionHouseKeys &&
 					(await Promise.all(
 						auctionHouseKeys.map(async (auctionHouseKey) => {
-							const response = await getAuction(realms[realmKey].id, auctionHouses[auctionHouseKey].id);
+							const response = await getAuction(
+								realms[realmKey].id,
+								auctionHouses[auctionHouseKey].id
+							);
 							const auctionData = await response.json();
 							let result = {};
 							result['name'] = auctionHouses[auctionHouseKey].name;
