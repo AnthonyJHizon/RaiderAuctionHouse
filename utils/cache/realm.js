@@ -1,18 +1,9 @@
-import cache from 'memory-cache';
-import getAccessToken from '../../utils/db/getAccessToken';
+import cache, { get } from 'memory-cache';
 import cacheFormatRealmData from '../formatData/cache/realm';
+import { getSearchConnectedRealm } from '../clients/blizzard/client';
 
 export default async function Realm() {
-	const accessToken = await getAccessToken();
-	const realmRes = await fetch(
-		`https://us.api.blizzard.com/data/wow/search/connected-realm?namespace=dynamic-classic-us&access_token=${accessToken}`,
-		{
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		}
-	);
+	const realmRes = await getSearchConnectedRealm();
 	let realmData = await realmRes.json();
 	realmData = await cacheFormatRealmData(realmData);
 	cache.put('realms', realmData, 8.64e7 * 3);

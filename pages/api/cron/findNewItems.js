@@ -5,20 +5,13 @@ import getAccessToken from '../../../utils/db/getAccessToken';
 import propsFormatAuctionData from '../../../utils/formatData/props/auction';
 import fetchWithCacheAllItem from '../../../utils/cache/itemIds';
 import updateCacheAllItem from '../../../utils/cache/updateItemIds';
+import { getAuction } from '../../../utils/clients/blizzard/client';
 
 export default async function handler(req, res) {
 	try {
 		const accessToken = await getAccessToken();
-		const auctionRes = await fetch(
-			//if a new item is discovered it is most likely going to be from this server's auction house
-			`https://us.api.blizzard.com/data/wow/connected-realm/4728/auctions/2?namespace=dynamic-classic-us&access_token=${accessToken}`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		);
+		//if a new item is discovered it is most likely going to be from this server's auction house
+		const auctionRes = await getAuction('4728', '2');
 		let auctionData = await auctionRes.json();
 		auctionData = await propsFormatAuctionData(auctionData);
 		let allItems = cache.get('allItems');

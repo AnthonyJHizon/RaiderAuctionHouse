@@ -3,6 +3,7 @@ import cache from 'memory-cache';
 import getAccessToken from '../utils/db/getAccessToken';
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
 import cacheRealms from '../utils/cache/realm';
+import { getAuction } from '../utils/clients/blizzard/client';
 
 import HomePage from './homePage';
 
@@ -41,16 +42,8 @@ async function getData() {
 					auctionHouseKeys &&
 					(await Promise.all(
 						auctionHouseKeys.map(async (auctionHouseKey) => {
-							const auctionRes = await fetch(
-								`https://us.api.blizzard.com/data/wow/connected-realm/${realms[realmKey].id}/auctions/${auctionHouses[auctionHouseKey].id}?namespace=dynamic-classic-us&access_token=${accessToken}`,
-								{
-									method: 'GET',
-									headers: {
-										'Content-Type': 'application/json',
-									},
-								}
-							);
-							const auctionData = await auctionRes.json();
+							const response = await getAuction(realms[realmKey].id, auctionHouses[auctionHouseKey].id);
+							const auctionData = await response.json();
 							let result = {};
 							result['name'] = auctionHouses[auctionHouseKey].name;
 							if (typeof auctionData.auctions === 'undefined') {
