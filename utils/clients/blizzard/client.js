@@ -1,4 +1,3 @@
-import { revalidate } from '../../../app/page';
 import getAccessToken from '../../db/getAccessToken';
 import updateAccessToken from '../../db/updateAccessToken';
 
@@ -65,6 +64,8 @@ async function performRequest(url) {
 				if (response.status === 401) {
 					accessToken = await getToken();
 					await updateAccessToken(accessToken);
+					continue;
+				} else if (response.status === 504 || response.status === 429) {
 					continue;
 				} else {
 					throw new Error(`${response.status}: ${response.statusText}`);
