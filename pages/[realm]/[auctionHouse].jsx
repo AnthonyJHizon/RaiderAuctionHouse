@@ -1,36 +1,41 @@
-'use client';
-
 import { useState, useEffect, useRef } from 'react';
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 import Script from 'next/script';
+import Head from 'next/head';
 
-import Auction from '../../../components/auction';
-import Button from '../../../components/dropdown/button';
-import Dropdown from '../../../components/dropdown/dropdown';
-import Footer from '../../../components/footer';
-import InfiniteScroll from '../../../components/infiniteScroll';
-import Navbar from '../../../components/navbar';
-import LoadSpinner from '../../../components/loadSpinner';
+import cache from 'memory-cache';
 
-export default function AuctionPage({
-	data,
-	relevantItems,
-	realms,
-	auctionHouses,
-}) {
+import { getAuction } from '../../utils/clients/blizzard/client';
+import findItem from '../../utils/db/findItem';
+import propsFormatAuctionData from '../../utils/formatData/props/auction';
+import propsFormatRealmData from '../../utils/formatData/props/realm';
+import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
+import cacheRealms from '../../utils/cache/realm';
+import cacheAuctionHouses from '../../utils/cache/auctionHouse';
+import cacheRelevantItems from '../../utils/cache/relevantItems';
+
+import Auction from '../../components/auction';
+import Button from '../../components/dropdown/button';
+import Dropdown from '../../components/dropdown/dropdown';
+import Footer from '../../components/footer';
+import InfiniteScroll from '../../components/infiniteScroll';
+import Navbar from '../../components/navbar';
+import LoadSpinner from '../../components/loadSpinner';
+
+export default function Auctions({ data }) {
 	const router = useRouter();
-	const pathname = usePathname().split('/');
-	const searchParams = useSearchParams();
-
 	const auctionsContainerRef = useRef(null);
-	const realm = pathname[1];
-	const auctionHouse = pathname[2];
-	const filter = searchParams.get('filter');
-	const subclass = searchParams.get('subclass');
-	const search = searchParams.get('search');
 
-	const { self, auctions, initialAuctions } = data;
+	const { realm, auctionHouse, filter, subclass, search } = router.query;
+	const {
+		self,
+		realms,
+		auctionHouses,
+		auctions,
+		relevantItems,
+		initialAuctions,
+	} = data;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
 	const {
 		gems,
@@ -86,7 +91,7 @@ export default function AuctionPage({
 
 	useEffect(() => {
 		auctionsContainerRef.current.scroll({ top: 0, behavior: 'smooth' });
-	}, [pathname, searchParams]);
+	}, [router]);
 
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
@@ -180,6 +185,13 @@ export default function AuctionPage({
 
 	return (
 		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
+			<Head>
+				<title>{self.realm + ' ' + self.auctionHouse}</title>
+				<meta
+					name="description"
+					content="Search through filtered WOTLK Classic auction house data."
+				/>
+			</Head>
 			<Script
 				src="https://wow.zamimg.com/widgets/power.js"
 				strategy="lazyOnload"
@@ -252,4 +264,99 @@ export default function AuctionPage({
 			<Footer />
 		</div>
 	);
+}
+
+export async function loadInitialData(auctions) {
+	let newItemData = {};
+	if (auctions) {
+		const end = 20;
+		await Promise.all(
+			Object.keys(auctions)
+				.slice(0, end)
+				.map(async (id) => {
+					let item = {};
+					const itemData = await findItem(id);
+					item[itemData._id] = {
+						name: itemData.name,
+						icon: itemData.iconURL,
+					};
+					Object.assign(newItemData, item);
+				})
+		);
+	}
+	return newItemData;
+}
+
+export async function fetchWithCache(key) {
+	const value = cache.get(key);
+	if (value) {
+		return value;
+	} else {
+		switch (key) {
+			case 'realms':
+				return await cacheRealms();
+			case 'auctionHouses':
+				return await cacheAuctionHouses();
+			case 'relevantItems':
+				return await cacheRelevantItems();
+			default:
+				break;
+		}
+	}
+}
+
+export async function getStaticPaths() {
+	let realms = await fetchWithCache('realms');
+	let auctionHouses = await fetchWithCache('auctionHouses');
+
+	let paths = [];
+	Object.keys(realms).forEach((realm) => {
+		Object.keys(auctionHouses).forEach((auctionHouse) => {
+			paths.push({
+				params: {
+					realm: realm,
+					auctionHouse: auctionHouse,
+				},
+			});
+		});
+	});
+	return { paths, fallback: 'blocking' };
+}
+
+export async function getStaticProps({ params }) {
+	const { realm, auctionHouse } = params;
+
+	const auctionHouses = await fetchWithCache('auctionHouses');
+	const realms = await fetchWithCache('realms');
+	const response = await getAuction(
+		realms[realm].id,
+		auctionHouses[auctionHouse].id
+	);
+	let auctionData = await response.json();
+	auctionData = await propsFormatAuctionData(auctionData);
+
+	let data = {};
+	data['self'] = {
+		realm: realms[realm].name,
+		auctionHouse: auctionHouses[auctionHouse].name,
+		lastModified: new Date(response.headers.get('last-modified'))
+			.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
+			.toString(), //get last modified header and convert to realm's timezone
+	};
+
+	data['auctions'] = auctionData;
+	data['realms'] = await propsFormatRealmData(realms);
+	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
+	data['initialAuctions'] = await loadInitialData(auctionData);
+	data['relevantItems'] = await fetchWithCache('relevantItems');
+
+	delete data['realms'][realm]; //remove current realm from list of navigatable realms
+	delete data['auctionHouses'][auctionHouse]; //remove current auction house from list of navigatable auction houses
+	return {
+		props: {
+			data,
+			fallback: 'blocking',
+		},
+		revalidate: 60, //revalidate every minute.
+	};
 }

@@ -70,11 +70,6 @@ async function getData() {
 	return data;
 }
 
-export const metadata = {
-	title: 'Raider Auction House',
-	description: 'Search through filtered auction house data for WOTLK Classic',
-};
-
 export default async function Page() {
 	const data = await getData();
 	return <HomePage data={data} />;

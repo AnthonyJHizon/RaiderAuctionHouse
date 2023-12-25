@@ -1,8 +1,8 @@
 import '../styles/globals.css';
 
 export const metadata = {
-	title: 'Home',
-	description: 'Welcome to Next.js',
+	title: 'Raider Auction House',
+	description: 'Search through filtered auction house data for WOTLK Classic',
 };
 
 export default function RootLayout({ children }) {
