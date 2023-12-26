@@ -6,6 +6,7 @@ import Head from 'next/head';
 
 import cache from 'memory-cache';
 
+import redis from '../../utils/redis/client';
 import { getAuction } from '../../utils/clients/blizzard/client';
 import findItem from '../../utils/db/findItem';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
@@ -325,14 +326,15 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
 	const { realm, auctionHouse } = params;
-
 	const auctionHouses = await fetchWithCache('auctionHouses');
 	const realms = await fetchWithCache('realms');
 	const response = await getAuction(
 		realms[realm].id,
 		auctionHouses[auctionHouse].id
 	);
+
 	let auctionData = await response.json();
+	redis.set(realm + '/' + auctionHouse, auctionData?.auctions?.length || 0);
 	auctionData = await propsFormatAuctionData(auctionData);
 
 	let data = {};

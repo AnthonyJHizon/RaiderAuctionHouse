@@ -1,10 +1,13 @@
 import cache from 'memory-cache';
 
+import Navbar from '../components/navbar';
+import Footer from '../components/footer';
+import RealmCard from '../components/realmCard';
+
 import cacheAuctionHouses from '../utils/cache/auctionHouse';
 import cacheRealms from '../utils/cache/realm';
-import { getAuction } from '../utils/clients/blizzard/client';
 
-import HomePage from './homePage';
+import redis from '../utils/redis/client';
 
 export const revalidate = 60;
 
@@ -40,18 +43,10 @@ async function getData() {
 					auctionHouseKeys &&
 					(await Promise.all(
 						auctionHouseKeys.map(async (auctionHouseKey) => {
-							const response = await getAuction(
-								realms[realmKey].id,
-								auctionHouses[auctionHouseKey].id
-							);
-							const auctionData = await response.json();
 							let result = {};
 							result['name'] = auctionHouses[auctionHouseKey].name;
-							if (typeof auctionData.auctions === 'undefined') {
-								result['numAuctions'] = 0;
-							} else {
-								result['numAuctions'] = auctionData.auctions.length;
-							}
+							result['numAuctions'] =
+								(await redis.get(realmKey + '/' + auctionHouseKey)) || 0;
 							return result;
 						})
 					));
@@ -62,7 +57,7 @@ async function getData() {
 					] = auctionHouse;
 				});
 				data[realmKey] = {
-					realm: realms[realmKey].name,
+					name: realms[realmKey].name,
 					auctionHouses: auctionHousesData,
 				};
 			})
@@ -72,5 +67,24 @@ async function getData() {
 
 export default async function Page() {
 	const data = await getData();
-	return <HomePage data={data} />;
+	return (
+		<div className="flex flex-col items-center bg-icecrown bg-cover bg-no-repeat bg-center h-screen">
+			<Navbar />
+			<main className="flex flex-wrap justify-center items-center gap-[2.5%] bg-white/70 backdrop-blur-md font-bold h-screen lg:w-6/12 w-9/12 overflow-y-scroll text-white pt-5 pl-2.5 pr-2.5 pb-12 text-normal-1 scrollbar-none">
+				{Object.keys(data)
+					.sort()
+					.map((realm) => {
+						return (
+							<RealmCard
+								key={realm}
+								realm={realm}
+								name={data[realm].name}
+								auctionHouses={data[realm].auctionHouses}
+							/>
+						);
+					})}
+			</main>
+			<Footer />
+		</div>
+	);
 }
