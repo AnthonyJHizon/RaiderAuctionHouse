@@ -1,6 +1,6 @@
 import Item from '../../models/item';
 
-export default async function getItemAllInfo() {
+export default async function getAllItemInfo() {
 	try {
 		let allItemId = new Set();
 		const results = await Item.find({});

@@ -1,36 +1,19 @@
-import cache from 'memory-cache';
-
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import RealmCard from '../components/realmCard';
 
-import cacheAuctionHouses from '../utils/cache/auctionHouse';
-import cacheRealms from '../utils/cache/realm';
-
-import redis from '../utils/redis/client';
+import {
+	cacheGet,
+	cachedAunctionHouses,
+	cachedRealms,
+} from '../utils/redis/client';
 
 export const revalidate = 60;
 
-async function fetchWithCache(key) {
-	const value = cache.get(key);
-	if (value) {
-		return value;
-	} else {
-		switch (key) {
-			case 'realms':
-				return await cacheRealms();
-			case 'auctionHouses':
-				return await cacheAuctionHouses();
-			default:
-				break;
-		}
-	}
-}
-
 async function getData() {
 	let data = {};
-	let auctionHouses = await fetchWithCache('auctionHouses');
-	let realms = await fetchWithCache('realms');
+	let auctionHouses = await cachedAunctionHouses();
+	let realms = await cachedRealms();
 
 	const realmKeys = Object.keys(realms);
 	const auctionHouseKeys = Object.keys(auctionHouses);
@@ -38,15 +21,15 @@ async function getData() {
 	realmKeys &&
 		(await Promise.all(
 			realmKeys.map(async (realmKey) => {
-				await new Promise((resolve) => setTimeout(resolve, 0));
 				let auctionHouseData =
 					auctionHouseKeys &&
 					(await Promise.all(
 						auctionHouseKeys.map(async (auctionHouseKey) => {
 							let result = {};
 							result['name'] = auctionHouses[auctionHouseKey].name;
-							result['numAuctions'] =
-								(await redis.get(realmKey + '/' + auctionHouseKey)) || 0;
+							result['numAuctions'] = await cacheGet(
+								realmKey + '/' + auctionHouseKey
+							);
 							return result;
 						})
 					));

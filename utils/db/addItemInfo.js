@@ -46,7 +46,6 @@ export default async function addItemInfo(itemId) {
 				await Item.create(item);
 			}
 		}
-		const accessToken = await getAccessToken();
 		console.log(error + ' ' + itemId);
 		console.log(
 			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=<REDACTED>`
