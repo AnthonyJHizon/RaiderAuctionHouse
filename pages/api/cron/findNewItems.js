@@ -1,5 +1,3 @@
-import cache from 'memory-cache';
-
 import addItemInfo from '../../../utils/db/addItemInfo';
 import propsFormatAuctionData from '../../../utils/formatData/props/auction';
 import { getAuction } from '../../../utils/clients/blizzard/client';
