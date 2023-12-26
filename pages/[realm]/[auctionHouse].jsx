@@ -11,7 +11,9 @@ import {
 	cachedRealms,
 	cachedRelevantItems,
 } from '../../utils/redis/client';
+
 import findItem from '../../utils/db/findItem';
+import dbConnect from '../../utils/db/dbConnect';
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
@@ -270,6 +272,7 @@ export default function Auctions({ data }) {
 export async function loadInitialData(auctions) {
 	let newItemData = {};
 	if (auctions) {
+		await dbConnect();
 		const end = 20;
 		await Promise.all(
 			Object.keys(auctions)

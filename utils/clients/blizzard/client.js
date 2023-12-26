@@ -61,7 +61,6 @@ async function performRequest(url) {
 
 			if (!response.ok) {
 				if (response.status === 401) {
-					console.log('HERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR');
 					accessToken = await cacheUpdateAccessToken();
 					continue;
 				} else if (response.status === 504 || response.status === 429) {
