@@ -12,8 +12,9 @@ module.exports = async function dbConnect() {
 	}
 
 	if (!cached.promise) {
+		const mongodbURI = process.env.MONGODB_URI ? process.env.MONGODB_URI : 'mongodb://root:password@mongodb:27017/admin';
 		mongoose.set('strictQuery', true);
-		cached.promise = await mongoose.connect(process.env.MONGODB_URI);
+		cached.promise = await mongoose.connect(mongodbURI);
 		// console.log('connected to mongoDB!');
 	}
 
