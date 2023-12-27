@@ -1,0 +1,4 @@
+FROM mongo
+
+COPY itemsInit.json /itemsInit.json
+CMD mongoimport --uri mongodb://root:password@mongodb:27017/admin --collection items --type json --file /itemsInit.json --jsonArray

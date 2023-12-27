@@ -12,6 +12,11 @@ services:
     volumes:
       - mongodb-data:/data/db
 
+  mongo-seed:
+    build: ./utils/db/docker
+    depends_on:
+      - mongodb
+
   web:
     build: ./
     container_name: raider-auction-house-c
