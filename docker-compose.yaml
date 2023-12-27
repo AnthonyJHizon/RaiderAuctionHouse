@@ -1,9 +1,45 @@
 version: '3.8'
 services:
+  mongodb:
+    image: mongo:7.0.4
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongodb-data:/data/db
+
+  mongo-seed:
+    build: ./utils/db/docker
+    depends_on:
+      - mongodb
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      REDIS_PORT: 6379
+    volumes:
+      - redis-data:/data/cache
+
   web:
     build: ./
     container_name: raider-auction-house-c
-    volumes:
-      - .:/app
     ports:
       - '3000:3000'
+    depends_on:
+      - mongodb
+      - redis
+    command: ['npm', 'run', 'dev']
+
+volumes:
+  mongodb-data:
+    name: mongodb-data
+  redis-data:
+    name: redis-data
