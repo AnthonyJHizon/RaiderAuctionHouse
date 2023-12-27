@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 export default function Content({
 	element,
@@ -9,10 +9,11 @@ export default function Content({
 	auctionHouses,
 	type,
 }) {
-	const router = useRouter();
-	const { realm, auctionHouse } = router.query;
+	const pathname = usePathname().split('/');
+	const realm = pathname[1];
+	const auctionHouse = pathname[2];
 
-	const pathname = {
+	const newPathname = {
 		AuctionHouse: {
 			pathname: `../${realm}/${element}`,
 			query: queryParams,
@@ -31,7 +32,7 @@ export default function Content({
 	};
 
 	return (
-		<Link href={pathname[type]}>
+		<Link href={newPathname[type]}>
 			<div className="h-full w-full hover:bg-neutral-200">
 				{elementName[type]}
 			</div>

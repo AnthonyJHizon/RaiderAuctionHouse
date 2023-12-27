@@ -1,6 +1,6 @@
 import Item from '../../models/item';
 
-module.exports = async function getItemAllInfo() {
+export default async function getAllItemInfo() {
 	try {
 		let allItemId = new Set();
 		const results = await Item.find({});
@@ -11,4 +11,4 @@ module.exports = async function getItemAllInfo() {
 	} catch (error) {
 		console.log('Error getting data', error);
 	}
-};
+}

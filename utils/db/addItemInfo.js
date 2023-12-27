@@ -1,12 +1,9 @@
-import getAccessToken from '../db/getAccessToken';
+import { getItemInfo, getItemIcon } from '../clients/blizzard/client';
 import Item from '../../models/item';
 
-module.exports = async function addItemInfo(itemId) {
+export default async function addItemInfo(itemId) {
 	try {
-		const accessToken = await getAccessToken();
-		const itemDataRes = await fetch(
-			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=${accessToken}`
-		);
+		const itemDataRes = await getItemInfo(itemId);
 		const itemData = await itemDataRes.json();
 		const name = itemData.name;
 		const levelReq = itemData.required_level;
@@ -15,9 +12,7 @@ module.exports = async function addItemInfo(itemId) {
 		const itemSubclass = itemData.item_subclass.name;
 		const itemEquip = itemData.inventory_type.name;
 		const itemQuality = itemData.quality.name;
-		const iconRes = await fetch(
-			`https://us.api.blizzard.com/data/wow/media/item/${itemId}?namespace=static-classic-us&locale=en_US&access_token=${accessToken}`
-		);
+		const iconRes = await getItemIcon(itemId);
 		const iconData = await iconRes.json();
 		const iconResult = iconData.assets[0].value;
 
@@ -51,10 +46,9 @@ module.exports = async function addItemInfo(itemId) {
 				await Item.create(item);
 			}
 		}
-		const accessToken = await getAccessToken();
 		console.log(error + ' ' + itemId);
 		console.log(
-			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=${accessToken}`
+			`https://us.api.blizzard.com/data/wow/item/${itemId}?namespace=static-classic-us&locale=en_US&&locale=en_US&access_token=<REDACTED>`
 		);
 	}
-};
+}

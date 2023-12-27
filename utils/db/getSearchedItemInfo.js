@@ -1,6 +1,6 @@
 import Item from '../../models/item';
 
-module.exports = async function getSearchItemInfo(searchInput) {
+export default async function getSearchItemInfo(searchInput) {
 	try {
 		searchInput = searchInput.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 		const results = await Item.find({
@@ -10,4 +10,4 @@ module.exports = async function getSearchItemInfo(searchInput) {
 	} catch (error) {
 		return error;
 	}
-};
+}
