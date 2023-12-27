@@ -270,7 +270,7 @@ export default function Auctions({ data }) {
 }
 
 export async function loadInitialData(auctions) {
-	let newItemData = {};
+	let initialProps = {};
 	if (auctions) {
 		await dbConnect();
 		const end = 20;
@@ -280,15 +280,17 @@ export async function loadInitialData(auctions) {
 				.map(async (id) => {
 					let item = {};
 					const itemData = await findItem(id);
-					item[itemData._id] = {
-						name: itemData.name,
-						icon: itemData.iconURL,
-					};
-					Object.assign(newItemData, item);
+					if (itemData) {
+						item[itemData._id] = {
+							name: itemData.name,
+							icon: itemData.iconURL,
+						};
+						Object.assign(initialProps, item);
+					}
 				})
 		);
 	}
-	return newItemData;
+	return initialProps;
 }
 
 export async function getStaticPaths() {

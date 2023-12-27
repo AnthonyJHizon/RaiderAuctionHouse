@@ -12,7 +12,7 @@ import cacheFormatRealmData from '../formatData/cache/realm';
 import getAllItemInfo from '../db/getAllItem';
 import getAllRelevantItemInfo from '../db/getAllRelevantItemInfo';
 
-export const redis = new Redis(process.env.REDIS_URL);
+export const redis = new Redis(process.env.REDIS_URL ?? 'redis://redis:6379');
 
 export async function cacheGet(value) {
 	const result = await redis.get(value);

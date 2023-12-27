@@ -27,9 +27,8 @@ async function getData() {
 						auctionHouseKeys.map(async (auctionHouseKey) => {
 							let result = {};
 							result['name'] = auctionHouses[auctionHouseKey].name;
-							result['numAuctions'] = await cacheGet(
-								realmKey + '/' + auctionHouseKey
-							);
+							result['numAuctions'] =
+								(await cacheGet(realmKey + '/' + auctionHouseKey)) ?? 0;
 							return result;
 						})
 					));
