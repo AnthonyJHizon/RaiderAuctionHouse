@@ -1,4 +1,4 @@
-export default async function Realm(data) {
+export default function Realm(data) {
 	let realmData = {};
 	Object.keys(data).forEach((realm) => {
 		realmData[realm] = data[realm].name;

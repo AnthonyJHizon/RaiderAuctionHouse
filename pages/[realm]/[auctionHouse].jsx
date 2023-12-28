@@ -4,16 +4,18 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 
-import { getAuction } from '../../utils/clients/blizzard/client';
+import { getAuction } from '../../lib/clients/blizzard/client';
+
 import {
 	cacheSet,
 	cachedAunctionHouses,
 	cachedRealms,
 	cachedRelevantItems,
-} from '../../utils/redis/client';
+} from '../../lib/clients/redis/client';
 
-import findItem from '../../utils/db/findItem';
-import dbConnect from '../../utils/db/dbConnect';
+import { getItem } from '../../lib/db/item/get';
+import dbConnect from '../../lib/db/dbConnect';
+
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
@@ -260,7 +262,11 @@ export default function Auctions({ data }) {
 							</div>
 						)
 					) : (
-						<InfiniteScroll auctions={auctions} initialData={initialAuctions} />
+						<InfiniteScroll
+							key={realm + '/' + auctionHouse}
+							auctions={auctions}
+							initialData={initialAuctions}
+						/>
 					)}
 				</div>
 			</main>
@@ -268,8 +274,7 @@ export default function Auctions({ data }) {
 		</div>
 	);
 }
-
-export async function loadInitialData(auctions) {
+async function loadInitialData(auctions) {
 	let initialProps = {};
 	if (auctions) {
 		await dbConnect();
@@ -279,7 +284,7 @@ export async function loadInitialData(auctions) {
 				.slice(0, end)
 				.map(async (id) => {
 					let item = {};
-					const itemData = await findItem(id);
+					const itemData = await getItem(id);
 					if (itemData) {
 						item[itemData._id] = {
 							name: itemData.name,
@@ -313,6 +318,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
 	const { realm, auctionHouse } = params;
+
 	const auctionHouses = await cachedAunctionHouses();
 	const realms = await cachedRealms();
 	const response = await getAuction(
@@ -325,7 +331,7 @@ export async function getStaticProps({ params }) {
 		realm + '/' + auctionHouse,
 		auctionData?.auctions?.length || 0
 	);
-	auctionData = await propsFormatAuctionData(auctionData);
+	auctionData = propsFormatAuctionData(auctionData);
 
 	let data = {};
 	data['self'] = {
@@ -337,8 +343,8 @@ export async function getStaticProps({ params }) {
 	};
 
 	data['auctions'] = auctionData;
-	data['realms'] = await propsFormatRealmData(realms);
-	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
+	data['realms'] = propsFormatRealmData(realms);
+	data['auctionHouses'] = propsFormatAuctionHouseData(auctionHouses);
 	data['initialAuctions'] = await loadInitialData(auctionData);
 	data['relevantItems'] = await cachedRelevantItems();
 

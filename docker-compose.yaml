@@ -13,7 +13,7 @@ services:
       - mongodb-data:/data/db
 
   mongo-seed:
-    build: ./utils/db/docker
+    build: ./lib/db/docker
     depends_on:
       - mongodb
 

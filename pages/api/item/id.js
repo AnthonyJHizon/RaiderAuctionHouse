@@ -1,5 +1,6 @@
-import connectToDatabase from '../../../utils/db/dbConnect';
-import findItem from '../../../utils/db/findItem';
+import { getItem } from '../../../lib/db/item/get';
+import addItem from '../../../lib/db/item/add';
+import dbConnect from '../../../lib/db/dbConnect';
 
 export default async function handler(req, res) {
 	if (!req.query) {
@@ -7,9 +8,12 @@ export default async function handler(req, res) {
 		return;
 	}
 	try {
-		await connectToDatabase();
+		await dbConnect();
 		let item = {};
-		const itemData = await findItem(req.query.id);
+		let itemData = await getItem(req.query.id);
+		if (!itemData) {
+			itemData = await addItem(req.query.id);
+		}
 		item[itemData._id] = {
 			name: itemData.name,
 			icon: itemData.iconURL,

@@ -1,4 +1,4 @@
-export default async function AuctionHouse(data) {
+export default function AuctionHouse(data) {
 	let auctionHouses = {};
 	Object.keys(data).forEach((auctionHouse) => {
 		auctionHouses[auctionHouse] = data[auctionHouse].name;

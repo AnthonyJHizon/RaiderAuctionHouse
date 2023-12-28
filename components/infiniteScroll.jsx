@@ -12,31 +12,35 @@ export default function InfiniteScroll({ auctions, initialData }) {
 	let auctionsArr = [];
 
 	useEffect(() => {
+		let running = true;
+		const loadMoreData = async () => {
+			if (start < Object.keys(auctions).length) {
+				console.log('running ' + start);
+				const end = start + 20;
+				let newItemData = {};
+				await Promise.all(
+					Object.keys(auctions)
+						.slice(start, end)
+						.map(async (id) => {
+							const idParams = new URLSearchParams({
+								id,
+							}).toString();
+							const itemRes = await fetch(`/api/item/id?${idParams}`);
+							const itemData = await itemRes.json();
+							Object.assign(newItemData, itemData);
+						})
+				);
+				if (running) {
+					setItemsData(Object.assign(itemsData, newItemData));
+					setStart(end);
+				}
+			}
+		};
 		if (inView) {
 			loadMoreData();
 		}
-	}, [inView]);
-
-	async function loadMoreData() {
-		if (start < Object.keys(auctions).length) {
-			const end = start + 20;
-			let newItemData = {};
-			await Promise.all(
-				Object.keys(auctions)
-					.slice(start, end)
-					.map(async (id) => {
-						const idParams = new URLSearchParams({
-							id,
-						}).toString();
-						const itemRes = await fetch(`/api/item/id?${idParams}`);
-						const itemData = await itemRes.json();
-						Object.assign(newItemData, itemData);
-					})
-			);
-			setItemsData(Object.assign(itemsData, newItemData));
-			setStart(end);
-		}
-	}
+		return () => (running = false);
+	}, [inView, auctions, itemsData, start]);
 
 	if (itemsData && auctions) {
 		Object.keys(itemsData).forEach((item) => {
