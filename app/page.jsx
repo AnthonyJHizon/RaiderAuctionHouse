@@ -6,7 +6,7 @@ import {
 	cacheGet,
 	cachedAunctionHouses,
 	cachedRealms,
-} from '../utils/redis/client';
+} from '../lib/clients/redis/client';
 
 export const revalidate = 60;
 

@@ -1,4 +1,4 @@
-export default async function Auction(data) {
+export default function Auction(data) {
 	let minPriceHash = {};
 	data.auctions &&
 		data.auctions.forEach((item) => {
