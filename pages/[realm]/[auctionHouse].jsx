@@ -262,7 +262,11 @@ export default function Auctions({ data }) {
 							</div>
 						)
 					) : (
-						<InfiniteScroll auctions={auctions} initialData={initialAuctions} />
+						<InfiniteScroll
+							key={realm + '/' + auctionHouse}
+							auctions={auctions}
+							initialData={initialAuctions}
+						/>
 					)}
 				</div>
 			</main>
