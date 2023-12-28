@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-
+import { usePathname } from 'next/navigation';
 import Auction from './auction';
 import LoadSpinner from './loadSpinner';
 
@@ -8,8 +8,14 @@ export default function InfiniteScroll({ auctions, initialData }) {
 	const [itemsData, setItemsData] = useState(initialData);
 	const [start, setStart] = useState(20);
 	const { ref, inView } = useInView();
+	const pathname = usePathname().split('/');
 
 	let auctionsArr = [];
+
+	useEffect(() => {
+		auctionsArr = [];
+		setItemsData(initialData);
+	}, [pathname]);
 
 	useEffect(() => {
 		if (inView) {
