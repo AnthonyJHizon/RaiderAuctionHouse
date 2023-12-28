@@ -1,10 +1,12 @@
 import Link from 'next/link';
 
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 export default function Button({ name, itemClass }) {
-	const router = useRouter();
-	const { realm, auctionHouse } = router.query;
+	const pathname = usePathname().split('/');
+
+	const realm = pathname[1];
+	const auctionHouse = pathname[2];
 
 	return (
 		<>

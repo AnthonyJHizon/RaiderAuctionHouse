@@ -1,4 +1,4 @@
-module.exports = async function Auction(data) {
+export default function Auction(data) {
 	let minPriceHash = {};
 	data.auctions &&
 		data.auctions.forEach((item) => {
@@ -16,4 +16,4 @@ module.exports = async function Auction(data) {
 			}
 		});
 	return minPriceHash;
-};
+}

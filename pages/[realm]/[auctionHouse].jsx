@@ -4,16 +4,21 @@ import { useRouter } from 'next/router';
 import Script from 'next/script';
 import Head from 'next/head';
 
-import cache from 'memory-cache';
+import { getAuction } from '../../lib/clients/blizzard/client';
 
-import getAccessToken from '../../utils/db/getAccessToken';
+import {
+	cacheSet,
+	cachedAunctionHouses,
+	cachedRealms,
+	cachedRelevantItems,
+} from '../../lib/clients/redis/client';
+
+import { getItem } from '../../lib/db/item/get';
+import dbConnect from '../../lib/db/dbConnect';
+
 import propsFormatAuctionData from '../../utils/formatData/props/auction';
 import propsFormatRealmData from '../../utils/formatData/props/realm';
 import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHouse';
-import cacheRealms from '../../utils/cache/realm';
-import cacheAuctionHouses from '../../utils/cache/auctionHouse';
-import cacheRelevantItems from '../../utils/cache/relevantItems';
-import loadInitialAuctions from '../../utils/db/loadInitialAuctions';
 
 import Auction from '../../components/auction';
 import Button from '../../components/dropdown/button';
@@ -257,7 +262,11 @@ export default function Auctions({ data }) {
 							</div>
 						)
 					) : (
-						<InfiniteScroll auctions={auctions} initialData={initialAuctions} />
+						<InfiniteScroll
+							key={realm + '/' + auctionHouse}
+							auctions={auctions}
+							initialData={initialAuctions}
+						/>
 					)}
 				</div>
 			</main>
@@ -265,28 +274,33 @@ export default function Auctions({ data }) {
 		</div>
 	);
 }
-
-export async function fetchWithCache(key) {
-	const value = cache.get(key);
-	if (value) {
-		return value;
-	} else {
-		switch (key) {
-			case 'realms':
-				return await cacheRealms();
-			case 'auctionHouses':
-				return await cacheAuctionHouses();
-			case 'relevantItems':
-				return await cacheRelevantItems();
-			default:
-				break;
-		}
+async function loadInitialData(auctions) {
+	let initialProps = {};
+	if (auctions) {
+		await dbConnect();
+		const end = 20;
+		await Promise.all(
+			Object.keys(auctions)
+				.slice(0, end)
+				.map(async (id) => {
+					let item = {};
+					const itemData = await getItem(id);
+					if (itemData) {
+						item[itemData._id] = {
+							name: itemData.name,
+							icon: itemData.iconURL,
+						};
+						Object.assign(initialProps, item);
+					}
+				})
+		);
 	}
+	return initialProps;
 }
 
 export async function getStaticPaths() {
-	let realms = await fetchWithCache('realms');
-	let auctionHouses = await fetchWithCache('auctionHouses');
+	let realms = await cachedRealms();
+	let auctionHouses = await cachedAunctionHouses();
 
 	let paths = [];
 	Object.keys(realms).forEach((realm) => {
@@ -303,45 +317,39 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-	let data = {};
+	const { realm, auctionHouse } = params;
 
-	const auctionHouses = await fetchWithCache('auctionHouses');
-	const realms = await fetchWithCache('realms');
-	const accessToken = await getAccessToken();
-	const auctionRes = await fetch(
-		`https://us.api.blizzard.com/data/wow/connected-realm/${
-			realms[params.realm].id
-		}/auctions/${
-			auctionHouses[params.auctionHouse].id
-		}?namespace=dynamic-classic-us&access_token=${accessToken}`,
-		{
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		}
+	const auctionHouses = await cachedAunctionHouses();
+	const realms = await cachedRealms();
+	const response = await getAuction(
+		realms[realm].id,
+		auctionHouses[auctionHouse].id
 	);
 
-	let auctionData = await auctionRes.json();
+	let auctionData = await response.json();
+	await cacheSet(
+		realm + '/' + auctionHouse,
+		auctionData?.auctions?.length || 0
+	);
+	auctionData = propsFormatAuctionData(auctionData);
 
-	auctionData = await propsFormatAuctionData(auctionData);
-
+	let data = {};
 	data['self'] = {
-		realm: realms[params.realm].name,
-		auctionHouse: auctionHouses[params.auctionHouse].name,
-		lastModified: new Date(auctionRes.headers.get('last-modified'))
-			.toLocaleString('en-US', { timeZone: realms[params.realm].timeZone })
+		realm: realms[realm].name,
+		auctionHouse: auctionHouses[auctionHouse].name,
+		lastModified: new Date(response.headers.get('last-modified'))
+			.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
 			.toString(), //get last modified header and convert to realm's timezone
 	};
 
 	data['auctions'] = auctionData;
-	data['realms'] = await propsFormatRealmData(realms);
-	data['auctionHouses'] = await propsFormatAuctionHouseData(auctionHouses);
-	data['relevantItems'] = await fetchWithCache('relevantItems');
-	data['initialAuctions'] = await loadInitialAuctions(auctionData);
+	data['realms'] = propsFormatRealmData(realms);
+	data['auctionHouses'] = propsFormatAuctionHouseData(auctionHouses);
+	data['initialAuctions'] = await loadInitialData(auctionData);
+	data['relevantItems'] = await cachedRelevantItems();
 
-	delete data['realms'][params.realm]; //remove current realm from list of navigatable realms
-	delete data['auctionHouses'][params.auctionHouse]; //remove current auction house from list of navigatable auction houses
+	delete data['realms'][realm]; //remove current realm from list of navigatable realms
+	delete data['auctionHouses'][auctionHouse]; //remove current auction house from list of navigatable auction houses
 	return {
 		props: {
 			data,

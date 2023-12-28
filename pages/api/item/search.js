@@ -1,5 +1,5 @@
-import connectToDatabase from '../../../utils/db/dbConnect';
-import getSearchedItemInfo from '../../../utils/db/getSearchedItemInfo';
+import connectToDatabase from '../../../lib/db/dbConnect';
+import { getSearchItems } from '../../../lib/db/item/get';
 
 export default async function handler(req, res) {
 	if (!req.query) {
@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 	try {
 		await connectToDatabase();
 		let searchItems = {};
-		const searchItemData = await getSearchedItemInfo(req.query.item);
+		const searchItemData = await getSearchItems(req.query.item);
 		searchItemData.forEach((item) => {
 			searchItems[item._id] = {
 				name: item.name,
@@ -18,7 +18,6 @@ export default async function handler(req, res) {
 		});
 		res.status(200).json(searchItems);
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({ error: 'Server Error' });
 	}
 }
