@@ -202,7 +202,7 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full w-[100vw] sm:w-[50vw] overflow-hidden">
+			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full xl:w-6/12 md:w-9/12 w-full overflow-hidden">
 				<div className="inline-flex bg-royal-blue h-[5%] w-full">
 					<Dropdown
 						name={'Realm'}
