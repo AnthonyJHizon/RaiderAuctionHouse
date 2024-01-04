@@ -1,11 +1,15 @@
 import Description from './description';
-import WowToken from './wowToken';
 
 export default function Banner() {
 	return (
-		<div className="flex flex-col w-full h-80 bg-none">
+		<div className="relative w-full h-[350px] bg-gradient-to-r from-gray-700 via-zinc-500 to-gray-800 flex flex-wrap justify-center">
+			<img
+				src="/banner.jpg"
+				alt=""
+				className="absolute w-full h-full object-cover mix-blend-overlay"
+				draggable={false}
+			/>
 			<Description />
-			<WowToken />
 		</div>
 	);
 }

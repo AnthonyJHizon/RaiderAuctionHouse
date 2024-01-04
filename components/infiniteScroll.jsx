@@ -15,7 +15,6 @@ export default function InfiniteScroll({ auctions, initialData }) {
 		let running = true;
 		const loadMoreData = async () => {
 			if (start < Object.keys(auctions).length) {
-				console.log('running ' + start);
 				const end = start + 20;
 				let newItemData = {};
 				await Promise.all(
