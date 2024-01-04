@@ -5,8 +5,8 @@ export default function RelevantItem(
 	itemSubclasses
 ) {
 	itemData.forEach((item) => {
-		itemSubclassInfo[item_id] = item.itemSubclass;
-		itemClassInfo[item_id] = {
+		itemSubclassInfo[item._id] = item.itemSubclass;
+		itemClassInfo[item._id] = {
 			name: item.name,
 			icon: item.iconURL,
 		};
