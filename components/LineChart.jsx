@@ -1,7 +1,8 @@
 'use client';
 
-import ReactEcharts from 'echarts-for-react';
 import moment from 'moment';
+import { graphic } from 'echarts';
+import ReactEcharts from 'echarts-for-react';
 
 export default function LineChart({
 	data,
@@ -38,11 +39,9 @@ export default function LineChart({
 					.local()
 					.format('MMM Do, h:mm a')}</div>
 				<div style="text-shadow: 0px 0px 1px white;">
-				<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#5470c6;"></span>
+				<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:#04729e;"></span>
 				<span style="float:right;margin-left:5px;font-size:14px;color:black;font-weight:400">
-				Price: <span style="color:rgb(218,165,32)">${
-					params[0].value[1]
-				} Gold</span></span>
+				Price: ${params[0].value[1]} Gold</span>
 				</div>
 			    `;
 			},
@@ -125,9 +124,50 @@ export default function LineChart({
 			{
 				type: 'line',
 				data: data,
-				symbolSize: 15,
+				symbolSize: 20,
 				showSymbol: false,
-				areaStyle: {},
+				itemStyle: {
+					emphasis: {
+						color: 'white',
+						borderWidth: 0,
+					},
+				},
+				lineStyle: {
+					width: 3,
+					color: {
+						type: 'linear',
+						x: 0,
+						y: 0,
+						x2: 1,
+						y2: 1,
+						colorStops: [
+							{
+								offset: 0,
+								color: '#04729e',
+							},
+							{
+								offset: 0.5,
+								color: '#058fc5',
+							},
+							{
+								offset: 1,
+								color: '#24a2d4',
+							},
+						],
+					},
+				},
+				areaStyle: {
+					color: new graphic.LinearGradient(0, 0, 0, 1, [
+						{
+							offset: 0,
+							color: 'rgb(77, 119, 255)',
+						},
+						{
+							offset: 1,
+							color: 'rgb(0, 221, 255)',
+						},
+					]),
+				},
 			},
 		],
 		dataZoom: [

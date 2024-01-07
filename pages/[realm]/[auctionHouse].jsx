@@ -22,7 +22,7 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 
 import Auction from '../../components/auction';
 import Button from '../../components/dropdown/button';
-import Dropdown from '../../components/dropdown/dropdown';
+import Dropdown from '../../components/dropdown/index';
 import Footer from '../../components/footer';
 import InfiniteScroll from '../../components/infiniteScroll';
 import Navbar from '../../components/navbar';

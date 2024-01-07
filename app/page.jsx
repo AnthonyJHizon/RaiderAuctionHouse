@@ -1,4 +1,4 @@
-import Banner from '../components/banner/banner';
+import Banner from '../components/banner/index';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 import RealmCard from '../components/realmCard';
