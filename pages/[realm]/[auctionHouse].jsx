@@ -247,7 +247,7 @@ export default function Auctions({ data }) {
 				</div>
 				<div
 					ref={auctionsContainerRef}
-					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-none"
+					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-thumb-rounded-full scrollbar-thin scrollbar-track-neutral-300 scrollbar-thumb-zinc-400"
 				>
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
