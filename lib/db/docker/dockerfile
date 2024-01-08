@@ -1,4 +1,7 @@
 FROM mongo
 
 COPY itemsInit.json /itemsInit.json
-CMD mongoimport --uri mongodb://root:password@mongodb:27017/admin --collection items --drop --type json --file /itemsInit.json --jsonArray
+
+COPY wowTokensInit.json /wowTokensInit.json
+
+CMD mongoimport --uri mongodb://root:password@mongodb:27017/admin --collection items --drop --type json --file /itemsInit.json --jsonArray && mongoimport --uri mongodb://root:password@mongodb:27017/admin --collection wowtokens --drop --type json --file /wowTokensInit.json --jsonArray
