@@ -22,7 +22,7 @@ import propsFormatAuctionHouseData from '../../utils/formatData/props/auctionHou
 
 import Auction from '../../components/auction';
 import Button from '../../components/dropdown/button';
-import Dropdown from '../../components/dropdown/dropdown';
+import Dropdown from '../../components/dropdown/index';
 import Footer from '../../components/footer';
 import InfiniteScroll from '../../components/infiniteScroll';
 import Navbar from '../../components/navbar';
@@ -202,7 +202,7 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full w-[100vw] sm:w-[50vw] overflow-hidden">
+			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full xl:w-6/12 md:w-9/12 w-full overflow-hidden">
 				<div className="inline-flex bg-royal-blue h-[5%] w-full">
 					<Dropdown
 						name={'Realm'}
@@ -247,7 +247,7 @@ export default function Auctions({ data }) {
 				</div>
 				<div
 					ref={auctionsContainerRef}
-					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-none"
+					className="h-[72.5%] w-full overflow-y-scroll bg-white/50  scrollbar-thumb-rounded-full scrollbar-thin scrollbar-track-neutral-300 scrollbar-thumb-zinc-400"
 				>
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
