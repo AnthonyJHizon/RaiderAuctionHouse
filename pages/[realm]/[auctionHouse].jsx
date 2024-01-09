@@ -339,7 +339,7 @@ export async function getStaticProps({ params }) {
 		auctionHouse: auctionHouses[auctionHouse].name,
 		lastModified: new Date(response.headers.get('last-modified'))
 			.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
-			.toString(), //get last modified header and convert to realm's timezone
+			.toString() + ' (Server)', //get last modified header and convert to realm's timezone
 	};
 
 	data['auctions'] = auctionData;
