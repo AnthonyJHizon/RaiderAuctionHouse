@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import AmountAuctions from '../actions/getAmountAuctions';
 
-export default function AuctionHouseCard({ realm, auctionHouse, numAuctions }) {
+export default async function AuctionHouseCard({ realm, auctionHouse }) {
+	const numAuctions = await AmountAuctions(realm, auctionHouse);
 	return (
 		<Link key={realm + '-' + auctionHouse} href={`/${realm}/${auctionHouse}`}>
 			<div className="relative h-16 opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">
