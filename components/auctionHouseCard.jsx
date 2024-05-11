@@ -1,6 +1,11 @@
 import Link from 'next/link';
+import { unstable_noStore } from 'next/server';
 
-export default function AuctionHouseCard({ realm, auctionHouse, numAuctions }) {
+import getNumAuctions from '../actions/getNumAuctions';
+
+export default async function AuctionHouseCard({ realm, auctionHouse }) {
+	unstable_noStore();
+	const numAuctions = await getNumAuctions(realm, auctionHouse);
 	return (
 		<Link key={realm + '-' + auctionHouse} href={`/${realm}/${auctionHouse}`}>
 			<div className="relative h-16 opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">

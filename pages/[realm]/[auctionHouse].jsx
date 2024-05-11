@@ -328,8 +328,8 @@ export async function getStaticProps({ params }) {
 
 	let auctionData = await response.json();
 	await cacheSet(
-		realm + '/' + auctionHouse,
-		auctionData?.auctions?.length || 0
+		`${realm}/'${auctionHouse}`,
+		auctionData?.auctions?.length ?? 0
 	);
 	auctionData = propsFormatAuctionData(auctionData);
 
