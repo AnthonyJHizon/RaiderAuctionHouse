@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { unstable_noStore } from 'next/server';
 
-import getNumAuctions from '../actions/getNumAuctions';
+import { cacheGet } from '../lib/clients/redis/client';
 
 export default async function AuctionHouseCard({ realm, auctionHouse }) {
 	unstable_noStore();
-	const numAuctions = await getNumAuctions(realm, auctionHouse);
+
+	const numAuctions = await cacheGet(`${realm}/${auctionHouse}`);
+
 	return (
 		<Link key={realm + '-' + auctionHouse} href={`/${realm}/${auctionHouse}`}>
 			<div className="relative h-16 opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">

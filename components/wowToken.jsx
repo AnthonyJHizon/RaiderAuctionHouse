@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic';
-import { unstable_noStore } from 'next/server';
 
 import { getWowTokenGTE, getWowTokenLatest } from '../lib/db/wowToken/get';
 
@@ -9,8 +8,6 @@ const LineChart = dynamic(() => import('./LineChart'), {
 });
 
 export default async function WowToken() {
-	unstable_noStore();
-
 	const currentToken = await getWowTokenLatest();
 	const data = await getWowTokenGTE(3);
 
