@@ -5,7 +5,10 @@ import { unstable_noStore } from 'next/server';
 
 import { getWowTokenGTE, getWowTokenLatest } from '../lib/db/wowToken/get';
 
-const LineChart = dynamic(() => import('./LineChart'), { ssr: false });
+const LineChart = dynamic(() => import('./LineChart'), {
+	loading: () => <p className="animate-pulse text-header-1">Loading</p>,
+	ssr: false,
+});
 
 export default async function WowToken() {
 	unstable_noStore();
@@ -35,18 +38,14 @@ export default async function WowToken() {
 				className="absolute z-[-10] h-full w-full object-cover  mix-blend-overlay"
 				draggable={false}
 			/>
-			<Suspense
-				fallback={<p className="animate-pulse text-header-1">Loading</p>}
-			>
-				<LineChart
-					data={chartData}
-					title={`1 Wow Token = ${currentTokenPrice} Gold`}
-					yMin={yMin}
-					yMax={yMax}
-					yAxisName="Price in gold"
-					xAxisName="Date"
-				/>
-			</Suspense>
+			<LineChart
+				data={chartData}
+				title={`1 Wow Token = ${currentTokenPrice} Gold`}
+				yMin={yMin}
+				yMax={yMax}
+				yAxisName="Price in gold"
+				xAxisName="Date"
+			/>
 		</div>
 	);
 }
