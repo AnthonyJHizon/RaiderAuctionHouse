@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-
 import dynamic from 'next/dynamic';
 import { unstable_noStore } from 'next/server';
 
