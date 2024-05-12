@@ -5,7 +5,7 @@ import { unstable_noStore } from 'next/server';
 
 import { cacheGet } from '../lib/clients/redis/client';
 
-export default function AuctionHouseCard({ realm, auctionHouse }) {
+export default async function AuctionHouseCard({ realm, auctionHouse }) {
 	unstable_noStore();
 
 	return (
