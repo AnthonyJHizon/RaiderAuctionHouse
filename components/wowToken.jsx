@@ -1,20 +1,19 @@
 import { Suspense } from 'react';
 
-import { unstable_noStore } from 'next/server';
 import dynamic from 'next/dynamic';
+import { unstable_noStore } from 'next/server';
 
-import WowTokenData from '../actions/getWowTokenInfo';
-import { getWowTokenGTE } from '../lib/db/wowToken/get';
+import { getWowTokenGTE, getWowTokenLatest } from '../lib/db/wowToken/get';
 
 const LineChart = dynamic(() => import('./LineChart'), { ssr: false });
 
 export default async function WowToken() {
 	unstable_noStore();
 
-	const currentToken = await WowTokenData();
+	const currentToken = await getWowTokenLatest();
 	const data = await getWowTokenGTE(3);
 
-	const currentTokenPrice = currentToken.price / 10000;
+	const currentTokenPrice = currentToken.price;
 	const chartData = data.map((d) => [d.date, d.price]);
 
 	let yMin = Number.MAX_SAFE_INTEGER;
