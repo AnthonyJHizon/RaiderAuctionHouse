@@ -8,7 +8,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 			className="grid grid-cols-3 w-full h-[58px] items-center hover:bg-gray-50/80 text-normal-1 overflow-hidden"
 		>
 			<a
-				href={'https://wowhead.com/wotlk/item=' + itemId}
+				href={'https://wowhead.com/cata/item=' + itemId}
 				className="justify-self-start"
 				target="_blank"
 				rel="noreferrer"
@@ -16,7 +16,7 @@ export default function Auction({ itemId, itemName, itemIcon, itemVal }) {
 				<img src={itemIcon} alt="" height="58" width="58" draggable={false} />
 			</a>
 			<a
-				href={'https://wowhead.com/wotlk/item=' + itemId}
+				href={'https://wowhead.com/cata/item=' + itemId}
 				className="ml-[20%]"
 				target="_blank"
 				rel="noreferrer"
