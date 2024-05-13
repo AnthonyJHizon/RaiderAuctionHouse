@@ -12,8 +12,6 @@ export default function InfiniteScroll({ auctions, initialData }) {
 
 	let auctionsArr = [];
 
-	console.log(inView);
-
 	useEffect(() => {
 		let running = true;
 		const loadMoreData = async () => {
