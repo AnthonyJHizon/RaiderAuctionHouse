@@ -36,6 +36,13 @@ services:
     depends_on:
       - mongodb
       - redis
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
     command: ['npm', 'run', 'dev']
 
 volumes:
@@ -43,3 +50,5 @@ volumes:
     name: mongodb-data
   redis-data:
     name: redis-data
+  app-data:
+    name: app-data
