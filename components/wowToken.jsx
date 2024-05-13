@@ -1,12 +1,17 @@
-import WowTokenData from '../actions/getWowTokenInfo';
-import { getWowTokenGTE } from '../lib/db/wowToken/get';
-import LineChart from './LineChart';
+import dynamic from 'next/dynamic';
+
+import { getWowTokenGTE, getWowTokenLatest } from '../lib/db/wowToken/get';
+
+const LineChart = dynamic(() => import('./LineChart'), {
+	loading: () => <p className="animate-pulse text-header-1">Loading</p>,
+	ssr: false,
+});
 
 export default async function WowToken() {
-	const currentToken = await WowTokenData();
+	const currentToken = await getWowTokenLatest();
 	const data = await getWowTokenGTE(3);
 
-	const currentTokenPrice = currentToken.price / 10000;
+	const currentTokenPrice = currentToken.price;
 	const chartData = data.map((d) => [d.date, d.price]);
 
 	let yMin = Number.MAX_SAFE_INTEGER;

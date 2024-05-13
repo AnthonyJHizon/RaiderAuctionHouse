@@ -30,7 +30,6 @@ export default function RealmCard({ realm, name, auctionHouses }) {
 							key={realm + '/' + auctionHouse}
 							realm={realm}
 							auctionHouse={auctionHouse}
-							numAuctions={auctionHouses[auctionHouse].numAuctions}
 						/>
 					);
 				})}

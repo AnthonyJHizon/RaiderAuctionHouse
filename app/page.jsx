@@ -4,7 +4,6 @@ import Footer from '../components/footer';
 import RealmCard from '../components/realmCard';
 
 import {
-	cacheGet,
 	cachedAunctionHouses,
 	cachedRealms,
 } from '../lib/clients/redis/client';
@@ -21,31 +20,25 @@ async function getData() {
 	const auctionHouseKeys = Object.keys(auctionHouses);
 
 	realmKeys &&
-		(await Promise.all(
-			realmKeys.map(async (realmKey) => {
-				let auctionHouseData =
-					auctionHouseKeys &&
-					(await Promise.all(
-						auctionHouseKeys.map(async (auctionHouseKey) => {
-							let result = {};
-							result['name'] = auctionHouses[auctionHouseKey].name;
-							result['numAuctions'] =
-								(await cacheGet(realmKey + '/' + auctionHouseKey)) ?? 0;
-							return result;
-						})
-					));
-				let auctionHousesData = {};
-				auctionHouseData.forEach((auctionHouse) => {
-					auctionHousesData[
-						auctionHouse.name.toLowerCase().replace(/\s+/g, '-')
-					] = auctionHouse;
+		realmKeys.map((realmKey) => {
+			let auctionHouseData =
+				auctionHouseKeys &&
+				auctionHouseKeys.map((auctionHouseKey) => {
+					let result = {};
+					result['name'] = auctionHouses[auctionHouseKey].name;
+					return result;
 				});
-				data[realmKey] = {
-					name: realms[realmKey].name,
-					auctionHouses: auctionHousesData,
-				};
-			})
-		));
+			let auctionHousesData = {};
+			auctionHouseData.forEach((auctionHouse) => {
+				auctionHousesData[
+					auctionHouse.name.toLowerCase().replace(/\s+/g, '-')
+				] = auctionHouse;
+			});
+			data[realmKey] = {
+				name: realms[realmKey].name,
+				auctionHouses: auctionHousesData,
+			};
+		});
 	return data;
 }
 

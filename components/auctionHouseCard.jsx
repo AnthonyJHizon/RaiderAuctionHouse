@@ -1,11 +1,20 @@
-import Link from 'next/link';
+import { Suspense } from 'react';
 
-export default function AuctionHouseCard({ realm, auctionHouse, numAuctions }) {
+import Link from 'next/link';
+import { unstable_noStore } from 'next/server';
+
+import { cacheGet } from '../lib/clients/redis/client';
+
+export default async function AuctionHouseCard({ realm, auctionHouse }) {
+	unstable_noStore();
+
 	return (
 		<Link key={realm + '-' + auctionHouse} href={`/${realm}/${auctionHouse}`}>
 			<div className="relative h-16 opacity-[.99] transition-all duration-500 ease-in-out hover:scale-110">
 				<div className="absolute flex items-center justify-center text-center h-full w-full text-normal-1 z-50">
-					{numAuctions} {numAuctions != 1 ? 'Auctions' : 'Auction'}
+					<Suspense fallback={<p className="animate-pulse">Loading</p>}>
+						<NumAuctions realm={realm} auctionHouse={auctionHouse} />
+					</Suspense>
 				</div>
 				<img
 					src={`/auctionHouses/${auctionHouse}.webp`}
@@ -16,5 +25,14 @@ export default function AuctionHouseCard({ realm, auctionHouse, numAuctions }) {
 				/>
 			</div>
 		</Link>
+	);
+}
+
+async function NumAuctions({ realm, auctionHouse }) {
+	const numAuctions = await cacheGet(`${realm}/${auctionHouse}`);
+	return (
+		<p>
+			{numAuctions} {numAuctions != 1 ? 'Auctions' : 'Auction'}
+		</p>
 	);
 }
