@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 const LineChart = dynamic(() => import('./LineChart'), {
@@ -32,6 +32,7 @@ export default function WowToken() {
 	}, []);
 
 	useEffect(() => {
+		let running = true;
 		const getInitialData = async () => {
 			setLoading(true);
 			const dayParams = new URLSearchParams({
@@ -40,10 +41,14 @@ export default function WowToken() {
 			const rangeRes = await fetch(`/api/wowToken/gte?${dayParams}`);
 			const rangeData = await rangeRes.json();
 
-			setData(rangeData);
-			setLoading(false);
+			if (running) {
+				setData(rangeData);
+				setLoading(false);
+			}
 		};
 		getInitialData();
+
+		return () => (running = false);
 	}, [days]);
 
 	const currentTokenPrice = currentToken.price;

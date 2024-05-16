@@ -182,22 +182,26 @@ export default function LineChart({
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center pt-5 pb-5">
 			{loading ? (
-				<p className="animate-pulse text-header-1">Loading</p>
-			) : (
 				<>
+					<p className="absolute z-40 animate-pulse text-header-1">Loading</p>
 					<ReactEcharts
-						option={option}
+						option={{ ...option, animation: false }}
 						style={{ height: '100%', width: '100%' }}
 					/>
-					<Options days={days} setDays={setDays} />
 				</>
+			) : (
+				<ReactEcharts
+					option={option}
+					style={{ height: '100%', width: '100%' }}
+				/>
 			)}
+			<Options days={days} setDays={setDays} />
 		</div>
 	);
 }
 
 function Options({ days, setDays }) {
-	const optionArr = ['1D', '7D', '1M', '6M', 'YTD', 'MAX'];
+	const optionArr = ['1D', '7D', '1M', '6M'];
 	return (
 		<div className="hidden md:flex flex-row gap-x-6 items-center justify-center">
 			{optionArr.map((option) => {
