@@ -7,10 +7,11 @@ import ReactEcharts from 'echarts-for-react';
 export default function LineChart({
 	data,
 	title,
-	yMin,
-	yMax,
 	yAxisName,
 	xAxisName,
+	days,
+	setDays,
+	loading,
 }) {
 	const option = {
 		title: [
@@ -47,6 +48,7 @@ export default function LineChart({
 			},
 		},
 		xAxis: {
+			scale: true,
 			type: 'time',
 			name: xAxisName,
 			nameLocation: 'middle',
@@ -83,9 +85,6 @@ export default function LineChart({
 		},
 		yAxis: {
 			type: 'value',
-			interval: 250,
-			min: yMin,
-			max: yMax,
 			name: yAxisName,
 			nameLocation: 'middle',
 			nameTextStyle: {
@@ -119,6 +118,7 @@ export default function LineChart({
 			axisTick: {
 				alignWithLabel: true,
 			},
+			scale: true,
 		},
 		series: [
 			{
@@ -143,15 +143,15 @@ export default function LineChart({
 						colorStops: [
 							{
 								offset: 0,
-								color: '#04729e',
+								color: '#F27003',
 							},
 							{
 								offset: 0.5,
-								color: '#058fc5',
+								color: '#F27B03',
 							},
 							{
 								offset: 1,
-								color: '#24a2d4',
+								color: '#FC5229',
 							},
 						],
 					},
@@ -160,11 +160,11 @@ export default function LineChart({
 					color: new graphic.LinearGradient(0, 0, 0, 1, [
 						{
 							offset: 0,
-							color: 'rgb(77, 119, 255)',
+							color: '#F27003',
 						},
 						{
 							offset: 1,
-							color: 'rgb(0, 221, 255)',
+							color: '#a10202',
 						},
 					]),
 				},
@@ -176,9 +176,58 @@ export default function LineChart({
 				filterMode: 'none',
 			},
 		],
+		animationThreshold: 10000,
 	};
 
 	return (
-		<ReactEcharts option={option} style={{ height: '100%', width: '100%' }} />
+		<div className="h-full w-full flex flex-col items-center justify-center pt-5 pb-5">
+			{loading ? (
+				<>
+					<p className="absolute z-40 animate-pulse text-header-1">Loading</p>
+					<ReactEcharts
+						option={{ ...option, animation: false }}
+						style={{ height: '100%', width: '100%' }}
+					/>
+				</>
+			) : (
+				<ReactEcharts
+					option={option}
+					style={{ height: '100%', width: '100%' }}
+				/>
+			)}
+			<Options days={days} setDays={setDays} />
+		</div>
+	);
+}
+
+function Options({ days, setDays }) {
+	const optionArr = ['1D', '7D', '1M', '6M', 'YTD', 'MAX'];
+	return (
+		<div className="hidden md:flex flex-row gap-x-6 items-center justify-center">
+			{optionArr.map((option) => {
+				if (option !== days)
+					return <OptionButton option={option} setDays={setDays} />;
+				else return <SelectedButton option={option} />;
+			})}
+		</div>
+	);
+}
+
+function OptionButton({ option, setDays }) {
+	return (
+		<button
+			className="bg-left-bottom bg-gradient-to-r from-primary to-secondary bg-[length:0%_2px] bg-no-repeat hover:bg-[length:100%_2px] hover:text-secondary transition-all duration-500 ease-out"
+			onClick={() => setDays(option)}
+		>
+			{option}
+		</button>
+	);
+}
+
+function SelectedButton({ option }) {
+	return (
+		<button className="text-secondary bg-left-bottom bg-gradient-to-r from-primary to-secondary bg-no-repeat bg-[length:100%_2px]">
+			{option}
+		</button>
 	);
 }

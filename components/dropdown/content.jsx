@@ -33,7 +33,7 @@ export default function Content({
 
 	return (
 		<Link href={newPathname[type]}>
-			<div className="h-full w-full hover:bg-neutral-200">
+			<div className="h-fit w-full hover:bg-neutral-200">
 				{elementName[type]}
 			</div>
 		</Link>

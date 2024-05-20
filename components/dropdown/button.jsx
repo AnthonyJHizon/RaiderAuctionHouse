@@ -11,7 +11,7 @@ export default function Button({ name, itemClass }) {
 	return (
 		<>
 			{itemClass ? (
-				<button className="flex justify-center items-center bg-royal-blue group-hover:bg-cyan hover:bg-cyan text-white w-full h-full">
+				<button className="flex justify-center items-center bg-primary group-hover:bg-secondary hover:bg-secondary transition-all duration-500 ease-out text-white w-full h-full">
 					<Link
 						href={{
 							pathname: `../${realm}/${auctionHouse}`,
@@ -29,7 +29,7 @@ export default function Button({ name, itemClass }) {
 					</Link>
 				</button>
 			) : (
-				<button className="bg-royal-blue group-hover:bg-cyan text-white w-full h-full">
+				<button className="bg-primary group-hover:bg-secondary text-white w-full h-full transition-all duration-500 ease-out">
 					{name}
 				</button>
 			)}

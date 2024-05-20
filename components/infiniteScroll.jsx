@@ -7,6 +7,7 @@ import LoadSpinner from './loadSpinner';
 export default function InfiniteScroll({ auctions, initialData }) {
 	const [itemsData, setItemsData] = useState(initialData);
 	const [start, setStart] = useState(20);
+	const [loading, setLoading] = useState(false);
 	const { ref, inView } = useInView();
 
 	let auctionsArr = [];
@@ -15,6 +16,7 @@ export default function InfiniteScroll({ auctions, initialData }) {
 		let running = true;
 		const loadMoreData = async () => {
 			if (start < Object.keys(auctions).length) {
+				setLoading(true);
 				const end = start + 20;
 				let newItemData = {};
 				await Promise.all(
@@ -32,27 +34,45 @@ export default function InfiniteScroll({ auctions, initialData }) {
 				if (running) {
 					setItemsData(Object.assign(itemsData, newItemData));
 					setStart(end);
+					setLoading(false);
 				}
 			}
 		};
 		if (inView) {
 			loadMoreData();
 		}
-		return () => (running = false);
-	}, [inView, auctions, itemsData, start]);
-
+		return () => ((running = false), setLoading(false));
+	}, [inView, auctions, itemsData, start, loading]);
+	console.log(loading);
 	if (itemsData && auctions) {
-		Object.keys(itemsData).forEach((item) => {
+		Object.keys(itemsData).forEach((item, i) => {
 			if (itemsData[item].name !== 'Deprecated' && auctions[item]) {
-				auctionsArr.push(
-					<Auction
-						key={item}
-						itemId={item}
-						itemName={itemsData[item].name}
-						itemIcon={itemsData[item].icon}
-						itemVal={auctions[item]?.toFixed(4)}
-					/>
-				);
+				if (
+					i === Object.keys(itemsData).length - 1 &&
+					start < Object.keys(auctions).length
+				) {
+					auctionsArr.push(
+						<div key={item} ref={ref}>
+							<Auction
+								key={item}
+								itemId={item}
+								itemName={itemsData[item].name}
+								itemIcon={itemsData[item].icon}
+								itemVal={auctions[item]?.toFixed(4)}
+							/>
+						</div>
+					);
+				} else {
+					auctionsArr.push(
+						<Auction
+							key={item}
+							itemId={item}
+							itemName={itemsData[item].name}
+							itemIcon={itemsData[item].icon}
+							itemVal={auctions[item]?.toFixed(4)}
+						/>
+					);
+				}
 			}
 		});
 	}
@@ -62,8 +82,8 @@ export default function InfiniteScroll({ auctions, initialData }) {
 			{Object.keys(auctions).length > 0 ? (
 				<>
 					{auctionsArr}
-					{start < Object.keys(auctions).length && (
-						<div ref={ref} className="text-center mt-2 mb-0">
+					{loading && start < Object.keys(auctions).length && (
+						<div className="flex items-center justify-center h-40">
 							<LoadSpinner />
 						</div>
 					)}

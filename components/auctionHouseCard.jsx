@@ -29,7 +29,7 @@ export default async function AuctionHouseCard({ realm, auctionHouse }) {
 }
 
 async function NumAuctions({ realm, auctionHouse }) {
-	const numAuctions = await cacheGet(`${realm}/${auctionHouse}`);
+	const numAuctions = (await cacheGet(`${realm}/${auctionHouse}`)) ?? 0;
 	return (
 		<p>
 			{numAuctions} {numAuctions != 1 ? 'Auctions' : 'Auction'}

@@ -33,8 +33,8 @@ export default async function handler(req, res) {
 						async () => {
 							const item = await addItem(itemId);
 							if (item) {
-								allItems.add(itemId);
 								console.log(`Successfully added: ${item._id}, ${item.name}`);
+								allItems.add(itemId);
 							} else {
 								console.log(`Failed to add: ${item._id}`);
 							}
