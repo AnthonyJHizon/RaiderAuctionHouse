@@ -8,6 +8,7 @@
 		"test": "jest"
 	},
 	"dependencies": {
+		"@vercel/speed-insights": "^1.0.10",
 		"caniuse-lite": "^1.0.30001572",
 		"echarts": "^5.4.3",
 		"echarts-for-react": "^3.0.2",

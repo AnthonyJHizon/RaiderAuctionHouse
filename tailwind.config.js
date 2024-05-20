@@ -8,19 +8,9 @@ module.exports = {
 	theme: {
 		extend: {
 			backgroundImage: {
-				icecrown: "url('../public/backgrounds/background-cata.webp')",
+				cataclysm: "url('../public/backgrounds/background-cata.webp')",
 			},
 			colors: {
-				//#a10202
-
-				//#e30202
-
-				//#D32A00
-				//#E83A10
-				//#FC5229
-
-				//#F27003
-				//#F27B03
 				primary: '#a10202',
 				secondary: '#e30202',
 			},
