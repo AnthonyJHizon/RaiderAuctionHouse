@@ -41,9 +41,9 @@ export default function InfiniteScroll({ auctions, initialData }) {
 		if (inView) {
 			loadMoreData();
 		}
-		return () => (running = false);
+		return () => ((running = false), setLoading(false));
 	}, [inView, auctions, itemsData, start, loading]);
-
+	console.log(loading);
 	if (itemsData && auctions) {
 		Object.keys(itemsData).forEach((item, i) => {
 			if (itemsData[item].name !== 'Deprecated' && auctions[item]) {

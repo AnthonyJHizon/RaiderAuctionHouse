@@ -189,7 +189,7 @@ export default function Auctions({ data }) {
 	}
 
 	return (
-		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-[100vh]">
+		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-screen">
 			<Head>
 				<title>{self.realm + ' ' + self.auctionHouse}</title>
 				<meta
@@ -202,8 +202,8 @@ export default function Auctions({ data }) {
 				strategy="lazyOnload"
 			/>
 			<Navbar />
-			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md bg-white h-full xl:w-6/12 md:w-9/12 w-full overflow-hidden">
-				<div className="inline-flex bg-royal-blue h-[5%] w-full">
+			<main className="flex flex-col items-center text-black bg-white/75 backdrop-blur-md h-full xl:w-6/12 md:w-9/12 w-full overflow-hidden">
+				<div className="inline-flex bg-primary h-[5%] w-full divide-x divide-black">
 					<Dropdown
 						name={'Realm'}
 						queryParams={queryParams}
@@ -218,12 +218,12 @@ export default function Auctions({ data }) {
 						auctionHouses={auctionHouses}
 						type="AuctionHouse"
 					/>
-					<div className="basis-full flex items-center justify-center w-[33.33%] text-normal-1">
+					<div className="basis-full flex items-center justify-center w-[33.33%] text-normal-1 transition-all duration-500 ease-out focus-within:bg-secondary">
 						<input
 							id="searchInput"
 							type="text"
 							placeholder="Search"
-							className="h-[50%] w-[80%]"
+							className="h-[50%] w-[80%] pl-1 pr-1"
 							onKeyPress={(e) => handleSearchSubmit(e)}
 						></input>
 					</div>
@@ -233,7 +233,7 @@ export default function Auctions({ data }) {
 						{self.realm + ' ' + self.auctionHouse}
 					</h1>
 				</div>
-				<div className="flex bg-royal-blue h-[5%] w-full">
+				<div className="flex bg-primary h-[5%] w-full divide-x divide-black">
 					<div className="basis-full text-normal-1">
 						<Button name={'All'} itemClass={'All'} />
 					</div>
@@ -339,9 +339,10 @@ export async function getStaticProps({ params }) {
 	data['self'] = {
 		realm: realms[realm].name,
 		auctionHouse: auctionHouses[auctionHouse].name,
-		lastModified: new Date(response.headers.get('last-modified'))
-			.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
-			.toString() + ' (Server)', //get last modified header and convert to realm's timezone
+		lastModified:
+			new Date(response.headers.get('last-modified'))
+				.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
+				.toString() + ' (Server)', //get last modified header and convert to realm's timezone
 	};
 
 	data['auctions'] = auctionData;

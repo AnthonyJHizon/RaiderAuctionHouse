@@ -6,7 +6,7 @@ export default function LoadSpinner() {
 		>
 			<svg
 				aria-hidden="true"
-				className="inline h-3/5 text-gray-200 animate-spin fill-cyan"
+				className="inline h-3/5 text-gray-200 animate-spin fill-secondary"
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"

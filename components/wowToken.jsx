@@ -48,18 +48,18 @@ export default function WowToken() {
 		};
 		getInitialData();
 
-		return () => (running = false);
+		return () => ((running = false), setLoading(false));
 	}, [days]);
 
 	const currentTokenPrice = currentToken.price;
 	const chartData = data.map((d) => [d.date, d.price]);
 
 	return (
-		<div className="relative flex min-h-[350px] h-3/5 w-full items-center justify-center z-10 bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white text-normal-1">
+		<div className="relative flex min-h-[350px] h-3/5 w-full items-center justify-center z-10 bg-gradient-to-r from-[#431407] via-[#171717] to-black text-white text-normal-1">
 			<img
-				src="wow-token.webp"
+				src="/wowToken/wow-token-cata.webp"
 				alt=""
-				className="absolute z-[-10] h-full w-full object-cover  mix-blend-overlay"
+				className="absolute z-[-10] h-full w-full object-cover mix-blend-overlay"
 				draggable={false}
 			/>
 			<LineChart

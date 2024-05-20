@@ -143,15 +143,15 @@ export default function LineChart({
 						colorStops: [
 							{
 								offset: 0,
-								color: '#04729e',
+								color: '#F27003',
 							},
 							{
 								offset: 0.5,
-								color: '#058fc5',
+								color: '#F27B03',
 							},
 							{
 								offset: 1,
-								color: '#24a2d4',
+								color: '#FC5229',
 							},
 						],
 					},
@@ -160,11 +160,11 @@ export default function LineChart({
 					color: new graphic.LinearGradient(0, 0, 0, 1, [
 						{
 							offset: 0,
-							color: 'rgb(77, 119, 255)',
+							color: '#F27003',
 						},
 						{
 							offset: 1,
-							color: 'rgb(0, 221, 255)',
+							color: '#a10202',
 						},
 					]),
 				},
@@ -201,7 +201,7 @@ export default function LineChart({
 }
 
 function Options({ days, setDays }) {
-	const optionArr = ['1D', '7D', '1M', '6M'];
+	const optionArr = ['1D', '7D', '1M', '6M', 'YTD', 'MAX'];
 	return (
 		<div className="hidden md:flex flex-row gap-x-6 items-center justify-center">
 			{optionArr.map((option) => {
