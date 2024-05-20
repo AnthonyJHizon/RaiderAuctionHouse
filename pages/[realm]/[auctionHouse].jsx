@@ -189,7 +189,7 @@ export default function Auctions({ data }) {
 	}
 
 	return (
-		<div className="flex flex-col items-center bg-icecrown bg-no-repeat bg-cover bg-center h-screen">
+		<div className="flex flex-col items-center bg-cataclysm bg-no-repeat bg-cover bg-center h-screen">
 			<Head>
 				<title>{self.realm + ' ' + self.auctionHouse}</title>
 				<meta

@@ -1,6 +1,4 @@
 import Banner from '../components/banner/index';
-import Navbar from '../components/navbar';
-import Footer from '../components/footer';
 import RealmCard from '../components/realmCard';
 
 import {
@@ -45,8 +43,7 @@ async function getData() {
 export default async function Page() {
 	const data = await getData();
 	return (
-		<div className="relative flex flex-col items-center bg-icecrown bg-cover bg-no-repeat bg-center h-screen w-screen overflow-y-scroll scrollbar-none">
-			{/* <Navbar /> */}
+		<div className="relative flex flex-col items-center bg-cataclysm bg-cover bg-no-repeat bg-center h-screen w-screen overflow-y-scroll scrollbar-none">
 			<main className="relative flex flex-wrap justify-center items-center divide-y h-screen w-full text-white font-bold text-normal-1">
 				<Banner />
 				<WowToken />
@@ -67,7 +64,6 @@ export default async function Page() {
 					</div>
 				</div>
 			</main>
-			{/* <Footer /> */}
 		</div>
 	);
 }
