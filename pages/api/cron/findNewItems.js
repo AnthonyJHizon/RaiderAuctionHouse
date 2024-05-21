@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 								console.log(`Successfully added: ${item._id}, ${item.name}`);
 								allItems.add(itemId);
 							} else {
-								console.log(`Failed to add: ${item._id}`);
+								console.log(`Failed to add: ${itemId}, ${item}`);
 							}
 						}
 					);
