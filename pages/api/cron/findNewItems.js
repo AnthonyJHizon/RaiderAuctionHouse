@@ -32,7 +32,8 @@ export default async function handler(req, res) {
 					return new Promise((resolve) => setTimeout(resolve, index * 25)).then(
 						async () => {
 							const item = await addItem(itemId);
-							if (item) {
+							if (item._id) {
+								if (item._id === undefined) console.log(item);
 								console.log(`Successfully added: ${item._id}, ${item.name}`);
 								allItems.add(itemId);
 							} else {
