@@ -90,7 +90,7 @@ export default function Auctions({ data }) {
 					setSearchItems(searchItemData);
 					setLoading(false);
 				}
-			}
+			} else setSearchItems();
 		};
 		getSearch();
 		return () => ((running = false), setLoading(false));
