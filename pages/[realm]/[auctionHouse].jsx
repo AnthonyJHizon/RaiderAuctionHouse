@@ -76,7 +76,8 @@ export default function Auctions({ data }) {
 	if (search) queryParams['search'] = search;
 
 	useEffect(() => {
-		async function setData() {
+		let running = true;
+		const getSearch = async function () {
 			if (search) {
 				setLoading(true);
 				const item = search;
@@ -85,13 +86,14 @@ export default function Auctions({ data }) {
 				}).toString();
 				const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
 				const searchItemData = await searchItemRes.json();
-				setSearchItems(searchItemData);
-				setLoading(false);
-			} else {
-				setSearchItems();
+				if (running) {
+					setSearchItems(searchItemData);
+					setLoading(false);
+				}
 			}
-		}
-		setData();
+		};
+		getSearch();
+		return () => ((running = false), setLoading(false));
 	}, [search]);
 
 	useEffect(() => {
