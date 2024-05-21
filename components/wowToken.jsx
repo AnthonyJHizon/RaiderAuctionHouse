@@ -64,7 +64,7 @@ export default function WowToken() {
 			/>
 			<LineChart
 				data={chartData}
-				title={`1 Wow Token = ${currentTokenPrice} Gold`}
+				title={`1 Wow Token = ${currentTokenPrice ?? '???'} Gold`}
 				yAxisName="Price (Gold)"
 				xAxisName="Date"
 				days={days}
