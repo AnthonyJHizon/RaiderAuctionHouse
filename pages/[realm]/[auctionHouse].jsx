@@ -76,7 +76,8 @@ export default function Auctions({ data }) {
 	if (search) queryParams['search'] = search;
 
 	useEffect(() => {
-		async function setData() {
+		let running = true;
+		const getSearch = async function () {
 			if (search) {
 				setLoading(true);
 				const item = search;
@@ -85,13 +86,14 @@ export default function Auctions({ data }) {
 				}).toString();
 				const searchItemRes = await fetch(`/api/item/search?${searchParams}`);
 				const searchItemData = await searchItemRes.json();
-				setSearchItems(searchItemData);
-				setLoading(false);
-			} else {
-				setSearchItems();
+				if (running) {
+					setSearchItems(searchItemData);
+					setLoading(false);
+				}
 			}
-		}
-		setData();
+		};
+		getSearch();
+		return () => ((running = false), setLoading(false));
 	}, [search]);
 
 	useEffect(() => {
@@ -100,7 +102,7 @@ export default function Auctions({ data }) {
 
 	function handleSearchSubmit(e) {
 		if (e.key === 'Enter' || e.button === 0) {
-			if (e.target.value && !loading) {
+			if (e.target.value) {
 				router.push(`../${realm}/${auctionHouse}?search=${e.target.value}`);
 			}
 		}
@@ -251,7 +253,7 @@ export default function Auctions({ data }) {
 				>
 					{Object.keys(queryParams).length !== 0 ? (
 						loading ? (
-							<div className="flex items-center justify-center text-center text-header-2">
+							<div className="flex items-center justify-center h-40 text-center text-header-2">
 								<LoadSpinner />
 							</div>
 						) : auctionsArr.length > 0 ? (
