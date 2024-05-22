@@ -36,14 +36,17 @@ export default async function handler(req, res) {
 								console.log(`Successfully added: ${item._id}, ${item.name}`);
 								allItems.add(itemId);
 							} else {
-								console.log(`Failed to add: ${itemId}, ${item}`);
+								//duplicate key error, add itemid to set of all items
+								if (item.code === 11000) {
+									allItems.add(itemId);
+								} else console.log(`Failed to add: ${itemId}\n${item}`);
 							}
 						}
 					);
 				})
 			));
 
-		cacheUpdateAllItemIds(allItems);
+		await cacheUpdateAllItemIds(allItems);
 
 		return res
 			.status(200)
