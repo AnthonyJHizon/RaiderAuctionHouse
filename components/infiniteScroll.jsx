@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import Auction from './auction';
 import LoadSpinner from './loadSpinner';
 
-export default function InfiniteScroll({ auctions, initialData }) {
+export default function InfiniteScroll({ sortedKeys, auctions, initialData }) {
 	const [itemsData, setItemsData] = useState(initialData);
 	const [start, setStart] = useState(20);
 	const [loading, setLoading] = useState(false);
@@ -15,21 +15,19 @@ export default function InfiniteScroll({ auctions, initialData }) {
 	useEffect(() => {
 		let running = true;
 		const loadMoreData = async () => {
-			if (start < Object.keys(auctions).length) {
+			if (start < sortedKeys.length) {
 				setLoading(true);
 				const end = start + 20;
 				let newItemData = {};
 				await Promise.all(
-					Object.keys(auctions)
-						.slice(start, end)
-						.map(async (id) => {
-							const idParams = new URLSearchParams({
-								id,
-							}).toString();
-							const itemRes = await fetch(`/api/item/id?${idParams}`);
-							const itemData = await itemRes.json();
-							Object.assign(newItemData, itemData);
-						})
+					sortedKeys.slice(start, end).map(async (id) => {
+						const idParams = new URLSearchParams({
+							id,
+						}).toString();
+						const itemRes = await fetch(`/api/item/id?${idParams}`);
+						const itemData = await itemRes.json();
+						Object.assign(newItemData, itemData);
+					})
 				);
 				if (running) {
 					setItemsData(Object.assign(itemsData, newItemData));
@@ -42,11 +40,15 @@ export default function InfiniteScroll({ auctions, initialData }) {
 			loadMoreData();
 		}
 		return () => ((running = false), setLoading(false));
-	}, [inView, auctions, itemsData, start, loading]);
+	}, [inView, sortedKeys, itemsData, start, loading]);
 
-	if (itemsData && auctions) {
-		Object.keys(itemsData).forEach((item, i) => {
-			if (itemsData[item].name !== 'Deprecated' && auctions[item]) {
+	if (itemsData && auctions && sortedKeys) {
+		sortedKeys.forEach((item, i) => {
+			if (
+				itemsData[item] &&
+				itemsData[item].name !== 'Deprecated' &&
+				auctions[item]
+			) {
 				if (
 					i === Object.keys(itemsData).length - 1 &&
 					start < Object.keys(auctions).length
