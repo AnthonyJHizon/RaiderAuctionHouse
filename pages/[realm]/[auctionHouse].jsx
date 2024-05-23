@@ -37,10 +37,11 @@ export default function Auctions({ data }) {
 		self,
 		realms,
 		auctionHouses,
-		auctions,
+		auctionsData,
 		relevantItems,
 		initialAuctions,
 	} = data;
+	const { sortedKeys, auctions } = auctionsData;
 	const { relevantItemSubclasses, relevantItemInfo } = relevantItems;
 	const {
 		gems,
@@ -140,8 +141,8 @@ export default function Auctions({ data }) {
 		);
 	});
 
-	if (auctions) {
-		Object.keys(auctions).forEach((item) => {
+	if (auctions && sortedKeys) {
+		sortedKeys.forEach((item) => {
 			if (item) {
 				if (searchItems) {
 					if (searchItems[item]) {
@@ -266,6 +267,7 @@ export default function Auctions({ data }) {
 					) : (
 						<InfiniteScroll
 							key={realm + '/' + auctionHouse}
+							sortedKeys={sortedKeys}
 							auctions={auctions}
 							initialData={initialAuctions}
 						/>
@@ -282,19 +284,17 @@ async function loadInitialData(auctions) {
 		await dbConnect();
 		const end = 20;
 		await Promise.all(
-			Object.keys(auctions)
-				.slice(0, end)
-				.map(async (id) => {
-					let item = {};
-					const itemData = await getItem(id);
-					if (itemData) {
-						item[itemData._id] = {
-							name: itemData.name,
-							icon: itemData.iconURL,
-						};
-						Object.assign(initialProps, item);
-					}
-				})
+			auctions.slice(0, end).map(async (id) => {
+				let item = {};
+				const itemData = await getItem(id);
+				if (itemData) {
+					item[itemData._id] = {
+						name: itemData.name,
+						icon: itemData.iconURL,
+					};
+					Object.assign(initialProps, item);
+				}
+			})
 		);
 	}
 	return initialProps;
@@ -347,10 +347,10 @@ export async function getStaticProps({ params }) {
 				.toString() + ' (Server)', //get last modified header and convert to realm's timezone
 	};
 
-	data['auctions'] = auctionData;
+	data['auctionsData'] = auctionData;
 	data['realms'] = propsFormatRealmData(realms);
 	data['auctionHouses'] = propsFormatAuctionHouseData(auctionHouses);
-	data['initialAuctions'] = await loadInitialData(auctionData);
+	data['initialAuctions'] = await loadInitialData(auctionData.sortedKeys);
 	data['relevantItems'] = await cachedRelevantItems();
 
 	delete data['realms'][realm]; //remove current realm from list of navigatable realms

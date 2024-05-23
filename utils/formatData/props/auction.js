@@ -15,5 +15,13 @@ export default function Auction(data) {
 				}
 			}
 		});
-	return minPriceHash;
+
+	const sortedKeys = Object.keys(minPriceHash).sort((a, b) => {
+		return minPriceHash[b] - minPriceHash[a];
+	});
+
+	return {
+		sortedKeys: sortedKeys,
+		auctions: minPriceHash,
+	};
 }

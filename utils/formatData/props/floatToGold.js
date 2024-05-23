@@ -18,7 +18,19 @@ export default function floatToGold(float) {
 
 	return (
 		(gold > '0' ? gold + 'g ' : '') +
-		(silver > '0' ? silver + 's ' : '') +
-		(copper > '0' ? copper + 'c ' : '')
+		(silver > '0'
+			? silver.length < 2 && gold > '0'
+				? '0' + silver + 's '
+				: silver + 's '
+			: gold > '0'
+			? '00s '
+			: '') +
+		(copper > '0'
+			? copper.length < 2 && (gold > '0' || silver > '0')
+				? '0' + copper + 'c '
+				: copper + 'c '
+			: gold > '0' || silver > '0'
+			? '00c '
+			: ' ')
 	).slice(0, -1);
 }
