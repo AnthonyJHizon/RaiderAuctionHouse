@@ -11,7 +11,6 @@ export default function InfiniteScroll({ sortedKeys, auctions, initialData }) {
 	const { ref, inView } = useInView();
 
 	let auctionsArr = [];
-
 	useEffect(() => {
 		let running = true;
 		const loadMoreData = async () => {
@@ -43,7 +42,8 @@ export default function InfiniteScroll({ sortedKeys, auctions, initialData }) {
 	}, [inView, sortedKeys, itemsData, start, loading]);
 
 	if (itemsData && auctions && sortedKeys) {
-		sortedKeys.forEach((item, i) => {
+		let i = 0;
+		sortedKeys.forEach((item) => {
 			if (
 				itemsData[item] &&
 				itemsData[item].name !== 'Deprecated' &&
@@ -75,6 +75,7 @@ export default function InfiniteScroll({ sortedKeys, auctions, initialData }) {
 						/>
 					);
 				}
+				i++;
 			}
 		});
 	}
