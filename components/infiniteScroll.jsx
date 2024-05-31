@@ -75,8 +75,8 @@ export default function InfiniteScroll({ sortedKeys, auctions, initialData }) {
 						/>
 					);
 				}
-				i++;
 			}
+			i++;
 		});
 	}
 
