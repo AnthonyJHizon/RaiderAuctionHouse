@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 		//if a new item is discovered it is most likely going to be from this server's auction house
 		const auctionRes = await getAuction('4728', '2');
 		let auctionData = await auctionRes.json();
-		auctionData = propsFormatAuctionData(auctionData);
+		auctionData = propsFormatAuctionData(auctionData).auctions;
 
 		let allItems = await cachedItemIds();
 		let newItems = [];
