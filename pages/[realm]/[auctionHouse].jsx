@@ -342,7 +342,7 @@ export async function getStaticProps({ params }) {
 		realm: realms[realm].name,
 		auctionHouse: auctionHouses[auctionHouse].name,
 		lastModified:
-			new Date(response.headers.get('last-modified'))
+			new Date(response.headers.get('date'))
 				.toLocaleString('en-US', { timeZone: realms[realm].timeZone })
 				.toString() + ' (Server)', //get last modified header and convert to realm's timezone
 	};
